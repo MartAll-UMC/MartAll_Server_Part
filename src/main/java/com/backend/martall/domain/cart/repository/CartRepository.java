@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CartRepository extends JpaRepository<CartItem, Long> {
-
+    boolean existsByItemId(int itemId);
 }
