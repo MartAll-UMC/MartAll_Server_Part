@@ -1,6 +1,6 @@
 package com.backend.martall.domain.cart.entity;
 
-import com.backend.martall.domain.cart.dto.CartRequestDto;
+import com.backend.martall.domain.cart.dto.CartItemRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,10 +26,10 @@ public class CartItem {
     @Column(name = "item_id")
     private int itemId;
 
-    @Column(name = "number")
-    private int number;
+    @Column(name = "count")
+    private int count;
 
-    public void updateCartItem(CartRequestDto cartRequestDto) {
-        this.number = cartRequestDto.getNumber();
+    public void updateCartItem(CartItemRequest cartRequestDto) {
+        this.count = cartRequestDto.getCount();
     }
 }

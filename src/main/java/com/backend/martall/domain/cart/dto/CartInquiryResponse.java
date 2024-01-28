@@ -11,6 +11,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartRequestDtoList {
-    private List<CartRequestDto> cartItemList;
+public class CartInquiryResponse {
+
+//    private List<mart~~> -> 마트 리스트 추가
+
+    private List<CartItemResponse> cartItemResponseList;
 }

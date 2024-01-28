@@ -8,19 +8,27 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartResponseDto {
+public class CartItemResponse {
 
     private Long cartItemId;
 
     private int itemId;
 
-    private int number;
+    private String martShopId;
 
-    public static CartResponseDto of (CartItem cartItem) {
-        return CartResponseDto.builder()
+    private String picName;
+
+    private int count;
+
+    private String itemName;
+
+    private int price;
+
+    public static CartItemResponse of (CartItem cartItem) {
+        return CartItemResponse.builder()
                 .cartItemId(cartItem.getCartItemId())
                 .itemId(cartItem.getItemId())
-                .number(cartItem.getNumber())
+                .count(cartItem.getCount())
                 .build();
     }
 }

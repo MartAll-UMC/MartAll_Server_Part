@@ -1,7 +1,7 @@
 package com.backend.martall.domain.cart.controller;
 
-import com.backend.martall.domain.cart.dto.CartRequestDtoList;
-import com.backend.martall.domain.cart.dto.CartRequestDto;
+import com.backend.martall.domain.cart.dto.CartItemRequestList;
+import com.backend.martall.domain.cart.dto.CartItemRequest;
 import com.backend.martall.domain.cart.service.CartService;
 import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
@@ -24,22 +24,22 @@ public class CartController {
 
     // 장바구니 상품 추가
     @PostMapping("/cart")
-    public ResponseEntity<JsonResponse> addCart(@RequestBody CartRequestDto cartRequestDto) {
-        cartService.addCartItem(cartRequestDto);
+    public ResponseEntity<JsonResponse> addCart(@RequestBody CartItemRequest cartItemRequest) {
+        cartService.addCartItem(cartItemRequest);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
     // 장바구니 수정
     @PatchMapping("/cart")
-    public ResponseEntity<JsonResponse> updateCart(@RequestBody CartRequestDto cartRequestDto) {
-        cartService.updateCartItem(cartRequestDto);
+    public ResponseEntity<JsonResponse> updateCart(@RequestBody CartItemRequest cartItemRequest) {
+        cartService.updateCartItem(cartItemRequest);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
     // 장바구니 상품 삭제
     @DeleteMapping("/cart")
-    public ResponseEntity<JsonResponse> deleteCart(@RequestBody CartRequestDtoList cartRequestDtoList) {
-        cartService.deleteCartItem(cartRequestDtoList);
+    public ResponseEntity<JsonResponse> deleteCart(@RequestBody CartItemRequestList cartItemRequestList) {
+        cartService.deleteCartItem(cartItemRequestList);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 }
