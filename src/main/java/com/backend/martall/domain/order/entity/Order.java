@@ -20,7 +20,8 @@ public class Order extends BaseTime {
     private Long userIdx;
 
     @Column(name = "order_state")
-    private String orderState;
+    @Enumerated(EnumType.STRING)
+    private OrderState orderState;
 
     @Column(name = "payment_type")
     private String paymentType;

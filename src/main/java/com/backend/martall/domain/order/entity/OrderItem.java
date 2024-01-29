@@ -18,7 +18,7 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Column(name = "number")
-    private int number;
+    @Column(name = "count")
+    private int count;
 
 }

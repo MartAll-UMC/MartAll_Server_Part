@@ -1,5 +1,6 @@
 package com.backend.martall.domain.order.controller;
 
+import com.backend.martall.domain.order.dto.OrderCreateRequest;
 import com.backend.martall.domain.order.service.UserOrderService;
 import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
@@ -14,17 +15,12 @@ public class UserOrderController {
     private final UserOrderService userOrderService;
 
     @PostMapping("/order")
-    public ResponseEntity<JsonResponse> createOrder(){
+    public ResponseEntity<JsonResponse> createOrder(@RequestParam OrderCreateRequest orderCreateRequest){
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
     @GetMapping("/order")
     public ResponseEntity<JsonResponse> inquiryOrder(@RequestParam String filter){
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
-    }
-
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<JsonResponse> inquiryOrderDetail(@PathVariable Long orderId){
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
