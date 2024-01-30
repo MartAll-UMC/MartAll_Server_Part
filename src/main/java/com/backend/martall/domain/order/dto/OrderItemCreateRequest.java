@@ -5,6 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderItemAddRequest {
+public class OrderItemCreateRequest {
     private Long cartItemId;
+    private int itemId;
+    private String martShopId;
+    private int count;
+
 }

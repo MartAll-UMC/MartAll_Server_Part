@@ -1,10 +1,16 @@
 package com.backend.martall.domain.order.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +22,13 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private OrderInfo orderInfo;
 
     @Column(name = "count")
     private int count;
+
+    public void setOrderInfo(OrderInfo orderInfo){
+        this.orderInfo = orderInfo;
+    }
 
 }

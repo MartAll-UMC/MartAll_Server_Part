@@ -11,6 +11,10 @@ public enum ResponseStatus {
     // Success
 
     // Exception
+
+    // 주문 4420 ~
+    ORDER_PAYMENT_NOT_EQUAL(false, 4420, "결제 금액이 올바르지 않습니다."),
+
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),
 

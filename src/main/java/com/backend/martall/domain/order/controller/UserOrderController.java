@@ -15,17 +15,18 @@ public class UserOrderController {
     private final UserOrderService userOrderService;
 
     @PostMapping("/order")
-    public ResponseEntity<JsonResponse> createOrder(@RequestParam OrderCreateRequest orderCreateRequest){
+    public ResponseEntity<JsonResponse> createOrder(@RequestBody OrderCreateRequest orderCreateRequest) {
+        userOrderService.createOrder(orderCreateRequest);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
     @GetMapping("/order")
-    public ResponseEntity<JsonResponse> inquiryOrder(@RequestParam String filter){
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
+    public ResponseEntity<JsonResponse> inquiryOrder(@RequestParam String state) {
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, userOrderService.getAllOrderItem(state)));
     }
 
     @PatchMapping("/order/{orderId}/cancel")
-    public ResponseEntity<JsonResponse> cancelOrder(@PathVariable Long orderId){
+    public ResponseEntity<JsonResponse> cancelOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 }

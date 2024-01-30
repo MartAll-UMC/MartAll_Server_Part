@@ -1,14 +1,18 @@
 package com.backend.martall.domain.order.dto;
 
-import com.backend.martall.domain.order.entity.Order;
+import com.backend.martall.domain.order.entity.OrderInfo;
+import com.backend.martall.domain.order.entity.OrderItem;
+import com.backend.martall.domain.order.entity.OrderState;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderItemResponse {
 
     private Long orderItemId;
@@ -29,5 +33,15 @@ public class OrderItemResponse {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderTime;
+
+    public static OrderItemResponse of (OrderItem orderItem, OrderInfo orderInfo) {
+        return OrderItemResponse.builder()
+                .orderItemId(orderItem.getOrderItemId())
+                .itemId(orderItem.getItemId())
+                .martShopId(orderInfo.getMartShopId())
+                .orderState(OrderState.getStateByCode(orderInfo.getOrderState()))
+                .count(orderItem.getCount())
+                .build();
+    }
 
 }
