@@ -1,14 +1,16 @@
 package com.backend.martall.domain.mart.entity;
 
 import com.backend.martall.domain.BaseTime;
-import com.backend.martall.domain.mart.entity.MartRequestDto;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
 @Table(name = "mart_shop")
 @Entity
+@Getter // Lombok의 Getter 어노테이션을 추가
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -19,10 +21,10 @@ public class MartShop extends BaseTime {
     @Column(name = "martshop_id", nullable = false)
     private Long martShopId;
 
-    @Column(name = "name", length = 50) // CHAR는 길이가 정해진 String
+    @Column(name = "name", length = 50)
     private String name;
 
-    @Column(name = "introduction", length = 255) // CHAR 타입으로 보이는데, 실제 길이 제한이 있다면 length 속성을 추가
+    @Column(name = "introduction", length = 255)
     private String introduction;
 
     @Column(name = "address", length = 255)
@@ -69,7 +71,4 @@ public class MartShop extends BaseTime {
 
     @Column(name = "latitude", length = 50)
     private String latitude;
-
-
-
 }

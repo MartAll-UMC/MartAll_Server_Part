@@ -1,4 +1,5 @@
 package com.backend.martall.domain.mart.dto;
+import com.backend.martall.domain.mart.entity.MartShop;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

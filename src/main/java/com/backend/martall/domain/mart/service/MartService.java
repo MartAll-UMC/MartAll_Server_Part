@@ -31,7 +31,7 @@ public class MartService {
                 .orElseThrow(() -> new RuntimeException("MartShop not found"));
         return MartResponseDto.from(martShop);
     }
-//마트샵 검색 결과-> List<MartResponseDto>
+//마트샵 검색 결과-> List<MartResponseDto?
     public List<MartResponseDto> searchMarts(String keyword) {
         List<MartShop> martShops = martRepository.findByKeyword(keyword);
         return martShops.stream()
