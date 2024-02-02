@@ -1,7 +1,7 @@
 package com.backend.martall.domain.cart.controller;
 
-import com.backend.martall.domain.cart.dto.CartItemRequestList;
 import com.backend.martall.domain.cart.dto.CartItemRequest;
+import com.backend.martall.domain.cart.dto.CartItemRequestList;
 import com.backend.martall.domain.cart.service.CartService;
 import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
@@ -19,7 +19,7 @@ public class CartController {
     // 장바구니 조회
     @GetMapping("/cart")
     public ResponseEntity<JsonResponse> inquiryCart() {
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, cartService.getAllCartItem()));
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, cartService.inquiryCart()));
     }
 
     // 장바구니 상품 추가

@@ -11,12 +11,6 @@ public enum ResponseStatus {
     // Success
 
     // Exception
-
-    // 4400 ~ 4499
-    // 장바구니 4400 ~
-    CART_ITEM_DUP(false, 4400, "장바구니에 같은 상품이 존재합니다."),
-    CART_ITEM_NOT_EXIST(false, 4401, "장바구니에 상품이 존재하지 않습니다."),
-
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),
 

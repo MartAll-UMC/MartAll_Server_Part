@@ -1,5 +1,6 @@
 package com.backend.martall.domain.cart.service;
 
+import com.backend.martall.domain.cart.dto.CartInquiryResponse;
 import com.backend.martall.domain.cart.dto.CartItemRequest;
 import com.backend.martall.domain.cart.dto.CartItemRequestList;
 import com.backend.martall.domain.cart.dto.CartItemResponse;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.backend.martall.global.exception.ResponseStatus.CART_ITEM_DUP;
 import static com.backend.martall.global.exception.ResponseStatus.CART_ITEM_NOT_EXIST;
 
 @Slf4j
@@ -25,14 +25,33 @@ public class CartService {
 
     private final CartRepository cartRepository;
 
-
-    // 장바구니 상품 전체 출력
-    // 추후 사용자 아이디 장바구니를 불러오는 것으로 수정
     @Transactional
-    public List<CartItemResponse> getAllCartItem() {
+    public CartInquiryResponse inquiryCart() {
+
+        // 마트 정보 추가도 나중에 추가
+        // checkCartMart로 마트정보 얻기
+
+        return CartInquiryResponse.builder()
+                .cartItemResponseList(getCartItem())
+                .build();
+    }
+
+    // 장바구니 상품 리스트
+    @Transactional
+    public List<CartItemResponse> getCartItem() {
+
+        // 나중에 findByUserIdx 로 교체
         List<CartItem> cartItemList = cartRepository.findAll();
+
         List<CartItemResponse> cartResponseDtoList = cartItemList.stream()
-                .map(CartItemResponse::of)
+                .map(cartItem -> {
+                    CartItemResponse cartItemResponse = CartItemResponse.of(cartItem);
+//                    cartItemResponse.setItemName();
+//                    cartItemResponse.setCategoryName();
+//                    cartItemResponse.setPrice();
+//                    cartItemResponse.setPicName();
+                    return cartItemResponse;
+                })
                 .collect(Collectors.toList());
 
         log.info("장바구니 전체 조회, user id = {}", 1);
@@ -40,22 +59,25 @@ public class CartService {
         return cartResponseDtoList;
     }
 
+
     // 장바구니 상품 추가
     // 추후 사용자 아이디 장바구니에를 추가하는 것으로 수정
     @Transactional
-    public void addCartItem(CartItemRequest cartRequestDto) {
+    public void addCartItem(CartItemRequest cartItemRequest) {
 
-        // 중복된 상품 있으면 에러
-        if(!dupCheck(cartRequestDto)) {
-            log.info("장바구니 상품 추가 : Fail 중복 상품 , user id = {}", 1);
-            throw new BadRequestException(CART_ITEM_DUP);
-        }
+        // 장바구니의 상품과 같은 마트의 상품인지 확인하고 에러
+        // 나중에 findByUserIdx 로 교체
+        List<CartItem> cartItemList = cartRepository.findAll();
 
-        // 상품이 존재하는지 확인하고 없으면 에러
+        // 리스트 1번째 상품 id로 마트샵 아이디 get
+        // dto의 상품 id로 마트샵 아이디 get
+        // checkCartMart로 진행
+        // 비교 후 진행
 
+        // 엔티티 생성
         CartItem newCartItem = CartItem.builder()
-                .itemId(cartRequestDto.getItemId())
-                .count(cartRequestDto.getCount())
+                .itemId(cartItemRequest.getItemId())
+                .count(cartItemRequest.getCount())
                 //.userIdx()  -> 유저 아이디 넣는 부분
                 .build();
 
@@ -66,13 +88,14 @@ public class CartService {
     }
 
 
-    // 중복 상품 확인
-    public boolean dupCheck(CartItemRequest cartRequestDto){
-        if(cartRepository.existsByItemId(cartRequestDto.getItemId())) {
-            return false;
-        } else {
-            return true;
-        }
+    //사용자 장바구니 상품의 마트 id 불러오기
+    @Transactional
+    public void checkCartMart() {
+        // 상품 정보 불러오기
+
+        // 상품이 속해있는 마트ID 확인
+
+        // 사용자 idx에 해당하는 장바구니 상품 불러오고
     }
 
     // 장바구니 상품 수정
@@ -86,7 +109,7 @@ public class CartService {
         // cartItemId에 해당하는 상품이 장바구니에 없으면 에러
         try {
 
-             updateCartItem = cartItemOptional.get();
+            updateCartItem = cartItemOptional.get();
 
         } catch (RuntimeException e) {
 
@@ -105,8 +128,9 @@ public class CartService {
     @Transactional
     public void deleteCartItem(CartItemRequestList cartRequestDtoList) {
 
-        for(CartItemRequest cartRequestDto:cartRequestDtoList.getCartItemList()) {
+        for (CartItemRequest cartRequestDto : cartRequestDtoList.getCartItemList()) {
             Optional<CartItem> cartItemOptional = cartRepository.findById(cartRequestDto.getCartItemId());
+
             CartItem deleteCartItem;
 
             try {
@@ -124,6 +148,5 @@ public class CartService {
             cartRepository.delete(deleteCartItem);
 
         }
-
     }
 }

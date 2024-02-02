@@ -14,7 +14,7 @@ public class CartItemResponse {
 
     private int itemId;
 
-    private String martShopId;
+    private String categoryName;
 
     private String picName;
 
