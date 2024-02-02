@@ -8,10 +8,8 @@ import java.util.Arrays;
 @AllArgsConstructor
 @Getter
 public enum OrderState {
-    ORDER_REQUEST("주문요청", "R"),
-    ORDER_APPROVE("주문승인", "A"),
-    ORDER_PACKAGING("포장중", "P"),
-    ORDER_CANCEL("주문취소", "C"),
+    ORDER_PREPARE("상품준비중", "P"),
+    ORDER_COMPLETE("상품준비완료", "C")
     ;
 
     private final String state;

@@ -6,83 +6,129 @@ import com.backend.martall.domain.order.dto.OrderItemCreateRequest;
 import com.backend.martall.domain.order.dto.OrderItemResponse;
 import com.backend.martall.domain.order.entity.OrderInfo;
 import com.backend.martall.domain.order.entity.OrderItem;
-import com.backend.martall.domain.order.repository.OrderItemRepository;
+import com.backend.martall.domain.order.entity.OrderState;
 import com.backend.martall.domain.order.repository.OrderInfoRepository;
+import com.backend.martall.domain.order.repository.OrderItemRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.backend.martall.domain.order.entity.OrderState.ORDER_REQUEST;
+import static com.backend.martall.domain.order.entity.OrderState.ORDER_PREPARE;
 import static com.backend.martall.global.exception.ResponseStatus.ORDER_PAYMENT_NOT_EQUAL;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserOrderService {
 
     private final OrderInfoRepository orderInfoRepository;
     private final OrderItemRepository orderItemRepository;
+    private final OrderAsyncService orderAsyncService;
+
 
     // 주문 생성
     // 사용자 아이디의 장바구니 상품 -> 가게별로 분류 -> 같은 가게의 상품끼리 주문 생성
     @Transactional
     public void createOrder(OrderCreateRequest orderCreateRequest) {
+
         // 결제해야 하는 금액
         int realPayment = 0;
 
         // 주문할 상품 리스트
         List<OrderItemCreateRequest> cartItemList = orderCreateRequest.getCartItemList();
 
-        // orderItemAddRequest -> cartItemId -> cartItem의 itemId
-        // 금액 계산
-        // -> item의 price
-        // 마트별로 주문 나누기
-        // -> item의 martShopId
 
-        Map<String, List<OrderItem>> orderItemMap = new HashMap<>();
-        for(OrderItemCreateRequest cartItem:cartItemList) {
-            // cart repository에서 cart를 불러와 itemId 불러오기
-            // itemId로 item repository에서 item 불러오기
+
+        // 주문 정보 생성
+        OrderInfo orderInfo = OrderInfo.builder()
+//                .userIdx() --> 아이디 추가
+                .martShopId(orderCreateRequest.getMartShopId())
+                .orderState(OrderState.getCodeByState(ORDER_PREPARE.getState()))
+                .build();
+
+        orderInfoRepository.save(orderInfo);
+
+        for(OrderItemCreateRequest createRequest:cartItemList){
+//            Optional<CartItem> cartItemOptional = cartRepostory.findById(createRequest.getCartItemId());
+//            CartItem cartItem;
+//            try {
+//                cartItem = cartItemOptional.get();
+//            } catch (RuntimeException e) {
+//
+//                log.info("주문 생성 : Fail 장바구니에 상품이 없음, user id = {}")
+//            }
+            // cartItem의 itemId 로 상품 가격 불러오기
+            // 상품 가격 realPayment에 더하기
+            realPayment = realPayment + 1000;
+
+            // itemId, count는 위의 cartItem에서 가져오기
             OrderItem orderItem = OrderItem.builder()
-                    .itemId(cartItem.getItemId())
-                    .count(cartItem.getCount())
+                    .itemId(1)
+                    .orderInfo(orderInfo)
+                    .count(1)
                     .build();
-            // item의 금액 payment에 더하기
-            realPayment += 1000;
-            // martShopId 별로 상품 리스트에 정리
-            orderItemMap.putIfAbsent(cartItem.getMartShopId(), new ArrayList<>());
-            orderItemMap.get(cartItem.getMartShopId()).add(orderItem);
+
+            orderItemRepository.save(orderItem);
         }
+
 
         // 결제 금액 확인
         if(realPayment != orderCreateRequest.getTotalPayment()) {
             throw new BadRequestException(ORDER_PAYMENT_NOT_EQUAL);
         }
 
-        // 리스트에 정리한 상품으로 주문 생성
-        for (Map.Entry<String, List<OrderItem>> entry:orderItemMap.entrySet()) {
-            String martShopId = entry.getKey();
-            List<OrderItem> orderItemList = entry.getValue();
+        orderAsyncService.changeOrderState(orderInfo);
+//        ---> mart별로 아이템 분류
+//        ************************* 봉인 ****************************
+//        // orderItemAddRequest -> cartItemId -> cartItem의 itemId
+//        // 금액 계산
+//        // -> item의 price
+//        // 마트별로 주문 나누기
+//        // -> item의 martShopId
+//
+//        Map<String, List<OrderItem>> orderItemMap = new HashMap<>();
+//        for(OrderItemCreateRequest cartItem:cartItemList) {
+//            // cart repository에서 cart를 불러와 itemId 불러오기
+//            // itemId로 item repository에서 item 불러오기
+//            OrderItem orderItem = OrderItem.builder()
+//                    .itemId(cartItem.getItemId())
+//                    .count(cartItem.getCount())
+//                    .build();
+//            // item의 금액 payment에 더하기
+//            realPayment += 1000;
+//            // martShopId 별로 상품 리스트에 정리
+//            orderItemMap.putIfAbsent(cartItem.getMartShopId(), new ArrayList<>());
+//            orderItemMap.get(cartItem.getMartShopId()).add(orderItem);
+//        }
+//      ************************************************************
 
-            OrderInfo orderInfo = OrderInfo.builder()
-                    .martShopId(martShopId)
-                    .orderState(ORDER_REQUEST.getCode())
-                    .build();
-
-            orderInfoRepository.save(orderInfo);
-
-            orderInfo = orderInfoRepository.findByUserIdxAndMartShopIdAndOrderState(null, martShopId, ORDER_REQUEST.getCode());
-            for(OrderItem orderItem:orderItemList) {
-                orderItem.setOrderInfo(orderInfo);
-                orderItemRepository.save(orderItem);
-            }
-        }
+//        ---> 마트별로 주문 생성
+//        ************************* 봉인 ****************************
+//        // 리스트에 정리한 상품으로 주문 생성
+//        for (Map.Entry<String, List<OrderItem>> entry:orderItemMap.entrySet()) {
+//            String martShopId = entry.getKey();
+//            List<OrderItem> orderItemList = entry.getValue();
+//
+//            OrderInfo orderInfo = OrderInfo.builder()
+//                    .martShopId(martShopId)
+//                    .orderState(ORDER_REQUEST.getCode())
+//                    .build();
+//
+//            orderInfoRepository.save(orderInfo);
+//
+//            orderInfo = orderInfoRepository.findByUserIdxAndMartShopIdAndOrderState(null, martShopId, ORDER_REQUEST.getCode());
+//            for(OrderItem orderItem:orderItemList) {
+//                orderItem.setOrderInfo(orderInfo);
+//                orderItemRepository.save(orderItem);
+//            }
+//        }
+//      ************************************************************
     }
 
     public OrderInquiryResponse getAllOrderItem(String state) {

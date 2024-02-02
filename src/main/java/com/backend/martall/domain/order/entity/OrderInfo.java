@@ -30,4 +30,7 @@ public class OrderInfo extends BaseTime {
     @Column(name = "payment_type")
     private String paymentType;
 
+    public void updateOrderState(OrderState orderState) {
+        this.orderState = orderState.getCode();
+    }
 }

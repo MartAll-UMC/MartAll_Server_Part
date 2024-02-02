@@ -27,8 +27,4 @@ public class OrderItem {
     @Column(name = "count")
     private int count;
 
-    public void setOrderInfo(OrderInfo orderInfo){
-        this.orderInfo = orderInfo;
-    }
-
 }

@@ -7,8 +7,4 @@ import lombok.Setter;
 @Setter
 public class OrderItemCreateRequest {
     private Long cartItemId;
-    private int itemId;
-    private String martShopId;
-    private int count;
-
 }

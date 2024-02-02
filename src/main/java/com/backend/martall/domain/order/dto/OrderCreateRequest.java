@@ -15,6 +15,8 @@ public class OrderCreateRequest {
 
     private int totalPayment;
 
+    private String martShopId;
+
     private List<OrderItemCreateRequest> cartItemList;
 
 }
