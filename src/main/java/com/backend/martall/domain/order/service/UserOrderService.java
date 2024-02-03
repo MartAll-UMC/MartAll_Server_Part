@@ -36,7 +36,7 @@ public class UserOrderService {
         // 결제해야 하는 금액
         int realPayment = 0;
 
-        // 해당 아이디의 주문이 있는지 확인
+        // 해당 아이디에 주문이 있는지 확인
         // 존재하면 주문을 추가할 수 없음
         if(orderInfoRepository.existsByUserIdxAndOrderState(1L, ORDER_PREPARE.getCode())) {
             throw new BadRequestException(ORDER_EXIST_OTHER_ORDER);
@@ -45,7 +45,9 @@ public class UserOrderService {
         // 주문할 상품 리스트
         List<OrderItemCreateRequest> cartItemList = orderCreateRequest.getCartItemList();
 
-
+        if(cartItemList.isEmpty()) {
+            throw new BadRequestException(ORDER_CART_EMPTY);
+        }
 
         // 주문 정보 생성
         OrderInfo orderInfo = OrderInfo.builder()
@@ -147,7 +149,7 @@ public class UserOrderService {
             throw new BadRequestException(ORDER_NOT_EXIST);
         }
 
-        //
+        // 주문 상품을 response dto 로 전환
         List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
 
         List<OrderItemResponse> orderItemResponseList = orderItemList.stream()

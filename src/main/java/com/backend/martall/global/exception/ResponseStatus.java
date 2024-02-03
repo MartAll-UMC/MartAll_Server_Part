@@ -16,6 +16,7 @@ public enum ResponseStatus {
     ORDER_PAYMENT_NOT_EQUAL(false, 4420, "결제 금액이 올바르지 않습니다."),
     ORDER_EXIST_OTHER_ORDER(false, 4421, "다른 주문이 존재합니다."),
     ORDER_NOT_EXIST(false, 4422, "주문이 존재하지 않습니다."),
+    ORDER_CART_EMPTY(false, 4423, "주문하려는 장바구니의 상품이 존재하지 않습니다."),
 
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),
