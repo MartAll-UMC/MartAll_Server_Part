@@ -5,7 +5,7 @@ import com.backend.martall.domain.cart.dto.CartItemRequest;
 import com.backend.martall.domain.cart.dto.CartItemRequestList;
 import com.backend.martall.domain.cart.dto.CartItemResponse;
 import com.backend.martall.domain.cart.entity.CartItem;
-import com.backend.martall.domain.cart.repository.CartRepository;
+import com.backend.martall.domain.cart.repository.CartItemRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +17,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.backend.martall.global.exception.ResponseStatus.CART_ITEM_NOT_EXIST;
+import static com.backend.martall.global.exception.ResponseStatus.CART_USER_NOT_EQUAL;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartService {
 
-    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Transactional
     public CartInquiryResponse inquiryCart() {
@@ -41,7 +42,12 @@ public class CartService {
     public List<CartItemResponse> getCartItem() {
 
         // 나중에 findByUserIdx 로 교체
-        List<CartItem> cartItemList = cartRepository.findAll();
+        List<CartItem> cartItemList = cartItemRepository.findByUserIdx(1L);
+
+        // 장바구니에 상품이 없으면 에러
+        if (cartItemList.isEmpty()) {
+            throw new BadRequestException(CART_ITEM_NOT_EXIST);
+        }
 
         List<CartItemResponse> cartResponseDtoList = cartItemList.stream()
                 .map(cartItem -> {
@@ -67,22 +73,23 @@ public class CartService {
 
         // 장바구니의 상품과 같은 마트의 상품인지 확인하고 에러
         // 나중에 findByUserIdx 로 교체
-        List<CartItem> cartItemList = cartRepository.findAll();
+        List<CartItem> cartItemList = cartItemRepository.findByUserIdx(1L);
+
 
         // 리스트 1번째 상품 id로 마트샵 아이디 get
         // dto의 상품 id로 마트샵 아이디 get
-        // checkCartMart로 진행
+        // ----> checkCartMart로 진행
         // 비교 후 진행
 
         // 엔티티 생성
         CartItem newCartItem = CartItem.builder()
                 .itemId(cartItemRequest.getItemId())
                 .count(cartItemRequest.getCount())
-                //.userIdx()  -> 유저 아이디 넣는 부분
+                .userIdx(1L)  //-> 유저 아이디 넣는 부분
                 .build();
 
         log.info("장바구니 상품 추가 : Success , user id = {}", 1);
-        cartRepository.save(newCartItem);
+        cartItemRepository.save(newCartItem);
 
 
     }
@@ -103,7 +110,7 @@ public class CartService {
     @Transactional
     public void updateCartItem(CartItemRequest cartRequestDto) {
 
-        Optional<CartItem> cartItemOptional = cartRepository.findById(cartRequestDto.getCartItemId());
+        Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartRequestDto.getCartItemId());
         CartItem updateCartItem;
 
         // cartItemId에 해당하는 상품이 장바구니에 없으면 에러
@@ -118,6 +125,10 @@ public class CartService {
 
         }
 
+        if(checkCartItemUserIdx(1L, updateCartItem)) {
+            throw new BadRequestException(CART_USER_NOT_EQUAL);
+        }
+
         updateCartItem.updateCartItem(cartRequestDto);
 
         log.info("장바구니 상품 수정 : Success , user id = {}, cart_item_id = {}", 1, cartRequestDto.getCartItemId());
@@ -129,7 +140,7 @@ public class CartService {
     public void deleteCartItem(CartItemRequestList cartRequestDtoList) {
 
         for (CartItemRequest cartRequestDto : cartRequestDtoList.getCartItemList()) {
-            Optional<CartItem> cartItemOptional = cartRepository.findById(cartRequestDto.getCartItemId());
+            Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartRequestDto.getCartItemId());
 
             CartItem deleteCartItem;
 
@@ -144,9 +155,21 @@ public class CartService {
 
             }
 
-            log.info("장바구니 상품 삭제 : Success , user id = {}, cart_item_id = {}", 1, cartRequestDto.getCartItemId());
-            cartRepository.delete(deleteCartItem);
+            if(checkCartItemUserIdx(1L, deleteCartItem)) {
+                throw new BadRequestException(CART_USER_NOT_EQUAL);
+            }
 
+            log.info("장바구니 상품 삭제 : Success , user id = {}, cart_item_id = {}", 1, cartRequestDto.getCartItemId());
+            cartItemRepository.delete(deleteCartItem);
+
+        }
+    }
+
+    public boolean checkCartItemUserIdx(Long userIdx, CartItem cartItem) {
+        if (userIdx.equals(cartItem.getUserIdx())) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
