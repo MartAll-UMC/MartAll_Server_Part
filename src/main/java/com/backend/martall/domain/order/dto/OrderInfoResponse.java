@@ -2,19 +2,14 @@ package com.backend.martall.domain.order.dto;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderCreateRequest {
-
-    private int totalPayment;
-
+public class OrderInfoResponse {
     private String martShopId;
-
-    private List<OrderItemCreateRequest> cartItemList;
+    private String martName;
+    private int itemCount;
 
 }

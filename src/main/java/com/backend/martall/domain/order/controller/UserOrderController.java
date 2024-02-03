@@ -21,12 +21,8 @@ public class UserOrderController {
     }
 
     @GetMapping("/order")
-    public ResponseEntity<JsonResponse> inquiryOrder(@RequestParam String state) {
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, userOrderService.getAllOrderItem(state)));
+    public ResponseEntity<JsonResponse> inquiryOrder() {
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, userOrderService.getOrder()));
     }
 
-    @PatchMapping("/order/{orderId}/cancel")
-    public ResponseEntity<JsonResponse> cancelOrder(@PathVariable Long orderId) {
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
-    }
 }

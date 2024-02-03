@@ -1,12 +1,7 @@
 package com.backend.martall.domain.order.dto;
 
-import com.backend.martall.domain.order.entity.OrderInfo;
 import com.backend.martall.domain.order.entity.OrderItem;
-import com.backend.martall.domain.order.entity.OrderState;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,27 +14,20 @@ public class OrderItemResponse {
 
     private int itemId;
 
-    private String martShopId;
-
-    private String martName;
+    private String categoryName;
 
     private String picName;
-
-    private String orderState;
 
     private String itemName;
 
     private int count;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime orderTime;
+    private int price;
 
-    public static OrderItemResponse of (OrderItem orderItem, OrderInfo orderInfo) {
+    public static OrderItemResponse of (OrderItem orderItem) {
         return OrderItemResponse.builder()
                 .orderItemId(orderItem.getOrderItemId())
                 .itemId(orderItem.getItemId())
-                .martShopId(orderInfo.getMartShopId())
-                .orderState(OrderState.getStateByCode(orderInfo.getOrderState()))
                 .count(orderItem.getCount())
                 .build();
     }

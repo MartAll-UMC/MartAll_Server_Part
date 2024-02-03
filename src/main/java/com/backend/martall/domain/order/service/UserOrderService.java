@@ -1,12 +1,8 @@
 package com.backend.martall.domain.order.service;
 
-import com.backend.martall.domain.order.dto.OrderCreateRequest;
-import com.backend.martall.domain.order.dto.OrderInquiryResponse;
-import com.backend.martall.domain.order.dto.OrderItemCreateRequest;
-import com.backend.martall.domain.order.dto.OrderItemResponse;
+import com.backend.martall.domain.order.dto.*;
 import com.backend.martall.domain.order.entity.OrderInfo;
 import com.backend.martall.domain.order.entity.OrderItem;
-import com.backend.martall.domain.order.entity.OrderState;
 import com.backend.martall.domain.order.repository.OrderInfoRepository;
 import com.backend.martall.domain.order.repository.OrderItemRepository;
 import com.backend.martall.global.exception.BadRequestException;
@@ -15,12 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.backend.martall.domain.order.entity.OrderState.ORDER_PREPARE;
-import static com.backend.martall.global.exception.ResponseStatus.ORDER_PAYMENT_NOT_EQUAL;
+import static com.backend.martall.global.exception.ResponseStatus.*;
 
 @Slf4j
 @Service
@@ -40,6 +36,12 @@ public class UserOrderService {
         // 결제해야 하는 금액
         int realPayment = 0;
 
+        // 해당 아이디의 주문이 있는지 확인
+        // 존재하면 주문을 추가할 수 없음
+        if(orderInfoRepository.existsByUserIdxAndOrderState(1L, ORDER_PREPARE.getCode())) {
+            throw new BadRequestException(ORDER_EXIST_OTHER_ORDER);
+        }
+
         // 주문할 상품 리스트
         List<OrderItemCreateRequest> cartItemList = orderCreateRequest.getCartItemList();
 
@@ -47,9 +49,9 @@ public class UserOrderService {
 
         // 주문 정보 생성
         OrderInfo orderInfo = OrderInfo.builder()
-//                .userIdx() --> 아이디 추가
+                .userIdx(1L) // --> 실제 아이디 추가로 변경
                 .martShopId(orderCreateRequest.getMartShopId())
-                .orderState(OrderState.getCodeByState(ORDER_PREPARE.getState()))
+                .orderState(ORDER_PREPARE.getCode())
                 .build();
 
         orderInfoRepository.save(orderInfo);
@@ -131,48 +133,90 @@ public class UserOrderService {
 //      ************************************************************
     }
 
-    public OrderInquiryResponse getAllOrderItem(String state) {
+    public OrderInquiryResponse getOrder() {
 
+        // id에 해당하는 orderinfo 불러오기 ( 준비중 P 인것만)
+        Optional<OrderInfo> orderInfoOptional = orderInfoRepository.findByUserIdxAndOrderState(1L, ORDER_PREPARE.getCode());
 
-        OrderInquiryResponse orderInquiryResponse = new OrderInquiryResponse();
-        List<OrderItemResponse> resultList = new ArrayList<>();
+        // 주문이 존재하지 않으면 에러
+        OrderInfo orderInfo;
 
-        if (state.equals("전체")) {
-            // 주문 목록 가져오기
-            // findAll -> findByUserIdx()로 교체
-            List<OrderInfo> orderList = orderInfoRepository.findAll();
-
-            // order에 해당 하는 상품을 dto list에 저장
-            for(OrderInfo orderInfo:orderList){
-                List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
-                List<OrderItemResponse> orderItemResponseList = orderItemList.stream()
-                        .map((OrderItem orderItem) -> OrderItemResponse.of(orderItem, orderInfo))
-                        .collect(Collectors.toList());
-                resultList.addAll(orderItemResponseList);
-            }
-
-            // resultList
-            // mart 이름 -> 위의 for문에서 넣기, item이름, item 사진 넣기
-
-            orderInquiryResponse.setOrderItem(resultList);
-        } else {
-            // 주문 목록 가져오기
-            // findAll -> findByUserIdxAndOrderState(OrderState.getCodeByState(state))로 교체
-            List<OrderInfo> orderList = orderInfoRepository.findAll();
-
-            // order에 해당 하는 상품을 dto list에 저장
-            for(OrderInfo orderInfo:orderList){
-                List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
-                List<OrderItemResponse> orderItemResponseList = orderItemList.stream()
-                        .map((OrderItem orderItem) -> OrderItemResponse.of(orderItem, orderInfo))
-                        .collect(Collectors.toList());
-                resultList.addAll(orderItemResponseList);
-            }
-
-            // resultList
-            // mart 이름 -> 위의 for문에서 넣기, item이름, item 사진 넣기
-            orderInquiryResponse.setOrderItem(resultList);
+        try {
+            orderInfo = orderInfoOptional.get();
+        } catch (RuntimeException e) {
+            throw new BadRequestException(ORDER_NOT_EXIST);
         }
-        return orderInquiryResponse;
+
+        //
+        List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
+
+        List<OrderItemResponse> orderItemResponseList = orderItemList.stream()
+                .map(orderItem -> {
+                    OrderItemResponse orderItemResponse = OrderItemResponse.of(orderItem);
+//                    cartItemResponse.setItemName();
+//                    cartItemResponse.setCategoryName();
+//                    cartItemResponse.setPrice();
+//                    cartItemResponse.setPicName();
+                    return orderItemResponse;
+                })
+                .collect(Collectors.toList());
+
+        // 나중에 martShopId로 마트 이름 불러오기
+        OrderInfoResponse orderInfoResponse = OrderInfoResponse.builder()
+                .martShopId(orderInfo.getMartShopId())
+                .martName("제로마트")
+                .itemCount(orderItemResponseList.size())
+                .build();
+
+
+
+        return OrderInquiryResponse.builder()
+                .order(orderInfoResponse)
+                .orderItem(orderItemResponseList)
+                .build();
+
+//******************************************** 봉인 **************************************************
+//        // orderinfo에 해당하는 상품 불러오기
+//
+//        OrderInquiryResponse orderInquiryResponse = new OrderInquiryResponse();
+//        List<OrderItemResponse> resultList = new ArrayList<>();
+//
+//        if (state.equals("전체")) {
+//            // 주문 목록 가져오기
+//            // findAll -> findByUserIdx()로 교체
+//            List<OrderInfo> orderList = orderInfoRepository.findAll();
+//
+//            // order에 해당 하는 상품을 dto list에 저장
+//            for(OrderInfo orderInfo:orderList){
+//                List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
+//                List<OrderItemResponse> orderItemResponseList = orderItemList.stream()
+//                        .map((OrderItem orderItem) -> OrderItemResponse.of(orderItem, orderInfo))
+//                        .collect(Collectors.toList());
+//                resultList.addAll(orderItemResponseList);
+//            }
+//
+//            // resultList
+//            // mart 이름 -> 위의 for문에서 넣기, item이름, item 사진 넣기
+//
+//            orderInquiryResponse.setOrderItem(resultList);
+//        } else {
+//            // 주문 목록 가져오기
+//            // findAll -> findByUserIdxAndOrderState(OrderState.getCodeByState(state))로 교체
+//            List<OrderInfo> orderList = orderInfoRepository.findAll();
+//
+//            // order에 해당 하는 상품을 dto list에 저장
+//            for(OrderInfo orderInfo:orderList){
+//                List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
+//                List<OrderItemResponse> orderItemResponseList = orderItemList.stream()
+//                        .map((OrderItem orderItem) -> OrderItemResponse.of(orderItem, orderInfo))
+//                        .collect(Collectors.toList());
+//                resultList.addAll(orderItemResponseList);
+//            }
+//
+//            // resultList
+//            // mart 이름 -> 위의 for문에서 넣기, item이름, item 사진 넣기
+//            orderInquiryResponse.setOrderItem(resultList);
+//        }
+//        return orderInquiryResponse;
     }
 }
