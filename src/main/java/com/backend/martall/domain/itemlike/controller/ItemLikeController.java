@@ -16,16 +16,18 @@ public class ItemLikeController {
 
     @GetMapping("")
     public ResponseEntity<JsonResponse> inquiryItemLike() {
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemLikeService.inquiryItemLike()));
     }
 
     @PostMapping("/{itemId}")
     public ResponseEntity<JsonResponse> addItemLike(@PathVariable int itemId) {
+        itemLikeService.addItemLike(itemId);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<JsonResponse> removeItemLike(@PathVariable int itemId) {
+        itemLikeService.removeItemLike(itemId);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 }
