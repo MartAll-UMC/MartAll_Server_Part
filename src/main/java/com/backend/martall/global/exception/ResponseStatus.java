@@ -11,10 +11,22 @@ public enum ResponseStatus {
     // Success
 
     // Exception
+
     // 4220 ~ 상품 찜하기 에러
     ITEMLIKE_ALREADY_LIKE(false, 4220, "이미 찜한 상품입니다."),
     ITEMLIKE_ALREADY_DISLIKE(false, 4221, "찜이 되어 있는 상품을 찜 취소했습니다."),
     ITEMLIKE_NOT_EXIST(false, 4222, "찜 상품 목록이 존재하지 않습니다."),
+
+    // 4400 ~ 4499
+    // 장바구니 4400 ~
+    CART_ITEM_NOT_EXIST(false, 4400, "장바구니에 상품이 존재하지 않습니다."),
+    CART_USER_NOT_EQUAL(false, 4401, "장바구니 상품은 관련 회원만 접근 할 수 있습니다."),
+
+    // 주문 4420 ~
+    ORDER_PAYMENT_NOT_EQUAL(false, 4420, "결제 금액이 올바르지 않습니다."),
+    ORDER_EXIST_OTHER_ORDER(false, 4421, "다른 주문이 존재합니다."),
+    ORDER_NOT_EXIST(false, 4422, "주문이 존재하지 않습니다."),
+    ORDER_CART_EMPTY(false, 4423, "주문하려는 장바구니의 상품이 존재하지 않습니다."),
 
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),
