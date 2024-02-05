@@ -11,6 +11,15 @@ public enum ResponseStatus {
     // Success
 
     // Exception
+    //4100 ~ 4199
+    LOGIN_FAIL_EMPTY_PROVIDER(false, 4100, "provider 정보가 제공되지 않았습니다."),
+    LOGIN_FAIL_EMPTY_PROVIDER_ID(false, 4101, "provider id가 제공되지 않았습니다."),
+    LOGIN_FAIL_EXPIRED_JWT(false, 4102, "토큰이 만료되었습니다."),
+    LOGIN_FAIL_WRONG_JWT(false, 4103, "잘못된 JWT입니다."),
+    FAIL_ACCESS_EMPRY_JWT(false, 4104, "JWT를 입력해주세요."),
+
+
+
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),
 
