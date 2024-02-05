@@ -67,4 +67,19 @@ public class UserService {
         //필수인데 존재하지 않는 정보 검사
         //길이 검사
     }
+
+
+
+
+    public UserDto.UserInfoResponseDto getUserInformation(Long user_idx){
+        Optional<User> optionalUser = userRepository.findByUserIdx(user_idx);
+        if(optionalUser.isEmpty()) {
+            throw new GlobalException(ResponseStatus.NOT_EXIST_USER);
+        }
+
+        User user = optionalUser.get();
+
+
+        return new UserDto.UserInfoResponseDto(user);
+    }
 }
