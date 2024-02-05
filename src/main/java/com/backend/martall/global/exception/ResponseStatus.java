@@ -11,6 +11,13 @@ public enum ResponseStatus {
     // Success
 
     // Exception
+    //4100 ~ 유저
+    LOGIN_FAIL_EMPTY_PROVIDER(false, 4100, "provider 정보가 제공되지 않았습니다."),
+    LOGIN_FAIL_EMPTY_PROVIDER_ID(false, 4101, "provider id가 제공되지 않았습니다."),
+    LOGIN_FAIL_EXPIRED_JWT(false, 4102, "토큰이 만료되었습니다."),
+    LOGIN_FAIL_WRONG_JWT(false, 4103, "잘못된 JWT입니다."),
+    FAIL_ACCESS_EMPRY_JWT(false, 4104, "JWT를 입력해주세요."),
+
     // 4150 ~ 이미지
     NO_SELECT_IMAGE(false, 4150, "선택된 이미지가 존재하지 않습니다."),
     IMAGE_UPLOAD_FAIL(false, 4151, "이미지 업로드에 실패했습니다."),
