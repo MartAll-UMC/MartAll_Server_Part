@@ -11,6 +11,13 @@ public enum ResponseStatus {
     // Success
 
     // Exception
+
+    NO_SELECT_IMAGE(false, 4150, "선택된 이미지가 존재하지 않습니다."),
+    IMAGE_UPLOAD_FAIL(false, 4151, "이미지 업로드에 실패했습니다."),
+    IMAGE_DELETE_FAIL(false, 4152, "이미지 삭제에 실패했습니다"),
+    INVALID_IMAGE_URL(false, 4153, "잘못된 이미지 URL입니다."),
+
+
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),
 
