@@ -39,13 +39,16 @@ public class UserOrderService {
         // 해당 아이디에 주문이 있는지 확인
         // 존재하면 주문을 추가할 수 없음
         if(orderInfoRepository.existsByUserIdxAndOrderState(1L, ORDER_PREPARE.getCode())) {
+            log.info("주문이 이미 존재함, userIdx = {}", 1);
             throw new BadRequestException(ORDER_EXIST_OTHER_ORDER);
         }
 
         // 주문할 상품 리스트
         List<OrderItemCreateRequest> cartItemList = orderCreateRequest.getCartItemList();
 
+        // 주문할 상품 목록이 비어있을 경우
         if(cartItemList.isEmpty()) {
+            log.info("주문할 상품 목록이 비어있음, userIdx = {}", 1);
             throw new BadRequestException(ORDER_CART_EMPTY);
         }
 
@@ -56,6 +59,7 @@ public class UserOrderService {
                 .orderState(ORDER_PREPARE.getCode())
                 .build();
 
+        log.info("주문생성, userIdx = {}", 1);
         orderInfoRepository.save(orderInfo);
 
         for(OrderItemCreateRequest createRequest:cartItemList){
@@ -80,10 +84,11 @@ public class UserOrderService {
 
             orderItemRepository.save(orderItem);
         }
-
+        log.info("주문의 상품목록 생성 완료, userIdx = {}", 1);
 
         // 결제 금액 확인
         if(realPayment != orderCreateRequest.getTotalPayment()) {
+            log.info("주문 금액과 결제 금액이 일치하지 않음, userIdx = {}, 주문금액 = {}, 결제금액 = {}", 1, realPayment, orderCreateRequest.getTotalPayment());
             throw new BadRequestException(ORDER_PAYMENT_NOT_EQUAL);
         }
 
@@ -146,6 +151,7 @@ public class UserOrderService {
         try {
             orderInfo = orderInfoOptional.get();
         } catch (RuntimeException e) {
+            log.info("준비중인 주문이 존재하지 않음, userIdx = {}", 1);
             throw new BadRequestException(ORDER_NOT_EXIST);
         }
 
@@ -171,6 +177,7 @@ public class UserOrderService {
                 .build();
 
 
+        log.info("주문 상품 조회 목록 생성, userIdx = {}, orderId = {}", 1, orderInfo.getOrderId());
 
         return OrderInquiryResponse.builder()
                 .order(orderInfoResponse)
