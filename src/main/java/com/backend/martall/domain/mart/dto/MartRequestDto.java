@@ -25,6 +25,10 @@ public class MartRequestDto {
     private String linkNaver;
     private String longitude;
     private String latitude;
+    private String keyword;
+    private String category;
+    private String minRating;
+    private String maxRating;
 
    //MartShop 엔티티 인스턴스 생성, 초기화
     public MartShop toEntity() {

@@ -52,4 +52,6 @@ public class MartResponseDto {
         dto.latitude = martShop.getLatitude();
         return dto;
     }
+
+
 }
