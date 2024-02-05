@@ -11,6 +11,11 @@ public enum ResponseStatus {
     // Success
 
     // Exception
+    // 4150 ~ 이미지
+    NO_SELECT_IMAGE(false, 4150, "선택된 이미지가 존재하지 않습니다."),
+    IMAGE_UPLOAD_FAIL(false, 4151, "이미지 업로드에 실패했습니다."),
+    IMAGE_DELETE_FAIL(false, 4152, "이미지 삭제에 실패했습니다"),
+    INVALID_IMAGE_URL(false, 4153, "잘못된 이미지 URL입니다."),
 
     // 4220 ~ 상품 찜하기 에러
     ITEMLIKE_ALREADY_LIKE(false, 4220, "이미 찜한 상품입니다."),
