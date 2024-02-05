@@ -1,11 +1,14 @@
 package com.backend.martall.domain.user.dto;
 
+import com.backend.martall.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 public class UserDto {
@@ -45,7 +48,17 @@ public class UserDto {
         private String email;
         private String provider;
         private Integer money;
-    }
 
+        public UserInfoResponseDto(User user) {
+            this.id = user.getId();
+            this.username = user.getUsername();
+            this.phoneNumber = user.getPhoneNumber();
+            this.imgUrl = user.getImgUrl();
+            this.email = user.getEmail();
+            this.provider = user.getEmail();
+            this.money = user.getMoney();
+        }
+
+    }
 
 }

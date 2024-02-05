@@ -56,4 +56,11 @@ public class User extends BaseTime {
     public Long getUserIdx() {
         return userIdx;
     }
+    public String getId() { return id; }
+    public String getUsername() { return username; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public String getImgUrl() { return imgUrl; }
+    public String getEmail() { return email; }
+    public String getProvider() { return provider; }
+    public Integer getMoney() { return money; }
 }
