@@ -1,6 +1,7 @@
 package com.backend.martall.domain.item.dto;
 
 import com.backend.martall.domain.item.entity.Item;
+import com.backend.martall.domain.item.entity.ItemCategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +15,7 @@ public class ItemRequestDto {
 
     private int itemId;
     private String martShopId;
-    private int categoryId;
+    private ItemCategory categoryId;
     private String itemName;
     private int price;
     private int inventoryQuantity;

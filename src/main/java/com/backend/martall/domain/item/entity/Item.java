@@ -24,8 +24,9 @@ public class Item extends BaseTime {
     @Column(name = "mart_shop_id", length = 50)
     private String martShopId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "item_category_id")
-    private int categoryId;
+    private ItemCategory categoryId;
 
     @Column(name = "item_name", length = 50)
     private String itemName;
