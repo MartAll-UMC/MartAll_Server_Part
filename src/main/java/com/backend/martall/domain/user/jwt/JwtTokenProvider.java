@@ -103,8 +103,6 @@ public class JwtTokenProvider {
 
         Long user_id = getUserIdx(token);
 
-        System.out.println(user_id);
-
         userRepository.findByUserIdx(user_id)
                 .orElseThrow(()->new GlobalException(ResponseStatus.LOGIN_FAIL_WRONG_JWT));
 
