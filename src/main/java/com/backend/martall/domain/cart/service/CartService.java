@@ -6,6 +6,7 @@ import com.backend.martall.domain.cart.dto.CartItemRequestList;
 import com.backend.martall.domain.cart.dto.CartItemResponse;
 import com.backend.martall.domain.cart.entity.CartItem;
 import com.backend.martall.domain.cart.repository.CartItemRepository;
+import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import static com.backend.martall.global.exception.ResponseStatus.CART_USER_NOT_
 public class CartService {
 
     private final CartItemRepository cartItemRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public CartInquiryResponse inquiryCart() {
@@ -85,7 +87,7 @@ public class CartService {
         CartItem newCartItem = CartItem.builder()
                 .itemId(cartItemRequest.getItemId())
                 .count(cartItemRequest.getCount())
-                .userIdx(1L)  //-> 유저 아이디 넣는 부분
+                .user(userRepository.findByUserIdx(1L).get())  //-> 유저 아이디 넣는 부분
                 .build();
 
         log.info("장바구니 상품 추가, userIdx = {}, itemId = {}", 1, cartItemRequest.getItemId());
@@ -125,7 +127,7 @@ public class CartService {
 
         }
 
-        if(updateCartItem.getUserIdx().equals(1L)) {
+        if(updateCartItem.getUser().getUserIdx().equals(1L)) {
             throw new BadRequestException(CART_USER_NOT_EQUAL);
         }
 
@@ -155,7 +157,7 @@ public class CartService {
 
             }
 
-            if(deleteCartItem.getUserIdx().equals(1L)) {
+            if(deleteCartItem.getUser().getUserIdx().equals(1L)) {
                 throw new BadRequestException(CART_USER_NOT_EQUAL);
             }
 
