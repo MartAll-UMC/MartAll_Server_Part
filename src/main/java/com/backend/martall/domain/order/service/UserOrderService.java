@@ -1,5 +1,7 @@
 package com.backend.martall.domain.order.service;
 
+import com.backend.martall.domain.cart.entity.CartItem;
+import com.backend.martall.domain.cart.repository.CartItemRepository;
 import com.backend.martall.domain.order.dto.*;
 import com.backend.martall.domain.order.entity.OrderInfo;
 import com.backend.martall.domain.order.entity.OrderItem;
@@ -26,6 +28,7 @@ public class UserOrderService {
     private final OrderInfoRepository orderInfoRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderAsyncService orderAsyncService;
+    private final CartItemRepository cartItemRepository;
 
 
     // 주문 생성
@@ -36,20 +39,12 @@ public class UserOrderService {
         // 결제해야 하는 금액
         int realPayment = 0;
 
+
         // 해당 아이디에 주문이 있는지 확인
         // 존재하면 주문을 추가할 수 없음
         if(orderInfoRepository.existsByUserIdxAndOrderState(1L, ORDER_PREPARE.getCode())) {
             log.info("주문이 이미 존재함, userIdx = {}", 1);
             throw new BadRequestException(ORDER_EXIST_OTHER_ORDER);
-        }
-
-        // 주문할 상품 리스트
-        List<OrderItemCreateRequest> cartItemList = orderCreateRequest.getCartItemList();
-
-        // 주문할 상품 목록이 비어있을 경우
-        if(cartItemList.isEmpty()) {
-            log.info("주문할 상품 목록이 비어있음, userIdx = {}", 1);
-            throw new BadRequestException(ORDER_CART_EMPTY);
         }
 
         // 주문 정보 생성
@@ -62,24 +57,38 @@ public class UserOrderService {
         log.info("주문생성, userIdx = {}", 1);
         orderInfoRepository.save(orderInfo);
 
+
+
+        // 주문할 상품 리스트
+        List<OrderItemCreateRequest> cartItemList = orderCreateRequest.getCartItemList();
+
+        // 주문할 상품 목록이 비어있을 경우
+        if(cartItemList.isEmpty()) {
+            log.info("주문할 상품 목록이 비어있음, userIdx = {}", 1);
+            throw new BadRequestException(ORDER_CART_EMPTY);
+        }
+
         for(OrderItemCreateRequest createRequest:cartItemList){
-//            Optional<CartItem> cartItemOptional = cartRepostory.findById(createRequest.getCartItemId());
-//            CartItem cartItem;
-//            try {
-//                cartItem = cartItemOptional.get();
-//            } catch (RuntimeException e) {
-//
-//                log.info("주문 생성 : Fail 장바구니에 상품이 없음, user id = {}")
-//            }
+
+            // 장바구니 상품 정보를 가져오기
+            Optional<CartItem> cartItemOptional = cartItemRepository.findById(createRequest.getCartItemId());
+            CartItem cartItem;
+            try {
+                cartItem = cartItemOptional.get();
+            } catch (RuntimeException e) {
+                log.info("주문할 상품 목록이 존재하지 않음, user id = {}");
+                throw new BadRequestException(ORDER_CARTITEM_NOT_EXIST);
+            }
+
             // cartItem의 itemId 로 상품 가격 불러오기
             // 상품 가격 realPayment에 더하기
             realPayment = realPayment + 1000;
 
             // itemId, count는 위의 cartItem에서 가져오기
             OrderItem orderItem = OrderItem.builder()
-                    .itemId(1)
+                    .itemId(cartItem.getItemId())
                     .orderInfo(orderInfo)
-                    .count(1)
+                    .count(cartItem.getCount())
                     .build();
 
             orderItemRepository.save(orderItem);
