@@ -1,16 +1,14 @@
 package com.backend.martall.domain.mart.entity;
 
 import com.backend.martall.domain.BaseTime;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Table(name = "mart_shop")
 @Entity
-@Getter // Lombok의 Getter 어노테이션을 추가
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -71,4 +69,10 @@ public class MartShop extends BaseTime {
 
     @Column(name = "latitude", length = 50)
     private String latitude;
+
+
+    /*@OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MartShopPic> martShopPics; */
+    /*@OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MartCategory> martCategories; */
 }

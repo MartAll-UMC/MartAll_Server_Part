@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+
+
 public class MartResponseDto {
     private Long martShopId;
     private String name;
