@@ -6,6 +6,7 @@ import com.backend.martall.domain.cart.dto.CartItemRequestList;
 import com.backend.martall.domain.cart.dto.CartItemResponse;
 import com.backend.martall.domain.cart.entity.CartItem;
 import com.backend.martall.domain.cart.repository.CartItemRepository;
+import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import jakarta.transaction.Transactional;
@@ -29,22 +30,24 @@ public class CartService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CartInquiryResponse inquiryCart() {
+    public CartInquiryResponse inquiryCart(Long userIdx) {
 
         // 마트 정보 추가도 나중에 추가
         // checkCartMart로 마트정보 얻기
 
         return CartInquiryResponse.builder()
-                .cartItemResponseList(getCartItem())
+                .cartItemResponseList(getCartItem(userIdx))
                 .build();
     }
 
     // 장바구니 상품 리스트
     @Transactional
-    public List<CartItemResponse> getCartItem() {
+    public List<CartItemResponse> getCartItem(Long userIdx) {
+
+        User user = userRepository.findByUserIdx(userIdx).get();
 
         // 나중에 findByUserIdx 로 교체
-        List<CartItem> cartItemList = cartItemRepository.findByUserIdx(1L);
+        List<CartItem> cartItemList = cartItemRepository.findByUser(user);
 
         // 장바구니에 상품이 없으면 에러
         if (cartItemList.isEmpty()) {
@@ -63,7 +66,7 @@ public class CartService {
                 })
                 .collect(Collectors.toList());
 
-        log.info("장바구니 상품 조회, userIdx = {}", 1);
+        log.info("장바구니 상품 조회, userIdx = {}", userIdx);
 
         return cartResponseDtoList;
     }
@@ -72,10 +75,12 @@ public class CartService {
     // 장바구니 상품 추가
     // 추후 사용자 아이디 장바구니에 추가하는 것으로 수정
     @Transactional
-    public void addCartItem(CartItemRequest cartItemRequest) {
+    public void addCartItem(CartItemRequest cartItemRequest, Long userIdx) {
+
+        User user = userRepository.findByUserIdx(userIdx).get();
 
         // 나중에 findByUserIdx 로 교체
-        List<CartItem> cartItemList = cartItemRepository.findByUserIdx(1L);
+        List<CartItem> cartItemList = cartItemRepository.findByUser(user);
 
 
         // 리스트 1번째 상품 id로 마트샵 아이디 get
@@ -87,10 +92,10 @@ public class CartService {
         CartItem newCartItem = CartItem.builder()
                 .itemId(cartItemRequest.getItemId())
                 .count(cartItemRequest.getCount())
-                .user(userRepository.findByUserIdx(1L).get())  //-> 유저 아이디 넣는 부분
+                .user(user)  //-> 유저 아이디 넣는 부분
                 .build();
 
-        log.info("장바구니 상품 추가, userIdx = {}, itemId = {}", 1, cartItemRequest.getItemId());
+        log.info("장바구니 상품 추가, userIdx = {}, itemId = {}", userIdx, cartItemRequest.getItemId());
         cartItemRepository.save(newCartItem);
 
 
@@ -110,7 +115,7 @@ public class CartService {
     // 장바구니 상품 수정
     // 추후 사용자 아이디 장바구니의 상품을 수정하는 것으로 수정
     @Transactional
-    public void updateCartItem(CartItemRequest cartRequestDto) {
+    public void updateCartItem(CartItemRequest cartRequestDto, Long userIdx) {
 
         Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartRequestDto.getCartItemId());
         CartItem updateCartItem;
@@ -122,7 +127,7 @@ public class CartService {
 
         } catch (RuntimeException e) {
 
-            log.info("수정하려는 장바구니 상품이 없음 , userIdx = {}, cart_item_id = {}", 1, cartRequestDto.getCartItemId());
+            log.info("수정하려는 장바구니 상품이 없음 , userIdx = {}, cart_item_id = {}", userIdx, cartRequestDto.getCartItemId());
             throw new BadRequestException(CART_ITEM_NOT_EXIST);
 
         }
@@ -133,13 +138,13 @@ public class CartService {
 
         updateCartItem.updateCartItem(cartRequestDto);
 
-        log.info("장바구니 상품 수정, user id = {}, cart_item_id = {}", 1, cartRequestDto.getCartItemId());
+        log.info("장바구니 상품 수정, user id = {}, cart_item_id = {}", userIdx, cartRequestDto.getCartItemId());
     }
 
     // 장바구니 상품 삭제
     // 추후 사용자 아이디 장바구니의 상품을 삭제하는 것으로 수정
     @Transactional
-    public void deleteCartItem(CartItemRequestList cartRequestDtoList) {
+    public void deleteCartItem(CartItemRequestList cartRequestDtoList, Long userIdx) {
 
         for (CartItemRequest cartRequestDto : cartRequestDtoList.getCartItemList()) {
             Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartRequestDto.getCartItemId());
@@ -152,7 +157,7 @@ public class CartService {
 
             } catch (RuntimeException e) {
 
-                log.info("삭제하려는 장바구니 상품이 없음, user id = {}, cart_item_id = {}", 1, cartRequestDto.getCartItemId());
+                log.info("삭제하려는 장바구니 상품이 없음, user id = {}, cart_item_id = {}", userIdx, cartRequestDto.getCartItemId());
                 throw new BadRequestException(CART_ITEM_NOT_EXIST);
 
             }
@@ -161,7 +166,7 @@ public class CartService {
                 throw new BadRequestException(CART_USER_NOT_EQUAL);
             }
 
-            log.info("장바구니 상품 삭제, user id = {}, cart_item_id = {}", 1, cartRequestDto.getCartItemId());
+            log.info("장바구니 상품 삭제, user id = {}, cart_item_id = {}", userIdx, cartRequestDto.getCartItemId());
             cartItemRepository.delete(deleteCartItem);
 
         }
