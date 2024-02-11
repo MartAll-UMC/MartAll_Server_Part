@@ -1,11 +1,10 @@
 package com.backend.martall.domain.cart.service;
 
-import com.backend.martall.domain.cart.dto.CartInquiryResponse;
-import com.backend.martall.domain.cart.dto.CartItemRequest;
-import com.backend.martall.domain.cart.dto.CartItemRequestList;
-import com.backend.martall.domain.cart.dto.CartItemResponse;
+import com.backend.martall.domain.cart.dto.*;
 import com.backend.martall.domain.cart.entity.CartItem;
 import com.backend.martall.domain.cart.repository.CartItemRepository;
+import com.backend.martall.domain.mart.entity.MartShop;
+import com.backend.martall.domain.mart.repository.MartRepository;
 import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.global.exception.BadRequestException;
@@ -28,21 +27,10 @@ public class CartService {
 
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
+    private final MartRepository martRepository;
 
     @Transactional
     public CartInquiryResponse inquiryCart(Long userIdx) {
-
-        // 마트 정보 추가도 나중에 추가
-        // checkCartMart로 마트정보 얻기
-
-        return CartInquiryResponse.builder()
-                .cartItemResponseList(getCartItem(userIdx))
-                .build();
-    }
-
-    // 장바구니 상품 리스트
-    @Transactional
-    public List<CartItemResponse> getCartItem(Long userIdx) {
 
         User user = userRepository.findByUserIdx(userIdx).get();
 
@@ -51,9 +39,22 @@ public class CartService {
 
         // 장바구니에 상품이 없으면 에러
         if (cartItemList.isEmpty()) {
-            log.info("장바구니에 상품이 존재하지 않음, userIdx = {}", 1);
+            log.info("장바구니에 상품이 존재하지 않음, userIdx = {}", userIdx);
             throw new BadRequestException(CART_ITEM_NOT_EXIST);
         }
+
+        // 장바구니에서 상품 아이디
+        // cartItemList.get(1).getItemId()
+        // 상품 아이디에서 마트 아이디
+        //
+        MartShop martShop = martRepository.findById(1L).get();
+
+        CartMartShopResponse cartMartShopResponse = CartMartShopResponse.builder()
+                .martShopId(1L)
+                .martName(martShop.getName())
+                .bookmarkCount(123)
+                .likeCount(123)
+                .build();
 
         List<CartItemResponse> cartResponseDtoList = cartItemList.stream()
                 .map(cartItem -> {
@@ -67,8 +68,13 @@ public class CartService {
                 .collect(Collectors.toList());
 
         log.info("장바구니 상품 조회, userIdx = {}", userIdx);
+        // 마트 정보 추가도 나중에 추가
+        // checkCartMart로 마트정보 얻기
 
-        return cartResponseDtoList;
+        return CartInquiryResponse.builder()
+                .mart(cartMartShopResponse)
+                .cartItemResponseList(cartResponseDtoList)
+                .build();
     }
 
 
@@ -85,7 +91,6 @@ public class CartService {
 
         // 리스트 1번째 상품 id로 마트샵 아이디 get
         // dto의 상품 id로 마트샵 아이디 get
-        // ----> checkCartMart로 진행
         // 비교 후 진행
 
         // 엔티티 생성
@@ -101,16 +106,6 @@ public class CartService {
 
     }
 
-
-    //사용자 장바구니 상품의 마트 id 불러오기
-    @Transactional
-    public void checkCartMart() {
-        // 상품 정보 불러오기
-
-        // 상품이 속해있는 마트ID 확인
-
-        // 사용자 idx에 해당하는 장바구니 상품 불러오고
-    }
 
     // 장바구니 상품 수정
     // 추후 사용자 아이디 장바구니의 상품을 수정하는 것으로 수정
@@ -132,7 +127,7 @@ public class CartService {
 
         }
 
-        if(updateCartItem.getUser().getUserIdx().equals(1L)) {
+        if(!updateCartItem.getUser().getUserIdx().equals(userIdx)) {
             throw new BadRequestException(CART_USER_NOT_EQUAL);
         }
 
@@ -162,7 +157,7 @@ public class CartService {
 
             }
 
-            if(deleteCartItem.getUser().getUserIdx().equals(1L)) {
+            if(!deleteCartItem.getUser().getUserIdx().equals(userIdx)) {
                 throw new BadRequestException(CART_USER_NOT_EQUAL);
             }
 

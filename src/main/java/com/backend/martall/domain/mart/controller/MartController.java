@@ -44,12 +44,12 @@ public class MartController {
     }
 
     //마트 검색 by filter
-    @GetMapping("/search/filter")
-    public ResponseEntity<List<MartResponseDto>> searchMartsWithFilters(
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) Double rating) {
-        List<MartResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(category, rating);
-        return ResponseEntity.ok(responseDtos);
-    }
+//    @GetMapping("/search/filter")
+//    public ResponseEntity<List<MartResponseDto>> searchMartsWithFilters(
+//            @RequestParam(required = false) String category,
+//            @RequestParam(required = false) Double rating) {
+//        List<MartResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(category, rating);
+//        return ResponseEntity.ok(responseDtos);
+//    }
 }
 
