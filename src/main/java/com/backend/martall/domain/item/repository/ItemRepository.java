@@ -17,6 +17,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT item FROM Item item WHERE item.itemId = :itemId AND item.martShopId = :shopId")
     Item findById(Long shopId, int itemId);
 
-    @Query("SELECT item FROM Item item ORDER BY item.regDatetime DESC")
-    List<Item> findAllOrderByRegDateDesc();
+    // 밑에 쿼리문으로 대체했습니다!
+//    @Query("SELECT item FROM Item item ORDER BY item.createdAt DESC")
+//    List<Item> findAllOrderByCreatedAtDesc();
+
+    List<Item> findTop8ByOrderByCreatedAtDesc();
 }

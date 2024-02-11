@@ -9,30 +9,25 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class ItemResponseDto {
+@AllArgsConstructor
+// 마트 정보가 필요해서 ItemMartShopResponseDto를 추가 했어요!
+public class ItemDetailResponseDto {
 
     private int itemId;
-    private String martShopId;
-    private ItemCategory categoryId;
+    private ItemMartShopResponseDto mart;
+    private String categoryName;
     private String itemName;
     private int price;
-    private int inventoryQuantity;
-    private LocalDateTime regDatetime;
     private String content;
-    private String profilePhoto;
 
-    public static ItemResponseDto from(Item item) {
-        return ItemResponseDto.builder()
+    public static ItemDetailResponseDto from(Item item) {
+        return ItemDetailResponseDto.builder()
                 .itemId(item.getItemId())
-                .categoryId(item.getCategoryId())
+                .categoryName(item.getCategoryId().getName())
                 .itemName(item.getItemName())
                 .price(item.getPrice())
-                .inventoryQuantity(item.getInventoryQuantity())
-                .regDatetime(item.getCreatedAt())
                 .content(item.getContent())
-                .profilePhoto(item.getProfilePhoto())
                 .build();
     }
 }

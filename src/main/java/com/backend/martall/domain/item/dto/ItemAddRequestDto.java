@@ -6,12 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItemRequestDto {
+public class ItemAddRequestDto {
 
     private int itemId;
     private Long martShopId;
