@@ -1,5 +1,6 @@
 package com.backend.martall.domain.itemlike.entity;
 
+import com.backend.martall.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class ItemLike {
     @Column(name = "mart_item_id")
     private int martItemId;
 
-    @Column(name = "user_idx")
-    private Long userIdx;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx")
+    private User user;
 }
