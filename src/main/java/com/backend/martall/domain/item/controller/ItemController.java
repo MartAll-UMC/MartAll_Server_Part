@@ -16,9 +16,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
 
+    private final ItemService itemService;
+
     @GetMapping("/search")
     public ResponseEntity<List<ItemResponseDto>> searchItems(@RequestParam String itemName) {
-        List<ItemResponseDto> itemResponseDtos = ItemService.searchItems(itemName);
+        List<ItemResponseDto> itemResponseDtos = itemService.searchItems(itemName);
         return ResponseEntity.ok(itemResponseDtos);
     }
 }

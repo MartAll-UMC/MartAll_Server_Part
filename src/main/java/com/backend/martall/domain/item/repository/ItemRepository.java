@@ -11,5 +11,5 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT item FROM Item item WHERE item.itemName LIKE %:itemName% OR item.content LIKE %:itemName%")
-    static List<Item> findByItemName(String itemName);
+    List<Item> findByItemName(String itemName);
 }
