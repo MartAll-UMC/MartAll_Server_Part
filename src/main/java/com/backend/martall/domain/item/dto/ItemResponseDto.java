@@ -21,6 +21,7 @@ public class ItemResponseDto {
     private int inventoryQuantity;
     private LocalDateTime regDatetime;
     private String content;
+    private String profilePhoto;
 
     public static ItemResponseDto from(Item item) {
         ItemResponseDto itemResponseDto = new ItemResponseDto();
@@ -33,6 +34,7 @@ public class ItemResponseDto {
         itemResponseDto.inventoryQuantity = item.getInventoryQuantity();
         itemResponseDto.regDatetime = item.getRegDatetime();
         itemResponseDto.content = item.getContent();
+        itemResponseDto.profilePhoto = item.getProfilePhoto();
 
         return itemResponseDto;
     }

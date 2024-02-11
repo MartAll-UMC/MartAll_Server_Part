@@ -42,4 +42,7 @@ public class Item extends BaseTime {
 
     @Column(name = "content", length = 500)
     private String content;
+
+    @Column(name = "profile_photo", length = 255)
+    private String profilePhoto;
 }

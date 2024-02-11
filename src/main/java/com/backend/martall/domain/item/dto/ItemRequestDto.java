@@ -21,6 +21,7 @@ public class ItemRequestDto {
     private int inventoryQuantity;
     private LocalDateTime regDatetime;
     private String content;
+    private String profilePhoto;
 
     public Item toEntity() {
         return Item.builder()
@@ -32,6 +33,7 @@ public class ItemRequestDto {
                 .inventoryQuantity(this.inventoryQuantity)
                 .regDatetime(this.regDatetime)
                 .content(this.content)
+                .profilePhoto(this.profilePhoto)
                 .build();
     }
 }

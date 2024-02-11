@@ -10,6 +10,9 @@ public enum ResponseStatus {
 
     // Success
 
+    // 4200 ~ 상품
+    ITEM_DETAIL_FAIL(false, 4200, "해당 상품을 찾을 수 없습니다."),
+
     // Exception
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),

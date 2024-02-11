@@ -1,5 +1,6 @@
 package com.backend.martall.domain.item.repository;
 
+import com.backend.martall.domain.item.dto.ItemResponseDto;
 import com.backend.martall.domain.item.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,4 +13,10 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT item FROM Item item WHERE item.itemName LIKE %:itemName% OR item.content LIKE %:itemName%")
     List<Item> findByItemName(String itemName);
+
+    @Query("SELECT item FROM Item item WHERE item.itemId = :itemId AND item.martShopId = :shopId")
+    Item findById(Long shopId, int itemId);
+
+    @Query("SELECT item FROM Item item ORDER BY item.regDatetime DESC")
+    List<Item> findAllOrderByRegDateDesc();
 }
