@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderInfoResponse {
-    private String martShopId;
+    private Long martShopId;
     private String martName;
     private int itemCount;
 
