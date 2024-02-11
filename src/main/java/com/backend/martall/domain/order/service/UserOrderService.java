@@ -101,6 +101,7 @@ public class UserOrderService {
                     .build();
 
             orderItemRepository.save(orderItem);
+            cartItemRepository.deleteById(cartItem.getCartItemId());
         }
         log.info("주문의 상품목록 생성 완료, userIdx = {}", userIdx);
 
