@@ -98,7 +98,11 @@ public class JwtTokenProvider {
     public Long resolveToken() {
         String token = getJwt();
         if(!validateToken(token)){
+<<<<<<< Updated upstream
            throw new GlobalException(ResponseStatus.LOGIN_FAIL_WRONG_JWT);
+=======
+            throw new GlobalException(ResponseStatus.LOGIN_FAIL_WRONG_JWT);
+>>>>>>> Stashed changes
         }
 
         Long user_id = getUserIdx(token);
@@ -112,4 +116,8 @@ public class JwtTokenProvider {
     }
 
     //https://leeeehhjj.tistory.com/61
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

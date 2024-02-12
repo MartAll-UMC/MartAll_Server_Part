@@ -39,8 +39,6 @@ public class MartRequestDto {
                 .operatingTime(this.operatingTime)
                 .pickupTime(this.pickupTime)
                 .profilePhoto(this.profilePhoto)
-                .userIdx(this.userIdx)
-                .martCategoryId(this.martCategoryId)
                 .managerName(this.managerName)
                 .shopNumber(this.shopNumber)
                 .linkKakao(this.linkKakao)

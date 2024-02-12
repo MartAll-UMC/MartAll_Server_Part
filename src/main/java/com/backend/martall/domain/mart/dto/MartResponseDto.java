@@ -44,8 +44,12 @@ public class MartResponseDto {
         dto.visitor = martShop.getVisitor();
         dto.sale = martShop.getSale();
         dto.profilePhoto = martShop.getProfilePhoto();
-        dto.userIdx = martShop.getUserIdx();
-        dto.martCategoryId = martShop.getMartCategoryId();
+        if (martShop.getUser() != null) {
+            dto.userIdx = martShop.getUser().getUserIdx();
+        }
+        if (martShop.getMartCategory() != null) {
+            dto.martCategoryId = martShop.getMartCategory().getMartCategoryId();
+        }
         dto.managerName = martShop.getManagerName();
         dto.shopNumber = martShop.getShopNumber();
         dto.linkKakao = martShop.getLinkKakao();

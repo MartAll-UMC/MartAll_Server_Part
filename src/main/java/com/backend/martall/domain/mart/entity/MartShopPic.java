@@ -1,26 +1,28 @@
 package com.backend.martall.domain.mart.entity;
 
-import com.backend.martall.domain.BaseTime;
-import lombok.*;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Table(name = "martshoppic")
 public class MartShopPic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long martShopPicId;
+    private Long id;
 
     @Column(name = "pic_name")
     private String picName;
 
-    @Column(name = "index")
-    private Integer picindex;
+    @Column(name = "pic_index")
+    private Integer picIndex;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "martshop_id")
+    private MartShop martShop;
+
 }
