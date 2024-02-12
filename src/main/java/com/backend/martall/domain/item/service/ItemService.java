@@ -41,8 +41,6 @@ public class ItemService {
     public ItemDetailResponseDto getItemDetail(Long shopId, int itemId) {
         Item item = itemRepository.findById(shopId, itemId);
 
-//                .map(ItemResponseDto::from)
-//                .orElseThrow(() -> new BadRequestException(ResponseStatus.ITEM_DETAIL_FAIL));
         ItemDetailResponseDto itemDetailResponseDto = ItemDetailResponseDto.from(item);
 
         ItemMartShopResponseDto itemMartShopResponseDto = ItemMartShopResponseDto.builder()
@@ -73,9 +71,8 @@ public class ItemService {
         return itemNewResponseDtos;
     }
 
-
-    // 상품 하나당 사진 3개를 추가합니다.
-    // 테스트 코드에요!
+    // 상품 하나당 사진 3개를 추가
+    // 테스트 코드
     public void addItem(ItemAddRequestDto itemAddRequestDto) {
         Item item = itemAddRequestDto.toEntity();
         ItemPic itemPic1 = ItemPic.builder()
@@ -100,7 +97,5 @@ public class ItemService {
         itemPicRepository.save(itemPic1);
         itemPicRepository.save(itemPic2);
         itemPicRepository.save(itemPic3);
-
-
     }
 }

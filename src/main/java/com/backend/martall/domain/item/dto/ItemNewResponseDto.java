@@ -8,8 +8,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-// 이건 새로 나온 상품 관련 Dto 입니다
-// 사진 경로랑 카테고리 id -> 이름으로 추가 했어요!
 public class ItemNewResponseDto {
     private int itemId;
     private String pic;

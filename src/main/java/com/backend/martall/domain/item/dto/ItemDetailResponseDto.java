@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-// 마트 정보가 필요해서 ItemMartShopResponseDto를 추가 했어요!
 public class ItemDetailResponseDto {
 
     private int itemId;
-    private ItemMartShopResponseDto mart;
+    private ItemMartShopResponseDto mart; // 마트 정보가 필요해서 ItemMartShopResponseDto를 추가
     private String categoryName;
     private String itemName;
     private int price;
