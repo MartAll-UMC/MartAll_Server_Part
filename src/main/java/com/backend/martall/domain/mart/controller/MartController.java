@@ -1,15 +1,15 @@
-    package com.backend.martall.domain.mart.controller;
-    import java.util.List;
-    import com.backend.martall.domain.mart.dto.MartRequestDto;
-    import com.backend.martall.domain.mart.dto.MartResponseDto;
-    import com.backend.martall.domain.mart.service.MartService;
-    import lombok.RequiredArgsConstructor;
-    import org.springframework.http.HttpStatus;
-    import org.springframework.http.ResponseEntity;
-    import org.springframework.web.bind.annotation.*;
-    import com.backend.martall.global.dto.JsonResponse;
-    import com.backend.martall.domain.user.jwt.JwtTokenProvider;
-    import com.backend.martall.global.exception.ResponseStatus;
+package com.backend.martall.domain.mart.controller;
+
+import java.util.List;
+import com.backend.martall.domain.mart.dto.MartRequestDto;
+import com.backend.martall.domain.mart.dto.MartResponseDto;
+import com.backend.martall.domain.mart.service.MartService;
+import com.backend.martall.global.dto.JsonResponse;
+import com.backend.martall.domain.user.jwt.JwtTokenProvider;
+import com.backend.martall.global.exception.ResponseStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
 
@@ -87,7 +87,8 @@
         // 마트 검색
         @GetMapping("/search")
         public ResponseEntity<List<MartResponseDto>> searchMarts(@RequestParam String keyword) {
-            List<MartResponseDto> responseDtos = martService.searchMarts(keyword);
+            Long userIdx = jwtTokenProvider.resolveToken();
+            List<MartResponseDto> responseDtos = martService.searchMarts(keyword, userIdx);
             return ResponseEntity.ok(responseDtos);
         }
 

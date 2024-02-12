@@ -1,6 +1,9 @@
 package com.backend.martall.domain.mart.dto;
 
 import com.backend.martall.domain.mart.entity.MartShop;
+import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
+import com.backend.martall.domain.user.entity.User;
+import com.backend.martall.domain.user.entity.UserRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,8 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-
-
 public class MartResponseDto {
     private Long martShopId;
     private String name;
@@ -23,7 +24,6 @@ public class MartResponseDto {
     private Integer visitor;
     private Integer sale;
     private String profilePhoto;
-    private Long userIdx;
     private Long martCategoryId;
     private String managerName;
     private String shopNumber;
@@ -31,8 +31,9 @@ public class MartResponseDto {
     private String linkNaver;
     private String longitude;
     private String latitude;
+    private boolean isFavorite;
 
-    public static MartResponseDto from(MartShop martShop) {
+    public static MartResponseDto from(MartShop martShop, Long userId, MartBookmarkRepository martBookmarkRepository, UserRepository userRepository) {
         MartResponseDto dto = new MartResponseDto();
         dto.martShopId = martShop.getMartShopId();
         dto.name = martShop.getName();
@@ -44,9 +45,6 @@ public class MartResponseDto {
         dto.visitor = martShop.getVisitor();
         dto.sale = martShop.getSale();
         dto.profilePhoto = martShop.getProfilePhoto();
-        if (martShop.getUser() != null) {
-            dto.userIdx = martShop.getUser().getUserIdx();
-        }
         if (martShop.getMartCategory() != null) {
             dto.martCategoryId = martShop.getMartCategory().getMartCategoryId();
         }
@@ -56,8 +54,12 @@ public class MartResponseDto {
         dto.linkNaver = martShop.getLinkNaver();
         dto.longitude = martShop.getLongitude();
         dto.latitude = martShop.getLatitude();
+
+        // 단골 여부 설정
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        boolean isFavorite = martBookmarkRepository.existsByUserAndMartShop(user, martShop);
+        /*dto.setIsFavorite(isFavorite);*/
+
         return dto;
     }
-
-
 }
