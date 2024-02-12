@@ -112,51 +112,6 @@ public class UserOrderService {
         }
 
         orderAsyncService.changeOrderState(orderInfo);
-//        ---> mart별로 아이템 분류
-//        ************************* 봉인 ****************************
-//        // orderItemAddRequest -> cartItemId -> cartItem의 itemId
-//        // 금액 계산
-//        // -> item의 price
-//        // 마트별로 주문 나누기
-//        // -> item의 martShopId
-//
-//        Map<String, List<OrderItem>> orderItemMap = new HashMap<>();
-//        for(OrderItemCreateRequest cartItem:cartItemList) {
-//            // cart repository에서 cart를 불러와 itemId 불러오기
-//            // itemId로 item repository에서 item 불러오기
-//            OrderItem orderItem = OrderItem.builder()
-//                    .itemId(cartItem.getItemId())
-//                    .count(cartItem.getCount())
-//                    .build();
-//            // item의 금액 payment에 더하기
-//            realPayment += 1000;
-//            // martShopId 별로 상품 리스트에 정리
-//            orderItemMap.putIfAbsent(cartItem.getMartShopId(), new ArrayList<>());
-//            orderItemMap.get(cartItem.getMartShopId()).add(orderItem);
-//        }
-//      ************************************************************
-
-//        ---> 마트별로 주문 생성
-//        ************************* 봉인 ****************************
-//        // 리스트에 정리한 상품으로 주문 생성
-//        for (Map.Entry<String, List<OrderItem>> entry:orderItemMap.entrySet()) {
-//            String martShopId = entry.getKey();
-//            List<OrderItem> orderItemList = entry.getValue();
-//
-//            OrderInfo orderInfo = OrderInfo.builder()
-//                    .martShopId(martShopId)
-//                    .orderState(ORDER_REQUEST.getCode())
-//                    .build();
-//
-//            orderInfoRepository.save(orderInfo);
-//
-//            orderInfo = orderInfoRepository.findByUserIdxAndMartShopIdAndOrderState(null, martShopId, ORDER_REQUEST.getCode());
-//            for(OrderItem orderItem:orderItemList) {
-//                orderItem.setOrderInfo(orderInfo);
-//                orderItemRepository.save(orderItem);
-//            }
-//        }
-//      ************************************************************
     }
 
     public OrderInquiryResponse getOrder(Long userIdx) {
@@ -195,7 +150,7 @@ public class UserOrderService {
         OrderInfoResponse orderInfoResponse = OrderInfoResponse.builder()
                 .martShopId(orderMartShop.getMartShopId())
                 .martName(orderMartShop.getName())
-                .itemCount(orderItemResponseList.size())
+                .count(orderItemResponseList.size())
                 .build();
 
 
@@ -206,48 +161,6 @@ public class UserOrderService {
                 .orderItem(orderItemResponseList)
                 .build();
 
-//******************************************** 봉인 **************************************************
-//        // orderinfo에 해당하는 상품 불러오기
-//
-//        OrderInquiryResponse orderInquiryResponse = new OrderInquiryResponse();
-//        List<OrderItemResponse> resultList = new ArrayList<>();
-//
-//        if (state.equals("전체")) {
-//            // 주문 목록 가져오기
-//            // findAll -> findByUserIdx()로 교체
-//            List<OrderInfo> orderList = orderInfoRepository.findAll();
-//
-//            // order에 해당 하는 상품을 dto list에 저장
-//            for(OrderInfo orderInfo:orderList){
-//                List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
-//                List<OrderItemResponse> orderItemResponseList = orderItemList.stream()
-//                        .map((OrderItem orderItem) -> OrderItemResponse.of(orderItem, orderInfo))
-//                        .collect(Collectors.toList());
-//                resultList.addAll(orderItemResponseList);
-//            }
-//
-//            // resultList
-//            // mart 이름 -> 위의 for문에서 넣기, item이름, item 사진 넣기
-//
-//            orderInquiryResponse.setOrderItem(resultList);
-//        } else {
-//            // 주문 목록 가져오기
-//            // findAll -> findByUserIdxAndOrderState(OrderState.getCodeByState(state))로 교체
-//            List<OrderInfo> orderList = orderInfoRepository.findAll();
-//
-//            // order에 해당 하는 상품을 dto list에 저장
-//            for(OrderInfo orderInfo:orderList){
-//                List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
-//                List<OrderItemResponse> orderItemResponseList = orderItemList.stream()
-//                        .map((OrderItem orderItem) -> OrderItemResponse.of(orderItem, orderInfo))
-//                        .collect(Collectors.toList());
-//                resultList.addAll(orderItemResponseList);
-//            }
-//
-//            // resultList
-//            // mart 이름 -> 위의 for문에서 넣기, item이름, item 사진 넣기
-//            orderInquiryResponse.setOrderItem(resultList);
-//        }
-//        return orderInquiryResponse;
+
     }
 }
