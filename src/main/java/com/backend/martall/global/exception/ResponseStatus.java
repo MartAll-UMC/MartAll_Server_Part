@@ -10,6 +10,9 @@ public enum ResponseStatus {
 
     // Success
 
+    // 4200 ~ 상품
+    ITEM_DETAIL_FAIL(false, 4200, "해당 상품을 찾을 수 없습니다."),
+
     // Exception
     //4100 ~ 유저
     LOGIN_FAIL_EMPTY_PROVIDER(false, 4100, "provider 정보가 제공되지 않았습니다."),
