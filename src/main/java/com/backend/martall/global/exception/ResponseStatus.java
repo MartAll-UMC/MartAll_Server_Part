@@ -29,14 +29,6 @@ public enum ResponseStatus {
     ITEMLIKE_ALREADY_LIKE(false, 4220, "이미 찜한 상품입니다."),
     ITEMLIKE_ALREADY_DISLIKE(false, 4221, "찜이 되어 있는 상품을 찜 취소했습니다."),
     ITEMLIKE_NOT_EXIST(false, 4222, "찜 상품 목록이 존재하지 않습니다."),
-    //4300 ~ 마트
-    MART_NAME_NOT_FOUND(false, 4300, "마트를 찾을 수 없습니다."),
-    MART_ACCESS_DENIED(false, 4301, "마트 접근 권한이 없습니다."),
-    MART_OPERATION_ERROR(false, 4302, "마트 작업 중 오류가 발생했습니다."),
-    MART_FAVORITE_ALREADY(false, 4303, "이미 단골 추가된 마트 입니다."),
-    MART_DETAIL_FAIL(false, 4304, "마트 상세정보를 불러 올 수 없습니다."),
-    MART_CREATE_FAIL(false, 4305, "마트 생성에 실패했습니다."),
-    MART_FILTER_NOT_FOUND(false, 4306, "해당하는 마트를 찾을 수 없습니다"),
 
     // 4400 ~ 4499
     // 장바구니 4400 ~
