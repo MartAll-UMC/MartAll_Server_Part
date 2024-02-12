@@ -98,7 +98,7 @@ public class JwtTokenProvider {
     public Long resolveToken() {
         String token = getJwt();
         if(!validateToken(token)){
-           throw new GlobalException(ResponseStatus.LOGIN_FAIL_WRONG_JWT);
+            throw new GlobalException(ResponseStatus.LOGIN_FAIL_WRONG_JWT);
         }
 
         Long user_id = getUserIdx(token);
