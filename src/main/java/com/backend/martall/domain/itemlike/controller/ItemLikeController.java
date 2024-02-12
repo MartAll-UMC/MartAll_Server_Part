@@ -1,6 +1,7 @@
 package com.backend.martall.domain.itemlike.controller;
 
 import com.backend.martall.domain.itemlike.service.ItemLikeService;
+import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -13,21 +14,25 @@ import org.springframework.web.bind.annotation.*;
 public class ItemLikeController {
 
     private final ItemLikeService itemLikeService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("")
     public ResponseEntity<JsonResponse> inquiryItemLike() {
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemLikeService.inquiryItemLike()));
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemLikeService.inquiryItemLike(userIdx)));
     }
 
     @PostMapping("/{itemId}")
     public ResponseEntity<JsonResponse> addItemLike(@PathVariable int itemId) {
-        itemLikeService.addItemLike(itemId);
+        Long userIdx = jwtTokenProvider.resolveToken();
+        itemLikeService.addItemLike(itemId, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<JsonResponse> removeItemLike(@PathVariable int itemId) {
-        itemLikeService.removeItemLike(itemId);
+        Long userIdx = jwtTokenProvider.resolveToken();
+        itemLikeService.removeItemLike(itemId, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 }

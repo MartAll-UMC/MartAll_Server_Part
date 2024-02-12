@@ -117,7 +117,7 @@ public class MartService {
                 .map(martShop -> MartResponseDto.from(martShop, userId, martBookmarkRepository, userRepository))
                 .collect(Collectors.toList());
     }
-//search mart by filter(category선택)
+
     public List<MartResponseDto> searchMartsByCategoryAndRating(String category, Double rating) {
         List<MartShop> martShops = martRepository.findByCategoryName(category); //rating 구현 실패/.............
         return martShops.stream()

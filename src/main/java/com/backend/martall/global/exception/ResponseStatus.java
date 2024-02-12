@@ -10,6 +10,9 @@ public enum ResponseStatus {
 
     // Success
 
+    // 4200 ~ 상품
+    ITEM_DETAIL_FAIL(false, 4200, "해당 상품을 찾을 수 없습니다."),
+
     // Exception
     //4100 ~ 유저
     LOGIN_FAIL_EMPTY_PROVIDER(false, 4100, "provider 정보가 제공되지 않았습니다."),
@@ -27,7 +30,7 @@ public enum ResponseStatus {
 
     // 4220 ~ 상품 찜하기 에러
     ITEMLIKE_ALREADY_LIKE(false, 4220, "이미 찜한 상품입니다."),
-    ITEMLIKE_ALREADY_DISLIKE(false, 4221, "찜이 되어 있는 상품을 찜 취소했습니다."),
+    ITEMLIKE_ALREADY_DISLIKE(false, 4221, "찜이 되어 있지 않은 상품을 찜 취소했습니다."),
     ITEMLIKE_NOT_EXIST(false, 4222, "찜 상품 목록이 존재하지 않습니다."),
 
     //4300 ~ 마트
@@ -49,7 +52,8 @@ public enum ResponseStatus {
     ORDER_PAYMENT_NOT_EQUAL(false, 4420, "결제 금액이 올바르지 않습니다."),
     ORDER_EXIST_OTHER_ORDER(false, 4421, "다른 주문이 존재합니다."),
     ORDER_NOT_EXIST(false, 4422, "주문이 존재하지 않습니다."),
-    ORDER_CART_EMPTY(false, 4423, "주문하려는 장바구니의 상품이 존재하지 않습니다."),
+    ORDER_CART_EMPTY(false, 4423, "주문하려는 장바구니 상품 목록이 비어있습니다."),
+    ORDER_CARTITEM_NOT_EXIST(false, 4424, "장바구니에 존재하지 않는 상품입니다."),
 
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),

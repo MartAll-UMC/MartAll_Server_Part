@@ -18,7 +18,6 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
     List<MartShop> findByCategoryName(@Param("categoryName") String categoryName);
 
 
-}
 
 
 

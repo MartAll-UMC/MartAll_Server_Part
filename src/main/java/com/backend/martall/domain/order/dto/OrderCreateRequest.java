@@ -13,7 +13,7 @@ public class OrderCreateRequest {
 
     private int totalPayment;
 
-    private String martShopId;
+    private Long martShopId;
 
     private List<OrderItemCreateRequest> cartItemList;
 
