@@ -10,6 +10,6 @@ import lombok.*;
 public class OrderInfoResponse {
     private Long martShopId;
     private String martName;
-    private int itemCount;
+    private int count;
 
 }
