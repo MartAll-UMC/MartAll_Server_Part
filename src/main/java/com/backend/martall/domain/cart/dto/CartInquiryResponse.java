@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CartInquiryResponse {
 
-//    private cartMartShopResponse mart
+    private CartMartShopResponse mart;
 
     private List<CartItemResponse> cartItemResponseList;
 }

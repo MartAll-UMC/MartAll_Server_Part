@@ -1,15 +1,8 @@
 package com.backend.martall.domain.user.dto;
 
 import com.backend.martall.domain.user.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
 
 public class UserDto {
 
@@ -61,4 +54,33 @@ public class UserDto {
 
     }
 
+    @NoArgsConstructor
+    @Data
+    public static class UserLocationDto {
+        private Double longitude;
+        private Double latitude;
+        private String address;
+
+        public UserLocationDto(User user) {
+            this.longitude = user.getLongitude();
+            this.latitude = user.getLatitude();
+            this.address = user.getAddress();
+        }
+    }
+
+    @NoArgsConstructor
+    @Data
+    public static class UserLocationRangeDto {
+        private Double longitude;
+        private Double latitude;
+        private String address;
+        private Integer locationRange;
+        public UserLocationRangeDto(User user) {
+            this.longitude = user.getLongitude();
+            this.latitude = user.getLatitude();
+            this.address = user.getAddress();
+            this.locationRange = user.getLocationRange();
+        }
+
+    }
 }
