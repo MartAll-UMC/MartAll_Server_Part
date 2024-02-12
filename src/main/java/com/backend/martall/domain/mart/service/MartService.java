@@ -44,12 +44,14 @@ public class MartService {
                 .orElseThrow(() -> new RuntimeException("MartShop not found"));
         return MartResponseDto.from(martShop);
     }
-//    //rating, category filter - Martshop
-//    public List<MartResponseDto> searchMartsByCategoryAndRating(String category, Double rating) {
-//        List<MartShop> martShops = martRepository.findByCategoryAndRating(category, rating);
-//        return martShops.stream()
-//                .map(MartResponseDto::from)
-//                .collect(Collectors.toList());
-//    }
+
+    //rating, category filter - Martshop
+
+    public List<MartResponseDto> searchMartsByCategoryAndRating(String category, Double rating) {
+        List<MartShop> martShops = martRepository.findByCategoryAndRating(category, rating);
+        return martShops.stream()
+                .map(MartResponseDto::from)
+                .collect(Collectors.toList());
+    }
 
 }

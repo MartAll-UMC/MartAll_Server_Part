@@ -4,6 +4,8 @@ import com.backend.martall.domain.itemlike.dto.ItemLikeInquiryResponse;
 import com.backend.martall.domain.itemlike.dto.ItemLikeResponse;
 import com.backend.martall.domain.itemlike.entity.ItemLike;
 import com.backend.martall.domain.itemlike.repository.ItemLikeRepository;
+import com.backend.martall.domain.user.entity.User;
+import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +23,18 @@ import static com.backend.martall.global.exception.ResponseStatus.*;
 public class ItemLikeService {
 
     private final ItemLikeRepository itemLikeRepository;
+    private final UserRepository userRepository;
 
     // 찜한 상품 조회
-    public ItemLikeInquiryResponse inquiryItemLike() {
+    public ItemLikeInquiryResponse inquiryItemLike(Long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx).get();
 
         // userIdx의 찜한 상품 목록 불러오기
-        List<ItemLike> itemLikeList = itemLikeRepository.findByUserIdx(1L);
+        List<ItemLike> itemLikeList = itemLikeRepository.findByUser(user);
 
         // 찜한 상품이 없으면 예외처리
         if(itemLikeList.isEmpty()) {
-            log.info("찜한 상품이 존재하지 않음, userIdx = {}", 1);
+            log.info("찜한 상품이 존재하지 않음, userIdx = {}", userIdx);
             throw new BadRequestException(ITEMLIKE_NOT_EXIST);
         }
 
@@ -52,7 +56,7 @@ public class ItemLikeService {
                 })
                 .collect(Collectors.toList());
 
-        log.info("찜한 상품 조회, userIdx = {}", 1);
+        log.info("찜한 상품 조회, userIdx = {}", userIdx);
 
         return ItemLikeInquiryResponse.builder()
                 .item(itemLikeResponseList)
@@ -61,11 +65,12 @@ public class ItemLikeService {
 
     // 상품 찜하기
     @Transactional
-    public void addItemLike(int itemId) {
+    public void addItemLike(int itemId, Long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx).get();
 
         // 이미 찜 목록에 존재하면 에러
-        if(itemLikeRepository.existsByUserIdxAndMartItemId(1L, itemId)) {
-            log.info("이미 찜한 상품, userIdx = {}, itemId = {}", 1, itemId);
+        if(itemLikeRepository.existsByUserAndMartItemId(user, itemId)) {
+            log.info("이미 찜한 상품, userIdx = {}, itemId = {}", userIdx, itemId);
             throw new BadRequestException(ITEMLIKE_ALREADY_LIKE);
         }
 
@@ -77,7 +82,7 @@ public class ItemLikeService {
         // userIdx는 나중에 추가
         ItemLike itemLike = ItemLike.builder()
                 .martItemId(itemId)
-                .userIdx(1L)
+                .user(user)
                 .build();
 
         log.info("상품 찜하기, userIdx = {}, itemId = {}", 1, itemId);
@@ -87,17 +92,19 @@ public class ItemLikeService {
 
     // 상품 찜하기 취소
     @Transactional
-    public void removeItemLike(int itemId) {
+    public void removeItemLike(int itemId, Long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx).get();
 
         // 찜 목록에 상품이 존재하지 않으면 에러
-        if(!itemLikeRepository.existsByUserIdxAndMartItemId(1L, itemId)) {
-            log.info("찜이 되어 있지 않은 상품을 취소, userIdx = {}, itemId = {}", 1, itemId);
+        if(!itemLikeRepository.existsByUserAndMartItemId(user, itemId)) {
+            log.info("찜이 되어 있지 않은 상품을 취소, userIdx = {}, itemId = {}", userIdx, itemId);
             throw new BadRequestException(ITEMLIKE_ALREADY_DISLIKE);
         }
 
-        log.info("상품 찜 취소, userIdx = {}, itemId = {}", 1, itemId);
-        // userIdx는 나중에 추가
-        itemLikeRepository.deleteByUserIdxAndMartItemId(1L, itemId);
+
+        itemLikeRepository.deleteByUserAndMartItemId(user, itemId);
+        log.info("상품 찜 취소, userIdx = {}, itemId = {}", userIdx, itemId);
+
     }
 
 }
