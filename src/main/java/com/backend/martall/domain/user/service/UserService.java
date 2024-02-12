@@ -44,7 +44,6 @@ public class UserService {
                         .providerId(userRequestDto.getProviderId())
                         .userType(userRequestDto.getUserType())
                         .userState(0)
-                        .money(0)
                         .fcmToken(null)
                         .build();
 
@@ -68,9 +67,6 @@ public class UserService {
         //길이 검사
     }
 
-
-
-
     public UserDto.UserInfoResponseDto getUserInformation(Long user_idx){
         Optional<User> optionalUser = userRepository.findByUserIdx(user_idx);
         if(optionalUser.isEmpty()) {
@@ -79,7 +75,52 @@ public class UserService {
 
         User user = optionalUser.get();
 
-
         return new UserDto.UserInfoResponseDto(user);
+    }
+
+    public void logoutUser(Long id) {
+
+    }
+
+    public void updateLocation(Long id, UserDto.UserLocationDto userLocationDto) {
+        try {
+            userRepository.updateUserLocation(id, userLocationDto.getLongitude(), userLocationDto.getLatitude(), userLocationDto.getAddress());
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new GlobalException(ResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public void updateRange(Long id, Integer locationRange) {
+        try{
+            userRepository.updateLocationRange(id, locationRange);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new GlobalException(ResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public UserDto.UserLocationDto getLocation(Long id) {
+        try{
+
+            Optional<User> optionalUser = userRepository.findByUserIdx(id);
+            return new UserDto.UserLocationDto(optionalUser.get());
+
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new GlobalException(ResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public UserDto.UserLocationRangeDto getLocationRange(Long id) {
+        try{
+
+            Optional<User> optionalUser = userRepository.findByUserIdx(id);
+            return new UserDto.UserLocationRangeDto(optionalUser.get());
+
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new GlobalException(ResponseStatus.DATABASE_ERROR);
+        }
     }
 }

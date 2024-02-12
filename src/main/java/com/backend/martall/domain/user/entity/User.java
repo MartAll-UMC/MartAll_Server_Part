@@ -35,10 +35,16 @@ public class User extends BaseTime {
     private Integer money = 0;
     @Column(name = "fcm_token")
     private String fcmToken;
+    //@Column(columnDefinition = "double default 0.0")
+    private Double longitude;
+    private Double latitude;
+    private String address;
+    //@Column(name = "location_range", nullable = false, columnDefinition = "int default 0")
+    private Integer locationRange = 0;
 
     @Builder
     public User(String id, String password, String username, String imgUrl, String phoneNumber, String email, String provider,
-                Long providerId, Integer userType, Integer userState, Integer money, String fcmToken) {
+                Long providerId, Integer userType, Integer userState, String fcmToken) {
         this.id = id;
         this.password = password;
         this.username = username;
@@ -49,7 +55,6 @@ public class User extends BaseTime {
         this.providerId = providerId;
         this.userType = userType;
         this.userState = userState;
-        this.money = money;
         this.fcmToken = fcmToken;
     }
 
@@ -63,4 +68,8 @@ public class User extends BaseTime {
     public String getEmail() { return email; }
     public String getProvider() { return provider; }
     public Integer getMoney() { return money; }
+    public Double getLongitude() { return longitude; }
+    public Double getLatitude() { return latitude; }
+    public String getAddress() { return address; }
+    public Integer getLocationRange() { return locationRange; }
 }
