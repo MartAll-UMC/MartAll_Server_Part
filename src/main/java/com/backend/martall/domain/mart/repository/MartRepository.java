@@ -14,8 +14,10 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
 
     @Query("SELECT m FROM MartShop m WHERE m.name LIKE %:keyword% OR m.introduction LIKE %:keyword%")
     List<MartShop> findByKeyword(String keyword);
+
     @Query("SELECT m FROM MartShop m JOIN m.martCategories c WHERE :categoryName IS NULL OR c.categoryName = :categoryName")
     List<MartShop> findByCategoryName(@Param("categoryName") String categoryName);
+}
 
 
 
