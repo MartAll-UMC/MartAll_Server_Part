@@ -32,6 +32,7 @@ public enum ResponseStatus {
     ITEMLIKE_ALREADY_LIKE(false, 4220, "이미 찜한 상품입니다."),
     ITEMLIKE_ALREADY_DISLIKE(false, 4221, "찜이 되어 있지 않은 상품을 찜 취소했습니다."),
     ITEMLIKE_NOT_EXIST(false, 4222, "찜 상품 목록이 존재하지 않습니다."),
+    ITEMLIKE_ITEM_NOT_EXIST(false, 4223, "찜하려는 상품이 존재하지 않는 상품입니다."),
 
     //4300 ~ 마트
     MART_NAME_NOT_FOUND(false, 4300, "마트를 찾을 수 없습니다."),

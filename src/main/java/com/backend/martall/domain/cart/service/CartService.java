@@ -5,6 +5,8 @@ import com.backend.martall.domain.cart.entity.CartItem;
 import com.backend.martall.domain.cart.repository.CartItemRepository;
 import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.item.repository.ItemRepository;
+import com.backend.martall.domain.itemlike.repository.ItemLikeRepository;
+import com.backend.martall.domain.itemlike.service.ItemLikeService;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartRepository;
 import com.backend.martall.domain.user.entity.User;
@@ -28,7 +30,7 @@ public class CartService {
 
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
-    private final MartRepository martRepository;
+    private final ItemLikeService itemLikeService;
     private final ItemRepository itemRepository;
 
     /*
@@ -63,7 +65,7 @@ public class CartService {
                 .martName(martShop.getName())
                 .martCategory(cartMartShopCategoryResponseList)
                 .bookmarkCount(martShop.getMartBookmarks().size())
-                .likeCount(123)
+                .likeCount(itemLikeService.countItemLikeByMart(martShop))
                 .build();
 
         List<CartItemResponse> cartResponseDtoList = cartItemList.stream()
