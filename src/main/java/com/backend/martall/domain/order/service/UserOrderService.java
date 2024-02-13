@@ -2,6 +2,7 @@ package com.backend.martall.domain.order.service;
 
 import com.backend.martall.domain.cart.entity.CartItem;
 import com.backend.martall.domain.cart.repository.CartItemRepository;
+import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartRepository;
 import com.backend.martall.domain.order.dto.*;
@@ -15,12 +16,14 @@ import com.backend.martall.global.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.query.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.backend.martall.domain.order.entity.OrderState.ORDER_COMPLETE;
 import static com.backend.martall.domain.order.entity.OrderState.ORDER_PREPARE;
 import static com.backend.martall.global.exception.ResponseStatus.*;
 
@@ -49,7 +52,7 @@ public class UserOrderService {
 
         // 해당 아이디에 주문이 있는지 확인
         // 존재하면 주문을 추가할 수 없음
-        if(orderInfoRepository.existsByUserAndOrderState(user, ORDER_PREPARE.getCode())) {
+        if (orderInfoRepository.findByUserAndOrderState(user, ORDER_PREPARE.getCode()).isPresent()) {
             log.info("주문이 이미 존재함, userIdx = {}", userIdx);
             throw new BadRequestException(ORDER_EXIST_OTHER_ORDER);
         }
@@ -89,13 +92,15 @@ public class UserOrderService {
                 throw new BadRequestException(ORDER_CARTITEM_NOT_EXIST);
             }
 
+            Item item = cartItem.getItem();
+
             // cartItem의 itemId 로 상품 가격 불러오기
             // 상품 가격 realPayment에 더하기
-            realPayment = realPayment + 1000;
+            realPayment = realPayment + item.getPrice();
 
             // itemId, count는 위의 cartItem에서 가져오기
             OrderItem orderItem = OrderItem.builder()
-                    .itemId(cartItem.getItem().getItemId())
+                    .item(item)
                     .orderInfo(orderInfo)
                     .count(cartItem.getCount())
                     .build();
@@ -130,16 +135,13 @@ public class UserOrderService {
             throw new BadRequestException(ORDER_NOT_EXIST);
         }
 
-        // 주문 상품을 response dto 로 전환
+        // orderInfo로 해당 주문 상품 리스트 조회
         List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
 
+        // 주문 상품을 dto로 변환
         List<OrderItemResponse> orderItemResponseList = orderItemList.stream()
                 .map(orderItem -> {
                     OrderItemResponse orderItemResponse = OrderItemResponse.of(orderItem);
-//                    cartItemResponse.setItemName();
-//                    cartItemResponse.setCategoryName();
-//                    cartItemResponse.setPrice();
-//                    cartItemResponse.setPicName();
                     return orderItemResponse;
                 })
                 .collect(Collectors.toList());
@@ -160,7 +162,6 @@ public class UserOrderService {
                 .order(orderInfoResponse)
                 .orderItem(orderItemResponseList)
                 .build();
-
 
     }
 }

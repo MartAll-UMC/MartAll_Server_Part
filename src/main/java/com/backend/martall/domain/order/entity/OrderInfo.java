@@ -24,14 +24,10 @@ public class OrderInfo extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "martshop_id")
     private MartShop martShop;
-//    @Column(name = "martshop_id")
-//    private String martShopId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
-//    @Column(name = "user_idx")
-//    private Long userIdx;
 
     @Column(name = "order_state")
     private String orderState;
