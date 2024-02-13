@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,6 +34,7 @@ public class ItemAddRequestDto {
                 .inventoryQuantity(this.inventoryQuantity)
                 .content(this.content)
                 .profilePhoto(this.profilePhoto)
+                .itemPicList(new ArrayList<>())
                 .build();
     }
 }

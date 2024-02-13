@@ -12,7 +12,7 @@ import java.util.List;
 public class CartMartShopResponse {
     private Long martShopId;
     private String martName;
-    private List<Object> martCategory;
+    private List<CartMartShopCategoryResponse> martCategory;
     private int bookmarkCount;
     private int likeCount;
 }

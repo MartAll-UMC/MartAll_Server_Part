@@ -3,6 +3,8 @@ package com.backend.martall.domain.cart.service;
 import com.backend.martall.domain.cart.dto.*;
 import com.backend.martall.domain.cart.entity.CartItem;
 import com.backend.martall.domain.cart.repository.CartItemRepository;
+import com.backend.martall.domain.item.entity.Item;
+import com.backend.martall.domain.item.repository.ItemRepository;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartRepository;
 import com.backend.martall.domain.user.entity.User;
@@ -17,8 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.backend.martall.global.exception.ResponseStatus.CART_ITEM_NOT_EXIST;
-import static com.backend.martall.global.exception.ResponseStatus.CART_USER_NOT_EQUAL;
+import static com.backend.martall.global.exception.ResponseStatus.*;
 
 @Slf4j
 @Service
@@ -28,13 +29,18 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
     private final MartRepository martRepository;
+    private final ItemRepository itemRepository;
+
+    /*
+        likecount 로직 추가되면 추가
+
+     */
 
     @Transactional
     public CartInquiryResponse inquiryCart(Long userIdx) {
 
         User user = userRepository.findByUserIdx(userIdx).get();
 
-        // 나중에 findByUserIdx 로 교체
         List<CartItem> cartItemList = cartItemRepository.findByUser(user);
 
         // 장바구니에 상품이 없으면 에러
@@ -44,25 +50,29 @@ public class CartService {
         }
 
         // 장바구니에서 상품 아이디
-        // cartItemList.get(1).getItemId()
+        Item item = cartItemList.get(0).getItem();
         // 상품 아이디에서 마트 아이디
-        //
-        MartShop martShop = martRepository.findById(1L).get();
+        MartShop martShop = item.getMartShop();
+
+        List<CartMartShopCategoryResponse> cartMartShopCategoryResponseList = martShop.getMartCategories().stream()
+                .map(CartMartShopCategoryResponse::of)
+                .collect(Collectors.toList());
 
         CartMartShopResponse cartMartShopResponse = CartMartShopResponse.builder()
-                .martShopId(1L)
+                .martShopId(martShop.getMartShopId())
                 .martName(martShop.getName())
-                .bookmarkCount(123)
+                .martCategory(cartMartShopCategoryResponseList)
+                .bookmarkCount(martShop.getMartBookmarks().size())
                 .likeCount(123)
                 .build();
 
         List<CartItemResponse> cartResponseDtoList = cartItemList.stream()
                 .map(cartItem -> {
                     CartItemResponse cartItemResponse = CartItemResponse.of(cartItem);
-//                    cartItemResponse.setItemName();
-//                    cartItemResponse.setCategoryName();
-//                    cartItemResponse.setPrice();
-//                    cartItemResponse.setPicName();
+                    cartItemResponse.setItemName(cartItem.getItem().getItemName());
+                    cartItemResponse.setCategoryName(cartItem.getItem().getCategoryId().getName());
+                    cartItemResponse.setPrice(cartItem.getItem().getPrice());
+                    cartItemResponse.setPicName(cartItem.getItem().getProfilePhoto());
                     return cartItemResponse;
                 })
                 .collect(Collectors.toList());
@@ -85,17 +95,32 @@ public class CartService {
 
         User user = userRepository.findByUserIdx(userIdx).get();
 
-        // 나중에 findByUserIdx 로 교체
         List<CartItem> cartItemList = cartItemRepository.findByUser(user);
 
+        Optional<Item> optionalItem = itemRepository.findById(cartItemRequest.getItemId());
 
-        // 리스트 1번째 상품 id로 마트샵 아이디 get
-        // dto의 상품 id로 마트샵 아이디 get
-        // 비교 후 진행
+        Item item;
+        // item 이 존재하지 않으면 예외처리
+        try {
+            item = optionalItem.get();
+        } catch (RuntimeException e) {
+            throw new BadRequestException(CART_MART_NOT_EQUAL);
+        }
+
+        // 장바구니가 비어있지 않으면
+        if(!cartItemList.isEmpty()) {
+            MartShop cartMartShop = cartItemList.get(0).getItem().getMartShop();
+
+            // 장바구니 상품과 추가하려는 상품의 마트가 같지 않으면
+            if (!item.getMartShop().equals(cartMartShop)) {
+                throw new BadRequestException(CART_MART_NOT_EQUAL);
+            }
+        }
+
 
         // 엔티티 생성
         CartItem newCartItem = CartItem.builder()
-                .itemId(cartItemRequest.getItemId())
+                .item(item)
                 .count(cartItemRequest.getCount())
                 .user(user)  //-> 유저 아이디 넣는 부분
                 .build();
