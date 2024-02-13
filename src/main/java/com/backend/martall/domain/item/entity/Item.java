@@ -1,12 +1,15 @@
 package com.backend.martall.domain.item.entity;
 
 import com.backend.martall.domain.BaseTime;
+import com.backend.martall.domain.mart.entity.MartShop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "mart_item")
 @Entity
@@ -21,8 +24,9 @@ public class Item extends BaseTime {
     @Column(name = "item_id")
     private int itemId;
 
-    @Column(name = "mart_shop_id", length = 50)
-    private Long martShopId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mart_shop_id")
+    private MartShop martShop;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "item_category_id")
@@ -42,4 +46,16 @@ public class Item extends BaseTime {
 
     @Column(name = "profile_photo", length = 255)
     private String profilePhoto;
+
+    @OneToMany(mappedBy = "picItem", fetch = FetchType.LAZY)
+    private List<ItemPic> itemPicList = new ArrayList<>();
+
+    public void addPic(ItemPic itemPic) {
+        this.itemPicList.add(itemPic);
+        itemPic.setPicItem(this);
+    }
+
+    public void deletePic(ItemPic itemPic) {
+        this.itemPicList.remove(itemPic);
+    }
 }

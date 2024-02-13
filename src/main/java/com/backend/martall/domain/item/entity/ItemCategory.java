@@ -7,14 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ItemCategory {
     // 한글 이름을 추가했습니다.
-    SNACK("스낵"),
-    DRINK("음료"),
-    COFFEE("커피"),
-    SALAD("샐러드"),
-    CONVENIENT_FOOD("간편식품"),
-    FROZEN_FOOD("냉동식품"),
-    FRUIT("신선과일"),
-    DAILY_SUPPLIES("생활용품?")
+    FRUTVEG("과일&채소"),
+    SEAFOOD("수산"),
+    MEAT("정육"),
+    SNACK("간식")
     ;
 
     private final String name;

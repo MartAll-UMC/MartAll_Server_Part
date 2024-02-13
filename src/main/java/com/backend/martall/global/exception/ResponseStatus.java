@@ -11,7 +11,7 @@ public enum ResponseStatus {
     // Success
 
     // 4200 ~ 상품
-    ITEM_DETAIL_FAIL(false, 4200, "해당 상품을 찾을 수 없습니다."),
+    ITEM_DETAIL_FAIL(false, 4200, "해당 상품을 찾을 수 없습니다. 마트 아이디나 상품 아이디를 확인해주세요"),
 
     // Exception
     //4100 ~ 유저

@@ -15,6 +15,7 @@ public class ItemNewResponseDto {
     private String itemName;
     private int price;
     private String content;
+    private String like;
 
     public static ItemNewResponseDto from(Item item) {
         return ItemNewResponseDto.builder()
