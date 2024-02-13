@@ -126,11 +126,13 @@ public class ItemLikeService {
 
     }
 
+    // 마트에 있는 상품의 찜하기 수를 count
     @Transactional
     public int countItemLikeByMart(MartShop martShop) {
         return itemLikeRepository.countItemLikeByMart(martShop);
     }
 
+    // 회원이 상품을 좋아요 했는지 안했는지 반환
     @Transactional
     public String checkItemLike(Item item, User user) {
         if(itemLikeRepository.existsByUserAndItem(user, item)) {

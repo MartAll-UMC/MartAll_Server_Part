@@ -21,5 +21,4 @@ public interface ItemLikeRepository extends JpaRepository<ItemLike, Integer> {
     @Query("SELECT count(il) FROM ItemLike il WHERE il.item.martShop = :martShop")
     int countItemLikeByMart(MartShop martShop);
 
-    boolean existsByItemAndUser(Item item, User user);
 }
