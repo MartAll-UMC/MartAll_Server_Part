@@ -107,8 +107,9 @@ public class ItemService {
                 .picName(item.getProfilePhoto())
                 .build();
 
+        item.addPic(itemPic1);
         itemRepository.save(item);
         itemPicRepository.save(itemPic1);
-        item.addPic(itemPic1);
+
     }
 }

@@ -47,6 +47,7 @@ public enum ResponseStatus {
     // 장바구니 4400 ~
     CART_ITEM_NOT_EXIST(false, 4400, "장바구니에 상품이 존재하지 않습니다."),
     CART_USER_NOT_EQUAL(false, 4401, "장바구니 상품은 관련 회원만 접근 할 수 있습니다."),
+    CART_MART_NOT_EQUAL(false, 4402, "장바구니에는 같은 마트의 상품만 넣을 수 있습니다."),
 
     // 주문 4420 ~
     ORDER_PAYMENT_NOT_EQUAL(false, 4420, "결제 금액이 올바르지 않습니다."),

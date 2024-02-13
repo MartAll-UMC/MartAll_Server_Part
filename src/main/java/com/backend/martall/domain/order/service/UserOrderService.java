@@ -95,7 +95,7 @@ public class UserOrderService {
 
             // itemId, count는 위의 cartItem에서 가져오기
             OrderItem orderItem = OrderItem.builder()
-                    .itemId(cartItem.getItemId())
+                    .itemId(cartItem.getItem().getItemId())
                     .orderInfo(orderInfo)
                     .count(cartItem.getCount())
                     .build();
