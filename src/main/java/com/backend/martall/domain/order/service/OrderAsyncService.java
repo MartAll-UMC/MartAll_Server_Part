@@ -19,7 +19,7 @@ public class OrderAsyncService {
     @Async
     public void changeOrderState(OrderInfo orderInfo) {
         try{
-            Thread.sleep(30000);
+            Thread.sleep(60000);
             orderInfo.updateOrderState(ORDER_COMPLETE);
             orderInfoRepository.save(orderInfo);
         } catch (InterruptedException e) {
