@@ -39,7 +39,7 @@ public class ItemService {
     }
 
     public ItemDetailResponseDto getItemDetail(Long shopId, int itemId) {
-        Item item = itemRepository.findById(shopId, itemId);
+        Item item = itemRepository.findByShopIdAndItemId(shopId, itemId);
 
         ItemDetailResponseDto itemDetailResponseDto = ItemDetailResponseDto.from(item);
 

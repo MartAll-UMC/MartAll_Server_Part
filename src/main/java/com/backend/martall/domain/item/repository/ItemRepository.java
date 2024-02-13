@@ -14,7 +14,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findByItemName(String itemName);
 
     @Query("SELECT item FROM Item item WHERE item.itemId = :itemId AND item.martShopId = :shopId")
-    Item findById(Long shopId, int itemId);
+    Item findByShopIdAndItemId(Long shopId, int itemId);
 
     List<Item> findTop8ByOrderByCreatedAtDesc(); //"createdAt" 컬럼을 기준으로 내림차순으로 정렬된 최대 8개의 항목을 가져옴
 }
