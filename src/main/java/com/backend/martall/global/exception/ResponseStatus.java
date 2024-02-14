@@ -10,9 +10,6 @@ public enum ResponseStatus {
 
     // Success
 
-    // 4200 ~ 상품
-    ITEM_DETAIL_FAIL(false, 4200, "해당 상품을 찾을 수 없습니다. 마트 아이디나 상품 아이디를 확인해주세요"),
-
     // Exception
     //4100 ~ 유저
     LOGIN_FAIL_EMPTY_PROVIDER(false, 4100, "provider 정보가 제공되지 않았습니다."),
@@ -27,6 +24,14 @@ public enum ResponseStatus {
     IMAGE_UPLOAD_FAIL(false, 4151, "이미지 업로드에 실패했습니다."),
     IMAGE_DELETE_FAIL(false, 4152, "이미지 삭제에 실패했습니다"),
     INVALID_IMAGE_URL(false, 4153, "잘못된 이미지 URL입니다."),
+
+    // 4200 ~ 상품
+    ITEM_DETAIL_ITEMID_FAIL(false, 4200, "해당 상품을 찾을 수 없습니다. 상품 아이디를 확인해주세요."),
+    ITEM_DETAIL_MARTID_FAIL(false, 4201, "해당 마트를 찾을 수 없습니다. 마트 아이디를 확인해주세요."),
+    ITEM_SEARCH_EMPTY(false, 4202, "상품 검색 결과가 없습니다."),
+    ITEM_SEARCH_WORD_EMPTY(false, 4203, "상품 검색어가 비어있습니다."),
+    ITEM_CATEGORY_NAME_WRONG(false, 4204, "검색 카테고리가 올바르지 않습니다."),
+    ITEM_CATEGORY_SORT_WRONG(false, 4205, "정렬 방식을 확인 해주세요."),
 
     // 4220 ~ 상품 찜하기 에러
     ITEMLIKE_ALREADY_LIKE(false, 4220, "이미 찜한 상품입니다."),

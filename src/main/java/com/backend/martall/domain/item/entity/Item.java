@@ -1,6 +1,7 @@
 package com.backend.martall.domain.item.entity;
 
 import com.backend.martall.domain.BaseTime;
+import com.backend.martall.domain.itemlike.entity.ItemLike;
 import com.backend.martall.domain.mart.entity.MartShop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,6 +51,9 @@ public class Item extends BaseTime {
     @OneToMany(mappedBy = "picItem", fetch = FetchType.LAZY)
     private List<ItemPic> itemPicList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private List<ItemLike> itemLikeList = new ArrayList<>();
+
     public void addPic(ItemPic itemPic) {
         this.itemPicList.add(itemPic);
         itemPic.setPicItem(this);
@@ -57,5 +61,13 @@ public class Item extends BaseTime {
 
     public void deletePic(ItemPic itemPic) {
         this.itemPicList.remove(itemPic);
+    }
+
+    public void addLike(ItemLike itemLike) {
+        this.itemLikeList.add(itemLike);
+    }
+
+    public void deleteLike(ItemLike itemLike) {
+        this.itemLikeList.remove(itemLike);
     }
 }
