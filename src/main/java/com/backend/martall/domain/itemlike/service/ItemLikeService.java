@@ -99,6 +99,7 @@ public class ItemLikeService {
         log.info("상품 찜하기, userIdx = {}, itemId = {}", 1, itemId);
 
         itemLikeRepository.save(itemLike);
+        item.addLike(itemLike);
     }
 
     // 상품 찜하기 취소
@@ -120,8 +121,9 @@ public class ItemLikeService {
             throw new BadRequestException(ITEMLIKE_ALREADY_DISLIKE);
         }
 
-
-        itemLikeRepository.deleteByUserAndItem(user, item);
+        ItemLike itemLike = itemLikeRepository.findByUserAndItem(user, item).get();
+        item.deleteLike(itemLike);
+        itemLikeRepository.delete(itemLike);
         log.info("상품 찜 취소, userIdx = {}, itemId = {}", userIdx, itemId);
 
     }
@@ -134,11 +136,8 @@ public class ItemLikeService {
 
     // 회원이 상품을 좋아요 했는지 안했는지 반환
     @Transactional
-    public String checkItemLike(Item item, User user) {
-        if(itemLikeRepository.existsByUserAndItem(user, item)) {
-            return "Y";
-        } else {
-            return "N";
-        }
+    public boolean checkItemLike(Item item, User user) {
+        boolean itemLikeYN = itemLikeRepository.existsByUserAndItem(user, item);
+        return itemLikeYN;
     }
 }

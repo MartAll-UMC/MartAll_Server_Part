@@ -15,11 +15,12 @@ public class ItemNewResponseDto {
     private String itemName;
     private int price;
     private String content;
-    private String like;
+    private boolean like;
 
     public static ItemNewResponseDto from(Item item) {
         return ItemNewResponseDto.builder()
                 .itemId(item.getItemId())
+                .pic(item.getProfilePhoto())
                 .categoryName(item.getCategoryId().getName())
                 .itemName(item.getItemName())
                 .price(item.getPrice())

@@ -19,7 +19,7 @@ public class ItemDetailResponseDto {
     private String itemName;
     private int price;
     private String content;
-    private String like;
+    private boolean like;
 
     public static ItemDetailResponseDto from(Item item) {
         return ItemDetailResponseDto.builder()

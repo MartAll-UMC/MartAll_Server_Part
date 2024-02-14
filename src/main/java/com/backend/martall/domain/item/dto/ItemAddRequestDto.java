@@ -35,6 +35,7 @@ public class ItemAddRequestDto {
                 .content(this.content)
                 .profilePhoto(this.profilePhoto)
                 .itemPicList(new ArrayList<>())
+                .itemLikeList(new ArrayList<>())
                 .build();
     }
 }

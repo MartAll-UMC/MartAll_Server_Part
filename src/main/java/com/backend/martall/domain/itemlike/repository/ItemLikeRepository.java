@@ -9,13 +9,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ItemLikeRepository extends JpaRepository<ItemLike, Integer> {
 
     boolean existsByUserAndItem(User user, Item item);
-    void deleteByUserAndItem(User user, Item item);
+
     List<ItemLike> findByUser(User user);
+
+    Optional<ItemLike> findByUserAndItem(User user, Item item);
 
     // 마트에 있는 상품의 찜하기 수를 count
     @Query("SELECT count(il) FROM ItemLike il WHERE il.item.martShop = :martShop")
