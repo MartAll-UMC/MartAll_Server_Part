@@ -119,17 +119,19 @@ public class MartService {
                 .collect(Collectors.toList());
     }
 
-    public List<MartResponseDto> searchMartsByCategoryAndRating(String category, Double rating) {
-        List<MartShop> martShops = martRepository.findByCategoryName(category);
-        return martShops.stream()
-                .map(martShop -> MartResponseDto.from(martShop, null, martBookmarkRepository, userRepository))
-                .collect(Collectors.toList());
-    }
-    public List<MartResponseDto> findAllMarts() {
-        return martRepository.findAll().stream()
-                .map(MartResponseDto::fromEntity)
-                .collect(Collectors.toList());
-    }
+//    public List<MartResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
+//
+//
+//        List<MartShop> martShops = martRepository.findByCategoryName(category);
+//        return martShops.stream()
+//                .map(martShop -> MartResponseDto.from(martShop, null, martBookmarkRepository, userRepository))
+//                .collect(Collectors.toList());
+//    }
+//    public List<MartResponseDto> findAllMarts() {
+//        return martRepository.findAll().stream()
+//                .map(MartResponseDto::fromEntity)
+//                .collect(Collectors.toList());
+//    }
 }
 
 
