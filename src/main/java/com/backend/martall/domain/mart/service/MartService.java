@@ -45,7 +45,7 @@ public class MartService {
             throw new BadRequestException(ResponseStatus.MART_CREATE_FAIL);
         }
     }
-//마트 정보 업데이트
+    //마트 정보 업데이트
     @Transactional
     public MartResponseDto updateMart(Long shopId, MartRequestDto requestDto, Long userId) {
         MartShop martShop = martRepository.findById(shopId)
@@ -119,17 +119,29 @@ public class MartService {
                 .collect(Collectors.toList());
     }
 
-    public List<MartResponseDto> searchMartsByCategoryAndRating(String category, Double rating) {
-        List<MartShop> martShops = martRepository.findByCategoryName(category);
-        return martShops.stream()
-                .map(martShop -> MartResponseDto.from(martShop, null, martBookmarkRepository, userRepository))
-                .collect(Collectors.toList());
-    }
-    public List<MartResponseDto> findAllMarts() {
-        return martRepository.findAll().stream()
-                .map(MartResponseDto::fromEntity)
-                .collect(Collectors.toList());
-    }
-}
+//mart
 
+
+
+
+
+
+
+
+
+
+//    public List<MartResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
+//
+//
+//        List<MartShop> martShops = martRepository.findByCategoryName(category);
+//        return martShops.stream()
+//                .map(martShop -> MartResponseDto.from(martShop, null, martBookmarkRepository, userRepository))
+//                .collect(Collectors.toList());
+//    }
+//    public List<MartResponseDto> findAllMarts() {
+//        return martRepository.findAll().stream()
+//                .map(MartResponseDto::fromEntity)
+//                .collect(Collectors.toList());
+//    }
+}
 

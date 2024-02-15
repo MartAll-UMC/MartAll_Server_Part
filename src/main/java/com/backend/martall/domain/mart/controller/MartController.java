@@ -1,15 +1,17 @@
-package com.backend.martall.domain.mart.controller;
+    package com.backend.martall.domain.mart.controller;
 
-import java.util.List;
-import com.backend.martall.domain.mart.dto.MartRequestDto;
-import com.backend.martall.domain.mart.dto.MartResponseDto;
-import com.backend.martall.domain.mart.service.MartService;
-import com.backend.martall.global.dto.JsonResponse;
-import com.backend.martall.domain.user.jwt.JwtTokenProvider;
-import com.backend.martall.global.exception.ResponseStatus;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+    import java.util.List;
+
+    import com.backend.martall.domain.mart.dto.AllMartResponseDto;
+    import com.backend.martall.domain.mart.dto.MartRequestDto;
+    import com.backend.martall.domain.mart.dto.MartResponseDto;
+    import com.backend.martall.domain.mart.service.MartService;
+    import com.backend.martall.global.dto.JsonResponse;
+    import com.backend.martall.domain.user.jwt.JwtTokenProvider;
+    import com.backend.martall.global.exception.ResponseStatus;
+    import lombok.RequiredArgsConstructor;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.*;
 
 
 
@@ -86,39 +88,43 @@ import org.springframework.web.bind.annotation.*;
 
         // 마트 검색
         @GetMapping("/search")
-        public ResponseEntity<List<MartResponseDto>> searchMarts(@RequestParam String keyword) {
+        public ResponseEntity<JsonResponse> searchMarts(@RequestParam String keyword) {
             Long userIdx = jwtTokenProvider.resolveToken();
             List<MartResponseDto> responseDtos = martService.searchMarts(keyword, userIdx);
-            return ResponseEntity.ok(responseDtos);
+            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
         }
 
         // 마트 상세 정보 조회
         @GetMapping("/{shopId}/detail")
-        public ResponseEntity<MartResponseDto> getMartDetail(@PathVariable Long shopId) {
+        public ResponseEntity<JsonResponse> getMartDetail(@PathVariable Long shopId) {
             MartResponseDto responseDto = martService.getMartDetail(shopId);
-            return ResponseEntity.ok(responseDto);
+            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDto));
         }
 
 
 
-        //마트 검색 by filter
-        @GetMapping("/search/filter")
-        public ResponseEntity<List<MartResponseDto>> searchMartsWithFilters(
-                @RequestParam(required = false) String category,
-                @RequestParam(required = false) Double rating) {
-            List<MartResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(category, rating);
-            return ResponseEntity.ok(responseDtos);
-        }
+    //        //마트 검색 by filter
+    //        @GetMapping("/search/filter")
+    //        public ResponseEntity<JsonResponse> searchMartsWithFilters(
+    //                @RequestParam(required = false) String tag,
+    //                @RequestParam Integer minBookmark,
+    //                @RequestParam Integer maxBookmark,
+    //                @RequestParam Integer minLike,
+    //                @RequestParam Integer maxLike,
+    //                @RequestParam(required = false) String sort) {
+    //            Long userIdx = jwtTokenProvider.resolveToken();
+    //            List<MartResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
+    //            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
+    //        }
 
         //전체조회
         @GetMapping("/all")
-        public ResponseEntity<JsonResponse<List<MartResponseDto>>> getAllMarts() {
+        public ResponseEntity<JsonResponse<List<AllMartResponseDto>>> getAllMarts() {
             try {
-                List<MartResponseDto> marts = martService.findAllMarts();
+                List<AllMartResponseDto> marts = martService.findAllMarts();
                 return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
             } catch (Exception e) {
                 return ResponseEntity.badRequest().body(new JsonResponse<>(ResponseStatus.SERVER_ERROR, null));
             }
         }
     }
-
