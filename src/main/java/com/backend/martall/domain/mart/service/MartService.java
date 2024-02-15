@@ -26,6 +26,7 @@ public class MartService {
     private final MartCategoryRepository martCategoryRepository;
     private final MartBookmarkRepository martBookmarkRepository;
 
+
     public MartService(MartRepository martRepository, UserRepository userRepository, MartCategoryRepository martCategoryRepository, MartBookmarkRepository martBookmarkRepository) {
         this.martRepository = martRepository;
         this.userRepository = userRepository;
@@ -119,9 +120,16 @@ public class MartService {
     }
 
     public List<MartResponseDto> searchMartsByCategoryAndRating(String category, Double rating) {
-        List<MartShop> martShops = martRepository.findByCategoryName(category); //rating 구현 실패/.............
+        List<MartShop> martShops = martRepository.findByCategoryName(category);
         return martShops.stream()
                 .map(martShop -> MartResponseDto.from(martShop, null, martBookmarkRepository, userRepository))
                 .collect(Collectors.toList());
     }
+    public List<MartResponseDto> findAllMarts() {
+        return martRepository.findAll().stream()
+                .map(MartResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 }
+
+

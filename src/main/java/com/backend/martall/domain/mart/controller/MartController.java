@@ -110,6 +110,15 @@ import org.springframework.web.bind.annotation.*;
             return ResponseEntity.ok(responseDtos);
         }
 
+        //전체조회
+        @GetMapping("/all")
+        public ResponseEntity<JsonResponse<List<MartResponseDto>>> getAllMarts() {
+            try {
+                List<MartResponseDto> marts = martService.findAllMarts();
+                return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(new JsonResponse<>(ResponseStatus.SERVER_ERROR, null));
+            }
+        }
     }
-
 
