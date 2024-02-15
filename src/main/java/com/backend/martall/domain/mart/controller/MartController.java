@@ -1,6 +1,8 @@
 package com.backend.martall.domain.mart.controller;
 
 import java.util.List;
+
+import com.backend.martall.domain.mart.dto.MartFilterResponseDto;
 import com.backend.martall.domain.mart.dto.MartRequestDto;
 import com.backend.martall.domain.mart.dto.MartResponseDto;
 import com.backend.martall.domain.mart.service.MartService;
@@ -101,19 +103,19 @@ import org.springframework.web.bind.annotation.*;
 
 
 
-//        //마트 검색 by filter
-//        @GetMapping("/search/filter")
-//        public ResponseEntity<JsonResponse> searchMartsWithFilters(
-//                @RequestParam(required = false) String tag,
-//                @RequestParam Integer minBookmark,
-//                @RequestParam Integer maxBookmark,
-//                @RequestParam Integer minLike,
-//                @RequestParam Integer maxLike,
-//                @RequestParam(required = false) String sort) {
-//            Long userIdx = jwtTokenProvider.resolveToken();
-//            List<MartResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
-//            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
-//        }
+        //마트 검색 by filter
+        @GetMapping("/search/filter")
+        public ResponseEntity<JsonResponse> searchMartsWithFilters(
+                @RequestParam(defaultValue = "전체") String tag,
+                @RequestParam(required = false) Integer minBookmark,
+                @RequestParam(required = false) Integer maxBookmark,
+                @RequestParam(required = false) Integer minLike,
+                @RequestParam(required = false) Integer maxLike,
+                @RequestParam(defaultValue = "기본") String sort) {
+            Long userIdx = jwtTokenProvider.resolveToken();
+            List<MartFilterResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
+            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
+        }
 
         //전체조회
 //        @GetMapping("/all")

@@ -1,5 +1,8 @@
 package com.backend.martall.domain.mart.service;
 
+import com.backend.martall.domain.itemlike.service.ItemLikeService;
+import com.backend.martall.domain.mart.dto.MartFilterResponseDto;
+import com.backend.martall.domain.mart.entity.MartTag;
 import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.mart.entity.MartCategory;
 import com.backend.martall.domain.mart.entity.MartBookmark;
@@ -25,13 +28,14 @@ public class MartService {
     private final UserRepository userRepository;
     private final MartCategoryRepository martCategoryRepository;
     private final MartBookmarkRepository martBookmarkRepository;
+    private final ItemLikeService itemLikeService;
 
-
-    public MartService(MartRepository martRepository, UserRepository userRepository, MartCategoryRepository martCategoryRepository, MartBookmarkRepository martBookmarkRepository) {
+    public MartService(MartRepository martRepository, UserRepository userRepository, MartCategoryRepository martCategoryRepository, MartBookmarkRepository martBookmarkRepository, ItemLikeService itemLikeService) {
         this.martRepository = martRepository;
         this.userRepository = userRepository;
         this.martCategoryRepository = martCategoryRepository;
         this.martBookmarkRepository = martBookmarkRepository;
+        this.itemLikeService = itemLikeService;
     }
 
     // 마트샵 생성
@@ -119,14 +123,53 @@ public class MartService {
                 .collect(Collectors.toList());
     }
 
-//    public List<MartResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
-//
-//
-//        List<MartShop> martShops = martRepository.findByCategoryName(category);
-//        return martShops.stream()
-//                .map(martShop -> MartResponseDto.from(martShop, null, martBookmarkRepository, userRepository))
-//                .collect(Collectors.toList());
-//    }
+    // 카테고리 지수 검색
+    public List<MartFilterResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        // 존재하지 않는 태그면 예외처리
+        if (!MartTag.existByName(tag)) {
+            throw new BadRequestException(ResponseStatus.MART_TAG_WRONG);
+        }
+
+        List<MartShop> martShopList;
+        if (sort.equals("기본")) {
+            martShopList = martRepository.searchByFilter(tag, minBookmark, maxBookmark, minLike, maxLike);
+        } else if (sort.equals("최신")) {
+            martShopList = martRepository.searchByFilterCreatedAtDesc(tag, minBookmark, maxBookmark, minLike, maxLike);
+        } else if (sort.equals("단골")) {
+            martShopList = martRepository.searchByFilterBookmarkDesc(tag, minBookmark, maxBookmark, minLike, maxLike);
+        } else if (sort.equals("찜")) {
+            martShopList = martRepository.searchByFilterLikeDesc(tag, minBookmark, maxBookmark, minLike, maxLike);
+        } else {
+            throw new BadRequestException(ResponseStatus.MART_SORT_WRONG);
+        }
+
+        List<MartFilterResponseDto> martFilterResponseDtoList = martShopList.stream()
+                .map(martShop -> {
+                    MartFilterResponseDto martFilterResponseDto = MartFilterResponseDto.of(martShop);
+
+                    // 카테고리 채우기
+                    List<String> categoryList = martShop.getMartCategories().stream()
+                            .map(martCategory -> martCategory.getCategoryName())
+                            .collect(Collectors.toList());
+                    martFilterResponseDto.setCategories(categoryList);
+
+                    martFilterResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
+
+                    martFilterResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
+
+                    // 아이템 리스트 채우기
+
+                    return martFilterResponseDto;
+
+                })
+                .collect(Collectors.toList());
+
+        return martFilterResponseDtoList;
+    }
+
+
 //    public List<MartResponseDto> findAllMarts() {
 //        return martRepository.findAll().stream()
 //                .map(MartResponseDto::fromEntity)
