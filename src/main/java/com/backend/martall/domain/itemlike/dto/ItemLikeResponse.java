@@ -14,4 +14,5 @@ public class ItemLikeResponse {
     private int price;
     private Long martShopId;
     private String martName;
+    private boolean like;
 }

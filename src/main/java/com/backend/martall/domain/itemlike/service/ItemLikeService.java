@@ -57,6 +57,7 @@ public class ItemLikeService {
                             // 마트 정보에서 불러오기
                             .martShopId(martShop.getMartShopId())
                             .martName(martShop.getName())
+                            .like(checkItemLike(item, user))
                             .build();
                     return itemLikeResponse;
                 })
