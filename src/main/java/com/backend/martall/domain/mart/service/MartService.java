@@ -149,7 +149,7 @@ public class MartService {
             int totalLikes = itemLikeService.countItemLikeByMart(martShop); // 각 마트별 상품의 총 찜 수 계산
             dto.setTotalLikes(totalLikes);
             boolean isFollowed = martBookmarkRepository.existsByUserAndMartShop(user, martShop); // 단골 여부 확인
-            dto.setIsFollowed(isFollowed);
+           // dto.setIsFollowed(isFollowed); -setIsFollowed왜 인식못함
             return dto;
         }).collect(Collectors.toList());
     }
