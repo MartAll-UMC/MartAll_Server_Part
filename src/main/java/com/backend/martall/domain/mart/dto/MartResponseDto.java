@@ -58,7 +58,7 @@ public class MartResponseDto {
         // 단골 여부 설정
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         boolean isFavorite = martBookmarkRepository.existsByUserAndMartShop(user, martShop);
-        /*dto.setIsFavorite(isFavorite);*/
+
 
         return dto;
     }

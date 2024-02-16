@@ -3,6 +3,7 @@
     import java.util.List;
 
     import com.backend.martall.domain.mart.dto.AllMartResponseDto;
+    import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
     import com.backend.martall.domain.mart.dto.MartRequestDto;
     import com.backend.martall.domain.mart.dto.MartResponseDto;
     import com.backend.martall.domain.mart.service.MartService;
@@ -77,7 +78,7 @@
         public ResponseEntity<JsonResponse> getFollowedMarts() {
             try {
                 Long userIdx = jwtTokenProvider.resolveToken();
-                List<MartResponseDto> followedMarts = martService.getFollowedMarts(userIdx);
+                List<FollowedMartResponseDto> followedMarts = martService.getFollowedMarts(userIdx);
                 return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, followedMarts));
             } catch (Exception e) {
                 return ResponseEntity.ok(new JsonResponse(ResponseStatus.SERVER_ERROR, e.getMessage()));
@@ -103,6 +104,34 @@
 
 
 
+
+
+        //전체조회
+        @GetMapping("/all")
+        public ResponseEntity<JsonResponse<List<AllMartResponseDto>>> getAllMarts() {
+            try {
+                List<AllMartResponseDto> marts = martService.findAllMarts();
+                return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(new JsonResponse<>(ResponseStatus.SERVER_ERROR, null));
+            }
+        }
+
+    }
+    //        //마트 검색 by filter
+//        @GetMapping("/search/filter")
+//        public ResponseEntity<JsonResponse> searchMartsWithFilters(
+//                @RequestParam(required = false) String tag,
+//                @RequestParam Integer minBookmark,
+//                @RequestParam Integer maxBookmark,
+//                @RequestParam Integer minLike,
+//                @RequestParam Integer maxLike,
+//                @RequestParam(required = false) String sort) {
+//            Long userIdx = jwtTokenProvider.resolveToken();
+//            List<MartResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
+//            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
+//        }
+
     //        //마트 검색 by filter
     //        @GetMapping("/search/filter")
     //        public ResponseEntity<JsonResponse> searchMartsWithFilters(
@@ -116,15 +145,3 @@
     //            List<MartResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
     //            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
     //        }
-
-        //전체조회
-        @GetMapping("/all")
-        public ResponseEntity<JsonResponse<List<AllMartResponseDto>>> getAllMarts() {
-            try {
-                List<AllMartResponseDto> marts = martService.findAllMarts();
-                return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().body(new JsonResponse<>(ResponseStatus.SERVER_ERROR, null));
-            }
-        }
-    }

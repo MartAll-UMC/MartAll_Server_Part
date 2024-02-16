@@ -22,8 +22,13 @@ import java.util.List;
         private int visitorsCount;
         private String imageUrl;
         private List<ItemDto> items;
+        private int totalLikes;
+        private boolean isFollowed;
 
-        @Getter
+
+
+
+    @Getter
     @Setter
     @NoArgsConstructor
     public static class ItemDto {
@@ -34,4 +39,6 @@ import java.util.List;
         private String favoriteLink;
         private String detailLink;
     }
-}
+
+
+    }
