@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MartFilterResponseDto {
+public class MartSearchResponseDto {
     private Long martId;
     private String name;
     private String location;
@@ -21,8 +21,8 @@ public class MartFilterResponseDto {
     private List<ItemMartNewResponseDto> items;
     private boolean bookmarkYn;
 
-    public static MartFilterResponseDto of(MartShop martShop) {
-        return MartFilterResponseDto.builder()
+    public static MartSearchResponseDto of(MartShop martShop) {
+        return MartSearchResponseDto.builder()
                 .martId(martShop.getMartShopId())
                 .name(martShop.getName())
                 .location(martShop.getAddress())

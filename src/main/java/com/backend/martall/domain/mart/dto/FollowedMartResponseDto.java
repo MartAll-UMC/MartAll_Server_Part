@@ -14,27 +14,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class FollowedMartResponseDto {
     private Long bookmarkId;
-    private Long martshopId;
-    private String martname;
-    private List<String> martcategory;
-    private int visitorCount;
-    private int salesIndex;
-    private boolean isfollowed = true;
+    private Long martShopId;
+    private String martName;
+    private List<String> martCategory;
+    private int likeCount;
+    private int bookmarkCount;
+    private boolean isFollowed = true;
 
-
-    public static FollowedMartResponseDto from(MartBookmark bookmark) {
-        FollowedMartResponseDto dto = new FollowedMartResponseDto();
-        MartShop martShop = bookmark.getMartShop();
-
-        dto.setBookmarkId(bookmark.getBookmarkId());
-        dto.setMartshopId(martShop.getMartShopId());
-        dto.setMartname(martShop.getName());
-        dto.setVisitorCount(martShop.getVisitor());
-        //dto.setSalesIndex(calculateSalesIndex(martShop));
-        dto.setMartcategory(martShop.getMartCategories().stream()
-                .map(MartCategory::getCategoryName)
-                .collect(Collectors.toList()));
-
-        return dto;
-    }
 }
