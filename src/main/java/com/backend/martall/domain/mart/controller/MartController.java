@@ -67,7 +67,7 @@ public class MartController {
     @GetMapping("/search")
     public ResponseEntity<JsonResponse> searchMarts(@RequestParam String keyword) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<MartResponseDto> responseDtos = martService.searchMarts(keyword, userIdx);
+        List<MartSearchResponseDto> responseDtos = martService.searchMarts(keyword, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
     }
 
@@ -89,14 +89,14 @@ public class MartController {
             @RequestParam(required = false) Integer maxLike,
             @RequestParam(defaultValue = "기본") String sort) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<MartSearchResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
+        List<MartFilterResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
     }
 
     @GetMapping("/all")
     public ResponseEntity<JsonResponse> getAllMarts() {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<MartSearchResponseDto> marts = martService.findAllMarts(userIdx);
+        List<MartFilterResponseDto> marts = martService.findAllMarts(userIdx);
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
     }
 }
