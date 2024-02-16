@@ -2,15 +2,11 @@ package com.backend.martall.domain.mart.service;
 
 import com.backend.martall.domain.item.service.ItemService;
 import com.backend.martall.domain.itemlike.service.ItemLikeService;
-import com.backend.martall.domain.mart.dto.MartSearchResponseDto;
+import com.backend.martall.domain.mart.dto.*;
 import com.backend.martall.domain.mart.entity.MartTag;
 import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.mart.entity.MartBookmark;
-import com.backend.martall.domain.mart.dto.MartRequestDto;
-import com.backend.martall.domain.mart.dto.MartResponseDto;
-import com.backend.martall.domain.mart.dto.AllMartResponseDto;
 import com.backend.martall.domain.mart.entity.MartShop;
-import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
 import com.backend.martall.domain.mart.repository.MartRepository;
 import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.domain.mart.repository.MartCategoryRepository;
@@ -40,11 +36,10 @@ public class MartService {
 
     // 마트샵 생성
     @Transactional
-    public MartResponseDto createMart(MartRequestDto requestDto, Long userId) {
+    public void createMart(MartRequestDto requestDto) {
         try {
             MartShop martShop = requestDto.toEntity();
-            MartShop savedMartShop = martRepository.save(martShop);
-            return MartResponseDto.from(savedMartShop, userId, martBookmarkRepository, userRepository);
+            martRepository.save(martShop);
         } catch (Exception e) {
             throw new BadRequestException(ResponseStatus.MART_CREATE_FAIL);
         }
@@ -78,10 +73,23 @@ public class MartService {
     }
 
     // shopId로 마트샵의 상세정보 조회
-    public MartResponseDto getMartDetail(Long shopId) {
+    public MartDetailResponseDto getMartDetail(Long shopId) {
         MartShop martShop = martRepository.findById(shopId)
                 .orElseThrow(() -> new BadRequestException(ResponseStatus.MART_DETAIL_FAIL));
-        return MartResponseDto.from(martShop, null, martBookmarkRepository, userRepository);
+        MartDetailResponseDto martDetailResponseDto = MartDetailResponseDto.builder()
+                .martshopId(martShop.getMartShopId())
+                .name(martShop.getName())
+                .ownerName(martShop.getManagerName())
+                .shopnumber(martShop.getShopNumber())
+                .email("martall@gmail.com")
+                .phonenumber("010-xxxx-xxxx")
+                .operatingHours(martShop.getOperatingTime())
+                .pickuptime(martShop.getPickupTime())
+                .payment("카드결제")
+                .address(martShop.getAddress())
+                .kakaoTalkLink(martShop.getLinkKakao())
+                .build();
+        return martDetailResponseDto;
     }
 
     // 단골 마트 추가
@@ -122,7 +130,6 @@ public class MartService {
             dto.setMartName(martShop.getName());
             dto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
             dto.setBookmarkCount(martShop.getMartBookmarks().size());
-            // dto.setSalesIndex(calculateSalesIndex(martShop)); 판매지수 -
             dto.setMartCategory(martShop.getMartCategories().stream()
                     .map(MartCategory::getCategoryName)
                     .collect(Collectors.toList()));

@@ -3,9 +3,7 @@ package com.backend.martall.domain.mart.controller;
 
 import java.util.List;
 
-import com.backend.martall.domain.mart.dto.MartSearchResponseDto;
-import com.backend.martall.domain.mart.dto.MartRequestDto;
-import com.backend.martall.domain.mart.dto.MartResponseDto;
+import com.backend.martall.domain.mart.dto.*;
 import com.backend.martall.domain.mart.service.MartService;
 import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
@@ -13,9 +11,6 @@ import com.backend.martall.global.exception.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.backend.martall.domain.mart.dto.AllMartResponseDto;
-import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
 
 
 @RestController
@@ -29,25 +24,16 @@ public class MartController {
     // 마트 생성
     @PostMapping
     public ResponseEntity<JsonResponse> createMart(@RequestBody MartRequestDto requestDto) {
-        try {
-            Long userIdx = jwtTokenProvider.resolveToken();
-            MartResponseDto responseDto = martService.createMart(requestDto, userIdx);
-            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDto));
-        } catch (Exception e) {
-            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SERVER_ERROR, e.getMessage()));
-        }
+        martService.createMart(requestDto);
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
     // 마트 정보 업데이트
     @PatchMapping("/{shopId}")
     public ResponseEntity<JsonResponse> updateMartShop(@PathVariable Long shopId, @RequestBody MartRequestDto requestDto) {
-        try {
-            Long userIdx = jwtTokenProvider.resolveToken();
-            MartResponseDto responseDto = martService.updateMart(shopId, requestDto, userIdx);
-            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDto));
-        } catch (Exception e) {
-            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SERVER_ERROR, e.getMessage()));
-        }
+        Long userIdx = jwtTokenProvider.resolveToken();
+        MartResponseDto responseDto = martService.updateMart(shopId, requestDto, userIdx);
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDto));
     }
 
     // 단골 마트 팔로우
@@ -63,11 +49,9 @@ public class MartController {
     // 단골 마트 팔로우 취소
     @DeleteMapping("/{shopId}/unfollow")
     public ResponseEntity<JsonResponse> unfollowMart(@PathVariable Long shopId) {
-
         Long userIdx = jwtTokenProvider.resolveToken();
         martService.unfollowMart(userIdx, shopId);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, "단골 마트에서 제거되었습니다."));
-
     }
 
     // 단골 마트 내역 조회
@@ -90,8 +74,8 @@ public class MartController {
     // 마트 상세 정보 조회
     @GetMapping("/{shopId}/detail")
     public ResponseEntity<JsonResponse> getMartDetail(@PathVariable Long shopId) {
-        MartResponseDto responseDto = martService.getMartDetail(shopId);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDto));
+        MartDetailResponseDto martDetailResponseDto = martService.getMartDetail(shopId);
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martDetailResponseDto));
     }
 
 

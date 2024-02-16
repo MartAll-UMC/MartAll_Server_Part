@@ -37,11 +37,10 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
             "ORDER BY SIZE(item.itemLikeList) DESC")
     List<Item> searchByCategoryAndPriceLikeDesc(ItemCategory itemCategory, Integer minPrice, Integer maxPrice);
 
-    Optional<Item> findByMartShopAndItemId(MartShop martShop, int itemId);
 
     Optional<Item> findByItemId(int itemId);
 
     List<Item> findTop8ByOrderByCreatedAtDesc(); //"createdAt" 컬럼을 기준으로 내림차순으로 정렬된 최대 8개의 항목을 가져옴
 
-    List<Item> findTop4ByMartShopOrderByCreatedAtDesc(MartShop martShop);
+    List<Item> findByMartShopOrderByCreatedAtDesc(MartShop martShop);
 }

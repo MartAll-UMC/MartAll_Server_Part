@@ -146,7 +146,7 @@ public class ItemService {
     }
 
     public List<ItemMartNewResponseDto> getMartNewItem(MartShop martShop, User user) {
-        List<Item> itemList = itemRepository.findTop4ByMartShopOrderByCreatedAtDesc(martShop);
+        List<Item> itemList = itemRepository.findByMartShopOrderByCreatedAtDesc(martShop);
 
         List<ItemMartNewResponseDto> itemMartNewResponseDtoList = itemList.stream()
                 .map(item -> {
