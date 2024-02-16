@@ -1,5 +1,6 @@
 package com.backend.martall.domain.mart.service;
 
+import com.backend.martall.domain.item.service.ItemService;
 import com.backend.martall.domain.itemlike.service.ItemLikeService;
 import com.backend.martall.domain.mart.dto.MartFilterResponseDto;
 import com.backend.martall.domain.mart.entity.MartTag;
@@ -15,6 +16,7 @@ import com.backend.martall.domain.mart.repository.MartCategoryRepository;
 import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import com.backend.martall.global.exception.ResponseStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class MartService {
 
     private final MartRepository martRepository;
@@ -29,14 +32,8 @@ public class MartService {
     private final MartCategoryRepository martCategoryRepository;
     private final MartBookmarkRepository martBookmarkRepository;
     private final ItemLikeService itemLikeService;
+    private final ItemService itemService;
 
-    public MartService(MartRepository martRepository, UserRepository userRepository, MartCategoryRepository martCategoryRepository, MartBookmarkRepository martBookmarkRepository, ItemLikeService itemLikeService) {
-        this.martRepository = martRepository;
-        this.userRepository = userRepository;
-        this.martCategoryRepository = martCategoryRepository;
-        this.martBookmarkRepository = martBookmarkRepository;
-        this.itemLikeService = itemLikeService;
-    }
 
     // 마트샵 생성
     @Transactional
@@ -160,7 +157,7 @@ public class MartService {
                     martFilterResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
 
                     // 아이템 리스트 채우기
-
+                    martFilterResponseDto.setItems(itemService.getMartNewItem(martShop, user));
                     return martFilterResponseDto;
 
                 })

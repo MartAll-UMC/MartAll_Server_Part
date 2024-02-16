@@ -1,5 +1,6 @@
 package com.backend.martall.domain.mart.dto;
 
+import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
 import com.backend.martall.domain.mart.entity.MartShop;
 import lombok.*;
 
@@ -17,7 +18,7 @@ public class MartFilterResponseDto {
     private List<String> categories;
     private int followersCount;
     private int likeCount;
-//    private List<> items;  -->  나중에 추가하기
+    private List<ItemMartNewResponseDto> items;
     private boolean bookmarkYn;
 
     public static MartFilterResponseDto of(MartShop martShop) {

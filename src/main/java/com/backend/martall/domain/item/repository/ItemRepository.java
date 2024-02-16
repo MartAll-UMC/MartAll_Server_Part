@@ -42,4 +42,6 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     Optional<Item> findByItemId(int itemId);
 
     List<Item> findTop8ByOrderByCreatedAtDesc(); //"createdAt" 컬럼을 기준으로 내림차순으로 정렬된 최대 8개의 항목을 가져옴
+
+    List<Item> findTop4ByMartShopOrderByCreatedAtDesc(MartShop martShop);
 }
