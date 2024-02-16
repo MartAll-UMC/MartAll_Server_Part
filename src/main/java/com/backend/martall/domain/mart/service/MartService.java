@@ -102,8 +102,8 @@ public class MartService {
             throw new BadRequestException(ResponseStatus.MART_FAVORITE_ALREADY);
         }
         MartBookmark martBookmark = new MartBookmark();
+        martShop.addBookmark(martBookmark);
         martBookmark.setUser(user);
-        martBookmark.setMartShop(martShop);
         martBookmarkRepository.save(martBookmark);
     }
 
@@ -113,6 +113,7 @@ public class MartService {
         User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
         MartShop martShop = martRepository.findById(shopId).orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
         MartBookmark martBookmark = martBookmarkRepository.findByUserAndMartShop(user, martShop).orElseThrow(() -> new BadRequestException(ResponseStatus.MART_FAVORITE_NOT_FOUND));
+        martShop.removeBookmark(martBookmark);
         martBookmarkRepository.delete(martBookmark);
     }
 
