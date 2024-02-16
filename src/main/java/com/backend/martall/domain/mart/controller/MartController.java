@@ -1,4 +1,5 @@
-package com.backend.martall.domain.mart.controller;
+    package com.backend.martall.domain.mart.controller;
+
 
 import java.util.List;
 
@@ -12,6 +13,21 @@ import com.backend.martall.global.exception.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import com.backend.martall.domain.mart.dto.AllMartResponseDto;
+import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
+import com.backend.martall.domain.mart.dto.MartRequestDto;
+import com.backend.martall.domain.mart.dto.MartResponseDto;
+import com.backend.martall.domain.mart.service.MartService;
+import com.backend.martall.global.dto.JsonResponse;
+import com.backend.martall.domain.user.jwt.JwtTokenProvider;
+import com.backend.martall.global.exception.ResponseStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 
 
 
@@ -77,7 +93,7 @@ import org.springframework.web.bind.annotation.*;
         public ResponseEntity<JsonResponse> getFollowedMarts() {
             try {
                 Long userIdx = jwtTokenProvider.resolveToken();
-                List<MartResponseDto> followedMarts = martService.getFollowedMarts(userIdx);
+                List<FollowedMartResponseDto> followedMarts = martService.getFollowedMarts(userIdx);
                 return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, followedMarts));
             } catch (Exception e) {
                 return ResponseEntity.ok(new JsonResponse(ResponseStatus.SERVER_ERROR, e.getMessage()));
@@ -103,6 +119,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 
+
         //마트 검색 by filter
         @GetMapping("/search/filter")
         public ResponseEntity<JsonResponse> searchMartsWithFilters(
@@ -116,16 +133,4 @@ import org.springframework.web.bind.annotation.*;
             List<MartFilterResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
             return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
         }
-
-        //전체조회
-//        @GetMapping("/all")
-//        public ResponseEntity<JsonResponse<List<MartResponseDto>>> getAllMarts() {
-//            try {
-//                List<MartResponseDto> marts = martService.findAllMarts();
-//                return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
-//            } catch (Exception e) {
-//                return ResponseEntity.badRequest().body(new JsonResponse<>(ResponseStatus.SERVER_ERROR, null));
-//            }
-//        }
-    }
 
