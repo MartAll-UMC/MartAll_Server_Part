@@ -1,18 +1,33 @@
     package com.backend.martall.domain.mart.controller;
 
-    import java.util.List;
 
-    import com.backend.martall.domain.mart.dto.AllMartResponseDto;
-    import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
-    import com.backend.martall.domain.mart.dto.MartRequestDto;
-    import com.backend.martall.domain.mart.dto.MartResponseDto;
-    import com.backend.martall.domain.mart.service.MartService;
-    import com.backend.martall.global.dto.JsonResponse;
-    import com.backend.martall.domain.user.jwt.JwtTokenProvider;
-    import com.backend.martall.global.exception.ResponseStatus;
-    import lombok.RequiredArgsConstructor;
-    import org.springframework.http.ResponseEntity;
-    import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+import com.backend.martall.domain.mart.dto.MartFilterResponseDto;
+import com.backend.martall.domain.mart.dto.MartRequestDto;
+import com.backend.martall.domain.mart.dto.MartResponseDto;
+import com.backend.martall.domain.mart.service.MartService;
+import com.backend.martall.global.dto.JsonResponse;
+import com.backend.martall.domain.user.jwt.JwtTokenProvider;
+import com.backend.martall.global.exception.ResponseStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import com.backend.martall.domain.mart.dto.AllMartResponseDto;
+import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
+import com.backend.martall.domain.mart.dto.MartRequestDto;
+import com.backend.martall.domain.mart.dto.MartResponseDto;
+import com.backend.martall.domain.mart.service.MartService;
+import com.backend.martall.global.dto.JsonResponse;
+import com.backend.martall.domain.user.jwt.JwtTokenProvider;
+import com.backend.martall.global.exception.ResponseStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 
 
 
@@ -105,43 +120,17 @@
 
 
 
-
-        //전체조회
-        @GetMapping("/all")
-        public ResponseEntity<JsonResponse<List<AllMartResponseDto>>> getAllMarts() {
-            try {
-                List<AllMartResponseDto> marts = martService.findAllMarts();
-                return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().body(new JsonResponse<>(ResponseStatus.SERVER_ERROR, null));
-            }
+        //마트 검색 by filter
+        @GetMapping("/search/filter")
+        public ResponseEntity<JsonResponse> searchMartsWithFilters(
+                @RequestParam(defaultValue = "전체") String tag,
+                @RequestParam(required = false) Integer minBookmark,
+                @RequestParam(required = false) Integer maxBookmark,
+                @RequestParam(required = false) Integer minLike,
+                @RequestParam(required = false) Integer maxLike,
+                @RequestParam(defaultValue = "기본") String sort) {
+            Long userIdx = jwtTokenProvider.resolveToken();
+            List<MartFilterResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
+            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
         }
 
-    }
-    //        //마트 검색 by filter
-//        @GetMapping("/search/filter")
-//        public ResponseEntity<JsonResponse> searchMartsWithFilters(
-//                @RequestParam(required = false) String tag,
-//                @RequestParam Integer minBookmark,
-//                @RequestParam Integer maxBookmark,
-//                @RequestParam Integer minLike,
-//                @RequestParam Integer maxLike,
-//                @RequestParam(required = false) String sort) {
-//            Long userIdx = jwtTokenProvider.resolveToken();
-//            List<MartResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
-//            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
-//        }
-
-    //        //마트 검색 by filter
-    //        @GetMapping("/search/filter")
-    //        public ResponseEntity<JsonResponse> searchMartsWithFilters(
-    //                @RequestParam(required = false) String tag,
-    //                @RequestParam Integer minBookmark,
-    //                @RequestParam Integer maxBookmark,
-    //                @RequestParam Integer minLike,
-    //                @RequestParam Integer maxLike,
-    //                @RequestParam(required = false) String sort) {
-    //            Long userIdx = jwtTokenProvider.resolveToken();
-    //            List<MartResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
-    //            return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
-    //        }

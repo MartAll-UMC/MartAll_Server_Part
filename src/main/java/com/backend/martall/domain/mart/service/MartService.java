@@ -1,5 +1,9 @@
 package com.backend.martall.domain.mart.service;
 
+import com.backend.martall.domain.item.service.ItemService;
+import com.backend.martall.domain.itemlike.service.ItemLikeService;
+import com.backend.martall.domain.mart.dto.MartFilterResponseDto;
+import com.backend.martall.domain.mart.entity.MartTag;
 import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.mart.entity.MartBookmark;
 import com.backend.martall.domain.mart.dto.MartRequestDto;
@@ -13,6 +17,7 @@ import com.backend.martall.domain.mart.repository.MartCategoryRepository;
 import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import com.backend.martall.global.exception.ResponseStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.backend.martall.domain.mart.entity.MartCategory;
@@ -22,6 +27,7 @@ import java.util.stream.Collectors;
 import com.backend.martall.domain.itemlike.service.ItemLikeService;
 
 @Service
+@RequiredArgsConstructor
 public class MartService {
 
     private final MartRepository martRepository;
@@ -30,14 +36,9 @@ public class MartService {
     private final MartBookmarkRepository martBookmarkRepository;
     private final ItemLikeService itemLikeService;
 
+    private final ItemService itemService;
 
-    public MartService(MartRepository martRepository, UserRepository userRepository, MartCategoryRepository martCategoryRepository, MartBookmarkRepository martBookmarkRepository, ItemLikeService itemLikeService) {
-        this.martRepository = martRepository;
-        this.userRepository = userRepository;
-        this.martCategoryRepository = martCategoryRepository;
-        this.martBookmarkRepository = martBookmarkRepository;
-        this.itemLikeService = itemLikeService;
-    }
+
 
     // 마트샵 생성
     @Transactional
@@ -140,6 +141,55 @@ public class MartService {
                 .collect(Collectors.toList());
     }
 
+
+    // 카테고리 지수 검색
+    public List<MartFilterResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        // 존재하지 않는 태그면 예외처리
+        if (!MartTag.existByName(tag)) {
+            throw new BadRequestException(ResponseStatus.MART_TAG_WRONG);
+        }
+
+        List<MartShop> martShopList;
+        if (sort.equals("기본")) {
+            martShopList = martRepository.searchByFilter(tag, minBookmark, maxBookmark, minLike, maxLike);
+        } else if (sort.equals("최신")) {
+            martShopList = martRepository.searchByFilterCreatedAtDesc(tag, minBookmark, maxBookmark, minLike, maxLike);
+        } else if (sort.equals("단골")) {
+            martShopList = martRepository.searchByFilterBookmarkDesc(tag, minBookmark, maxBookmark, minLike, maxLike);
+        } else if (sort.equals("찜")) {
+            martShopList = martRepository.searchByFilterLikeDesc(tag, minBookmark, maxBookmark, minLike, maxLike);
+        } else {
+            throw new BadRequestException(ResponseStatus.MART_SORT_WRONG);
+        }
+
+        List<MartFilterResponseDto> martFilterResponseDtoList = martShopList.stream()
+                .map(martShop -> {
+                    MartFilterResponseDto martFilterResponseDto = MartFilterResponseDto.of(martShop);
+
+                    // 카테고리 채우기
+                    List<String> categoryList = martShop.getMartCategories().stream()
+                            .map(martCategory -> martCategory.getCategoryName())
+                            .collect(Collectors.toList());
+                    martFilterResponseDto.setCategories(categoryList);
+
+                    martFilterResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
+
+                    martFilterResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
+
+                    // 아이템 리스트 채우기
+                    martFilterResponseDto.setItems(itemService.getMartNewItem(martShop, user));
+                    return martFilterResponseDto;
+
+                })
+                .collect(Collectors.toList());
+
+        return martFilterResponseDtoList;
+    }
+
+
+
     //mart 전체 조회
     public List<AllMartResponseDto> findAllMarts(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
@@ -162,14 +212,6 @@ public class MartService {
         return dto;
     }
     }
-//    public List<MartResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
-//
-//
-//        List<MartShop> martShops = martRepository.findByCategoryName(category);
-//        return martShops.stream()
-//                .map(martShop -> MartResponseDto.from(martShop, null, martBookmarkRepository, userRepository))
-//                .collect(Collectors.toList());
-//    }
 
 
 
