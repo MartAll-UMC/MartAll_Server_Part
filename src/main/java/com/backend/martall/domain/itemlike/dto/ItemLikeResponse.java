@@ -15,8 +15,5 @@ public class ItemLikeResponse {
     private Long martShopId;
     private String martName;
     private boolean like;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 9b9cd89bf097a8affb04299ec4365dc28f94e39b
+
