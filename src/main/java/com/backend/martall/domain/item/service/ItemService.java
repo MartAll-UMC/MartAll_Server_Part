@@ -145,6 +145,20 @@ public class ItemService {
         return itemCategoryResponseDtoList;
     }
 
+    public List<ItemMartNewResponseDto> getMartNewItem(MartShop martShop, User user) {
+        List<Item> itemList = itemRepository.findByMartShopOrderByCreatedAtDesc(martShop);
+
+        List<ItemMartNewResponseDto> itemMartNewResponseDtoList = itemList.stream()
+                .map(item -> {
+                    ItemMartNewResponseDto itemMartNewResponseDto = ItemMartNewResponseDto.of(item);
+                    itemMartNewResponseDto.setLikeYn(itemLikeService.checkItemLike(item, user));
+                    return itemMartNewResponseDto;
+                })
+                .collect(Collectors.toList());
+
+        return itemMartNewResponseDtoList;
+    }
+
     // 테스트 코드
     @Transactional
     public void addItem(ItemAddRequestDto itemAddRequestDto) {

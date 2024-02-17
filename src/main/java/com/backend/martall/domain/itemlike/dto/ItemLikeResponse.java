@@ -15,4 +15,6 @@ public class ItemLikeResponse {
     private Long martShopId;
     private String martName;
     private boolean like;
+
 }
+

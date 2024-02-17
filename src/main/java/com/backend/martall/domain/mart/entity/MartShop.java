@@ -79,12 +79,22 @@ public class MartShop extends BaseTime {
     @Column(name = "latitude", length = 50)
     private String latitude;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mart_category_id")
-    private MartCategory martCategory;
 
     public void addMartCategory(MartCategory martCategory) {
         this.martCategories.add(martCategory);
         martCategory.setMartShop(this);
+    }
+
+    public void removeMartCategory(MartCategory martCategory) {
+        this.martCategories.remove(martCategory);
+    }
+
+    public void addBookmark(MartBookmark martBookmark) {
+        this.martBookmarks.add(martBookmark);
+        martBookmark.setMartShop(this);
+    }
+
+    public void removeBookmark(MartBookmark martBookmark) {
+        this.martBookmarks.remove(martBookmark);
     }
 }

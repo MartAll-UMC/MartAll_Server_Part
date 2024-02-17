@@ -49,6 +49,10 @@ public enum ResponseStatus {
     MART_FILTER_NOT_FOUND(false, 4306, "해당하는 마트를 찾을 수 없습니다."),
     MART_CATEGORY_NOT_FOUND(false, 4307, "해당하는 마트 카테고리를 찾을 수 없습니다."),
     MART_FAVORITE_NOT_FOUND(false, 4308, "단골 취소하려는 마트를 찾을 수 없습니다."),
+    MART_SORT_WRONG(false, 4315, "정렬 요청이 잘못 되었습니다. (전체, 최신, 단골, 찜)" ),
+    MART_TAG_WRONG(false, 4316, "태그가 잘못 되었습니다. 올바른 태그를 입력해주세요."),
+    MART_CATEGORY_NAME_WRONG(false, 4318, "존재하지 않는 태그 이름입니다. 올바른 태그 이름을 입력하세요"),
+
     // 4400 ~ 4499
     // 장바구니 4400 ~
     CART_ITEM_NOT_EXIST(false, 4400, "장바구니에 상품이 존재하지 않습니다."),
