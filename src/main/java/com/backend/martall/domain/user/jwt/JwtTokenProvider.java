@@ -1,5 +1,6 @@
 package com.backend.martall.domain.user.jwt;
 
+import com.backend.martall.domain.user.dto.JwtDto;
 import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.global.exception.GlobalException;
 import com.backend.martall.global.exception.ResponseStatus;
@@ -27,21 +28,37 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createAccessToken(Long userIdx) {
-        return createToken(userIdx);
-    }
+    public JwtDto.JwtDateDto createAccessToken(Long userIdx) {
+        Date now = new Date();
+        Date expireDate = new Date(now.getTime() + (30 * 60 * 1000L)); //30분
 
-    private String createToken(Long userIdx) {
         Claims claims = Jwts.claims();
         claims.put("userIdx", userIdx); //실제 jwt에는 사용자의 idx
 
-        Date now = new Date();
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + (30 * 60 * 1000L))) //30분
+                .setExpiration(expireDate)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
+        return new JwtDto.JwtDateDto(accessToken, expireDate);
+    }
+
+    public JwtDto.JwtDateDto createRefreshToken() {
+        Date now = new Date();
+        Date expireDate = new Date(now.getTime() + (7 * 1440 * 60 * 1000L)); //1440분*7 (일주일)
+
+        Claims claims = Jwts.claims();
+
+        String refreshToken = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expireDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return new JwtDto.JwtDateDto(refreshToken, expireDate);
     }
 
 //    public Authentication getAuthentication(String token) {
