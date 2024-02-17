@@ -25,4 +25,12 @@ public class JwtDto {
         private String refresh_token;
         private Date refresh_expiredDate;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class RefreshJwtDto {
+        private Long id;
+        private String refresh_token;
+    }
 }
