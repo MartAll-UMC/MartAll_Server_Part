@@ -1,5 +1,6 @@
 package com.backend.martall.domain.order.dto;
 
+import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.order.entity.OrderItem;
 import lombok.*;
 
@@ -27,8 +28,12 @@ public class OrderItemResponse {
     public static OrderItemResponse of (OrderItem orderItem) {
         return OrderItemResponse.builder()
                 .orderItemId(orderItem.getOrderItemId())
-                .itemId(orderItem.getItemId())
+                .itemId(orderItem.getItem().getItemId())
+                .categoryName(orderItem.getItem().getCategoryId().getName())
+                .picName(orderItem.getItem().getProfilePhoto())
+                .itemName(orderItem.getItem().getItemName())
                 .count(orderItem.getCount())
+                .price(orderItem.getItem().getPrice())
                 .build();
     }
 

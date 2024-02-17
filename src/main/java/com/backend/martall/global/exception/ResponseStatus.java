@@ -25,21 +25,42 @@ public enum ResponseStatus {
     IMAGE_DELETE_FAIL(false, 4152, "이미지 삭제에 실패했습니다"),
     INVALID_IMAGE_URL(false, 4153, "잘못된 이미지 URL입니다."),
 
+    // 4200 ~ 상품
+    ITEM_DETAIL_ITEMID_FAIL(false, 4200, "해당 상품을 찾을 수 없습니다. 상품 아이디를 확인해주세요."),
+    ITEM_DETAIL_MARTID_FAIL(false, 4201, "해당 마트를 찾을 수 없습니다. 마트 아이디를 확인해주세요."),
+    ITEM_SEARCH_EMPTY(false, 4202, "상품 검색 결과가 없습니다."),
+    ITEM_SEARCH_WORD_EMPTY(false, 4203, "상품 검색어가 비어있습니다."),
+    ITEM_CATEGORY_NAME_WRONG(false, 4204, "검색 카테고리가 올바르지 않습니다."),
+    ITEM_CATEGORY_SORT_WRONG(false, 4205, "정렬 방식을 확인 해주세요."),
+
     // 4220 ~ 상품 찜하기 에러
     ITEMLIKE_ALREADY_LIKE(false, 4220, "이미 찜한 상품입니다."),
-    ITEMLIKE_ALREADY_DISLIKE(false, 4221, "찜이 되어 있는 상품을 찜 취소했습니다."),
+    ITEMLIKE_ALREADY_DISLIKE(false, 4221, "찜이 되어 있지 않은 상품을 찜 취소했습니다."),
     ITEMLIKE_NOT_EXIST(false, 4222, "찜 상품 목록이 존재하지 않습니다."),
+    ITEMLIKE_ITEM_NOT_EXIST(false, 4223, "찜하려는 상품이 존재하지 않는 상품입니다."),
 
+    //4300 ~ 마트
+    MART_NAME_NOT_FOUND(false, 4300, "마트를 찾을 수 없습니다."),
+    MART_ACCESS_DENIED(false, 4301, "마트 접근 권한이 없습니다."),
+    MART_OPERATION_ERROR(false, 4302, "마트 작업 중 오류가 발생했습니다."),
+    MART_FAVORITE_ALREADY(false, 4303, "이미 단골 추가된 마트 입니다."),
+    MART_DETAIL_FAIL(false, 4304, "마트 상세정보를 불러 올 수 없습니다."),
+    MART_CREATE_FAIL(false, 4305, "마트 생성에 실패했습니다."),
+    MART_FILTER_NOT_FOUND(false, 4306, "해당하는 마트를 찾을 수 없습니다."),
+    MART_CATEGORY_NOT_FOUND(false, 4307, "해당하는 마트 카테고리를 찾을 수 없습니다."),
+    MART_FAVORITE_NOT_FOUND(false, 4308, "단골 취소하려는 마트를 찾을 수 없습니다."),
     // 4400 ~ 4499
     // 장바구니 4400 ~
     CART_ITEM_NOT_EXIST(false, 4400, "장바구니에 상품이 존재하지 않습니다."),
     CART_USER_NOT_EQUAL(false, 4401, "장바구니 상품은 관련 회원만 접근 할 수 있습니다."),
+    CART_MART_NOT_EQUAL(false, 4402, "장바구니에는 같은 마트의 상품만 넣을 수 있습니다."),
 
     // 주문 4420 ~
     ORDER_PAYMENT_NOT_EQUAL(false, 4420, "결제 금액이 올바르지 않습니다."),
     ORDER_EXIST_OTHER_ORDER(false, 4421, "다른 주문이 존재합니다."),
     ORDER_NOT_EXIST(false, 4422, "주문이 존재하지 않습니다."),
-    ORDER_CART_EMPTY(false, 4423, "주문하려는 장바구니의 상품이 존재하지 않습니다."),
+    ORDER_CART_EMPTY(false, 4423, "주문하려는 장바구니 상품 목록이 비어있습니다."),
+    ORDER_CARTITEM_NOT_EXIST(false, 4424, "장바구니에 존재하지 않는 상품입니다."),
 
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),

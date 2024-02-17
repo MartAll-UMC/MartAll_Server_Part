@@ -1,6 +1,8 @@
 package com.backend.martall.domain.cart.entity;
 
 import com.backend.martall.domain.cart.dto.CartItemRequest;
+import com.backend.martall.domain.item.entity.Item;
+import com.backend.martall.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,11 +22,13 @@ public class CartItem {
     @Column(name = "cart_item_id")
     private Long cartItemId;
 
-    @Column(name = "user_idx")
-    private Long userIdx;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx")
+    private User user;
 
-    @Column(name = "item_id")
-    private int itemId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
 
     @Column(name = "count")
     private int count;

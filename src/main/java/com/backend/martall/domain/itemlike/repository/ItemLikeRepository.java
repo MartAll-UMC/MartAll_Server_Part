@@ -1,15 +1,27 @@
 package com.backend.martall.domain.itemlike.repository;
 
+import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.itemlike.entity.ItemLike;
+import com.backend.martall.domain.mart.entity.MartShop;
+import com.backend.martall.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ItemLikeRepository extends JpaRepository<ItemLike, Integer> {
 
-    boolean existsByUserIdxAndMartItemId(Long userIdx, int martItemId);
-    void deleteByUserIdxAndMartItemId(Long userIdx, int martItemId);
-    List<ItemLike> findByUserIdx(Long userIdx);
+    boolean existsByUserAndItem(User user, Item item);
+
+    List<ItemLike> findByUser(User user);
+
+    Optional<ItemLike> findByUserAndItem(User user, Item item);
+
+    // 마트에 있는 상품의 찜하기 수를 count
+    @Query("SELECT count(il) FROM ItemLike il WHERE il.item.martShop = :martShop")
+    int countItemLikeByMart(MartShop martShop);
+
 }

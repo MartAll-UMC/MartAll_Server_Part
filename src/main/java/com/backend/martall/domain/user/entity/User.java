@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Table(name = "user")
 @Entity
+@Getter
 @NoArgsConstructor
 public class User extends BaseTime {
     @Id

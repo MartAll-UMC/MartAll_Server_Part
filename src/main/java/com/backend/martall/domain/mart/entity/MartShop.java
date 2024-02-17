@@ -1,16 +1,16 @@
 package com.backend.martall.domain.mart.entity;
 
 import com.backend.martall.domain.BaseTime;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import com.backend.martall.domain.user.entity.User;
+import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Table(name = "mart_shop")
 @Entity
-@Getter // Lombok의 Getter 어노테이션을 추가
+@Table(name = "mart_shop")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -48,11 +48,18 @@ public class MartShop extends BaseTime {
     @Column(name = "profile_photo", length = 255)
     private String profilePhoto;
 
-    @Column(name = "user_idx")
-    private Long userIdx;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx")
+    private User user;
 
-    @Column(name = "mart_category_id")
-    private Long martCategoryId;
+    @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MartShopPic> martShopPics;
+
+    @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MartCategory> martCategories;
+
+    @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MartBookmark> martBookmarks;
 
     @Column(name = "manager_name", length = 50)
     private String managerName;
@@ -71,4 +78,13 @@ public class MartShop extends BaseTime {
 
     @Column(name = "latitude", length = 50)
     private String latitude;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mart_category_id")
+    private MartCategory martCategory;
+
+    public void addMartCategory(MartCategory martCategory) {
+        this.martCategories.add(martCategory);
+        martCategory.setMartShop(this);
+    }
 }

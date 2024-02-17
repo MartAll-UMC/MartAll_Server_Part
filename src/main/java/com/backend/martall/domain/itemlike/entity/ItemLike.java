@@ -1,10 +1,13 @@
 package com.backend.martall.domain.itemlike.entity;
 
+import com.backend.martall.domain.item.entity.Item;
+import com.backend.martall.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 
 @Table(name = "item_like")
 @Entity
@@ -19,9 +22,11 @@ public class ItemLike {
     @Column(name = "item_like_id")
     private int itemLikeId;
 
-    @Column(name = "mart_item_id")
-    private int martItemId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mart_item_id")
+    private Item item;
 
-    @Column(name = "user_idx")
-    private Long userIdx;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx")
+    private User user;
 }
