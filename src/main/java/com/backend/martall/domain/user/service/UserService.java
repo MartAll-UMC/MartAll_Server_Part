@@ -83,7 +83,20 @@ public class UserService {
     }
 
     public void logoutUser(Long id) {
+        try {
+            Optional<User> optionalUser = userRepository.findByProviderId(id);
+            if(optionalUser.isPresent()) { //join
+                User user = optionalUser.get();
+                user.setRefreshToken(null);
+                userRepository.save(user);
 
+            } else {
+                throw new GlobalException(ResponseStatus.NOT_EXIST_USER);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new GlobalException(ResponseStatus.DATABASE_ERROR);
+        }
     }
 
     public void updateLocation(Long id, UserDto.UserLocationDto userLocationDto) {
