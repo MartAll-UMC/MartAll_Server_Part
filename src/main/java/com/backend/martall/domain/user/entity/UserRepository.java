@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query("UPDATE User u SET u.locationRange = :location_range WHERE u.userIdx = :user_idx")
     void updateLocationRange(@Param("user_idx") Long userIdx, @Param("location_range") Integer locationRange);
+
+    @Query("SELECT u.userIdx FROM User u WHERE u.refreshToken = :refreshToken")
+    Long findIdByRefreshToken(@Param("refreshToken") String refreshToken);
 }

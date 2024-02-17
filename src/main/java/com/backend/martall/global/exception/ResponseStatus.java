@@ -18,6 +18,7 @@ public enum ResponseStatus {
     LOGIN_FAIL_WRONG_JWT(false, 4103, "잘못된 JWT입니다."),
     FAIL_ACCESS_EMPRY_JWT(false, 4104, "JWT를 입력해주세요."),
     NOT_EXIST_USER(false, 4105, "존재하지 않는 유저입니다."),
+    REQUIRE_RETRY_LOGIN(false, 4106, "다시 로그인해주세요"),
 
     // 4150 ~ 이미지
     NO_SELECT_IMAGE(false, 4150, "선택된 이미지가 존재하지 않습니다."),

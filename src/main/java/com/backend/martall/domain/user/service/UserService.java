@@ -82,6 +82,17 @@ public class UserService {
         return new UserDto.UserInfoResponseDto(user);
     }
 
+    public JwtDto.JwtDateDto recreateAccessToken(String refresh_token) {
+
+        Long id = userRepository.findIdByRefreshToken(refresh_token); //일치하는 token 존재하는지 찾고,id 반환받기
+        if(id == null) {
+            throw new GlobalException(ResponseStatus.REQUIRE_RETRY_LOGIN);
+        }
+
+        System.out.println(id);
+        return jwtTokenProvider.createAccessToken(id);
+    }
+
     public void logoutUser(Long id) {
         try {
             Optional<User> optionalUser = userRepository.findByProviderId(id);

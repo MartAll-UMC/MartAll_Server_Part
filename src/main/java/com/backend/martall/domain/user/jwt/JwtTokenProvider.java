@@ -111,6 +111,17 @@ public class JwtTokenProvider {
         return token;
     }
 
+    private String getRefreshJwt() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String token = request.getHeader("refresh-token");
+
+        if (token == null || token.isEmpty()) {
+            throw new GlobalException(ResponseStatus.FAIL_ACCESS_EMPRY_JWT);
+        }
+
+        return token;
+    }
+
     //올바른 Token인지 검증
     public Long resolveToken() {
         String token = getJwt();
@@ -124,6 +135,16 @@ public class JwtTokenProvider {
                 .orElseThrow(()->new GlobalException(ResponseStatus.LOGIN_FAIL_WRONG_JWT));
 
         return user_id;
+    }
+
+    public String resolveRefreshToken() {
+        String refresh_token = getRefreshJwt();
+
+        if(!validateToken(refresh_token)){
+            throw new GlobalException(ResponseStatus.LOGIN_FAIL_WRONG_JWT);
+        }
+
+        return refresh_token;
     }
 
     //https://leeeehhjj.tistory.com/61

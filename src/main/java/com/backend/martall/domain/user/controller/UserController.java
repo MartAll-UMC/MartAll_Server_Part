@@ -28,10 +28,14 @@ public class UserController {
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, token));
     }
 
-//    @GetMapping("/refresh")
-//    public ResponseEntity<JsonResponse> refreshToken() {
-//
-//    }
+    @GetMapping("/refresh")
+    public ResponseEntity<JsonResponse> refreshToken() {
+        String refresh_token = jwtTokenProvider.resolveRefreshToken();
+
+        JwtDto.JwtDateDto accessToken = userService.recreateAccessToken(refresh_token);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, accessToken));
+    }
 
 
     @GetMapping("/profile")
