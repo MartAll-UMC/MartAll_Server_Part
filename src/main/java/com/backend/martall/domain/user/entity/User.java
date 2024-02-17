@@ -42,10 +42,12 @@ public class User extends BaseTime {
     private String address;
     //@Column(name = "location_range", nullable = false, columnDefinition = "int default 0")
     private Integer locationRange = 0;
+    @Column(name = "refresh_token")
+    private String refreshToken;
 
     @Builder
     public User(String id, String password, String username, String imgUrl, String phoneNumber, String email, String provider,
-                Long providerId, Integer userType, Integer userState, String fcmToken) {
+                Long providerId, Integer userType, Integer userState, String fcmToken, String refreshToken) {
         this.id = id;
         this.password = password;
         this.username = username;
@@ -57,6 +59,7 @@ public class User extends BaseTime {
         this.userType = userType;
         this.userState = userState;
         this.fcmToken = fcmToken;
+        this.refreshToken = refreshToken;
     }
 
     public Long getUserIdx() {
@@ -73,4 +76,5 @@ public class User extends BaseTime {
     public Double getLatitude() { return latitude; }
     public String getAddress() { return address; }
     public Integer getLocationRange() { return locationRange; }
+    public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
 }

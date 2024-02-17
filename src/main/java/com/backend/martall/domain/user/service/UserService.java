@@ -1,5 +1,6 @@
 package com.backend.martall.domain.user.service;
 
+import com.backend.martall.domain.user.dto.JwtDto;
 import com.backend.martall.domain.user.dto.UserDto;
 import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.user.entity.UserRepository;
@@ -18,8 +19,9 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public String join(UserDto.UserRequestDto userRequestDto) {
-        String accessToken = null;
+    public JwtDto.TwoJwtDateDto join(UserDto.UserRequestDto userRequestDto) {
+        JwtDto.JwtDateDto accessToken = null;
+        JwtDto.JwtDateDto refreshToken = null;
         
         if(userRequestDto.getProvider().isBlank() || userRequestDto.getProvider().isEmpty()) {
             throw new GlobalException(ResponseStatus.LOGIN_FAIL_EMPTY_PROVIDER);
@@ -30,10 +32,13 @@ public class UserService {
                 throw new GlobalException(ResponseStatus.LOGIN_FAIL_EMPTY_PROVIDER_ID);
             }
 
+            User user = null;
+
             Optional<User> optionalUser = userRepository.findByProviderId(userRequestDto.getProviderId());
+            refreshToken = jwtTokenProvider.createRefreshToken();
             if(optionalUser.isEmpty()) { //join
 
-                User user = User.builder()
+                user = User.builder()
                         .id(userRequestDto.getId())
                         .password(userRequestDto.getPassword()) //== null ? null : passwordEncoder.encode(userRequestDto.getPassword()))
                         .username(userRequestDto.getUsername())
@@ -45,26 +50,25 @@ public class UserService {
                         .userType(userRequestDto.getUserType())
                         .userState(0)
                         .fcmToken(null)
+                        .refreshToken(refreshToken.getToken())
                         .build();
 
-                try {
-                    userRepository.save(user);
-                } catch (Exception e) {
-                    throw new GlobalException(ResponseStatus.DATABASE_ERROR);
-                }
-
+            } else {
+                user = optionalUser.get();
+                user.setRefreshToken(refreshToken.getToken());
             }
 
-            User user = userRepository.findByProviderId(userRequestDto.getProviderId()).get();
+            try {
+                userRepository.save(user);
+            } catch (Exception e) {
+                throw new GlobalException(ResponseStatus.DATABASE_ERROR);
+            }
+
+            user = userRepository.findByProviderId(userRequestDto.getProviderId()).get();
             accessToken = jwtTokenProvider.createAccessToken(user.getUserIdx());
         }
-        
-        return accessToken;
-        
-        //자체 로그인 시 예외처리 예정
-        //이메일 검사
-        //필수인데 존재하지 않는 정보 검사
-        //길이 검사
+
+        return new JwtDto.TwoJwtDateDto(accessToken.getToken(), accessToken.getExpiredDate(), refreshToken.getToken(), refreshToken.getExpiredDate());
     }
 
     public UserDto.UserInfoResponseDto getUserInformation(Long user_idx){
@@ -79,7 +83,20 @@ public class UserService {
     }
 
     public void logoutUser(Long id) {
+        try {
+            Optional<User> optionalUser = userRepository.findByProviderId(id);
+            if(optionalUser.isPresent()) { //join
+                User user = optionalUser.get();
+                user.setRefreshToken(null);
+                userRepository.save(user);
 
+            } else {
+                throw new GlobalException(ResponseStatus.NOT_EXIST_USER);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new GlobalException(ResponseStatus.DATABASE_ERROR);
+        }
     }
 
     public void updateLocation(Long id, UserDto.UserLocationDto userLocationDto) {

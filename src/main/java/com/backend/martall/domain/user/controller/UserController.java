@@ -1,5 +1,6 @@
 package com.backend.martall.domain.user.controller;
 
+import com.backend.martall.domain.user.dto.JwtDto;
 import com.backend.martall.domain.user.dto.UserDto;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.domain.user.service.UserService;
@@ -22,10 +23,15 @@ public class UserController {
     @PostMapping("/login-kakao")
     public ResponseEntity<JsonResponse> joinUser(@RequestBody UserDto.UserRequestDto userRequestDto) {
 
-        String token = userService.join(userRequestDto);
+        JwtDto.TwoJwtDateDto token = userService.join(userRequestDto);
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, token));
     }
+
+//    @GetMapping("/refresh")
+//    public ResponseEntity<JsonResponse> refreshToken() {
+//
+//    }
 
 
     @GetMapping("/profile")
