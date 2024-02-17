@@ -9,6 +9,7 @@ import com.backend.martall.global.exception.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -58,6 +59,12 @@ public class ItemController {
     @PostMapping("/test-add")
     public ResponseEntity<JsonResponse> addItem(@RequestBody ItemAddRequestDto itemAddRequestDto) {
         itemService.addItem(itemAddRequestDto);
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
+    }
+
+    @PostMapping("/test/add")
+    public ResponseEntity<JsonResponse> addItem(@RequestPart(name = "profileImage") MultipartFile profileImage, @RequestPart(name = "contentImage") MultipartFile contentImage, @RequestBody ItemAddRequestDto itemAddRequestDto) {
+        itemService.addItemWithImage(profileImage, contentImage, itemAddRequestDto);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 }

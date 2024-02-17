@@ -1,5 +1,7 @@
 package com.backend.martall.domain.item.service;
 
+import com.backend.martall.domain.image.dto.ImageDto;
+import com.backend.martall.domain.image.service.ImageService;
 import com.backend.martall.domain.item.dto.*;
 import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.item.entity.ItemCategory;
@@ -16,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +39,7 @@ public class ItemService {
     private final MartRepository martRepository;
     private final UserRepository userRepository;
     private final ItemLikeService itemLikeService;
+    private final ImageService imageService;
 
     public List<ItemListResponseDto> searchItems(String itemName, Long userIdx) {
 
@@ -163,15 +167,24 @@ public class ItemService {
     @Transactional
     public void addItem(ItemAddRequestDto itemAddRequestDto) {
         MartShop martShop = martRepository.findById(itemAddRequestDto.getMartShopId()).get();
+
         Item item = itemAddRequestDto.toEntity(martShop);
-        ItemPic itemPic1 = ItemPic.builder()
-                .picIndex(1)
-                .picName(item.getProfilePhoto())
-                .build();
 
-        item.addPic(itemPic1);
         itemRepository.save(item);
-        itemPicRepository.save(itemPic1);
+    }
 
+    @Transactional
+    public void addItemWithImage(MultipartFile profileImage, MultipartFile contentImage, ItemAddRequestDto itemAddRequestDto) {
+        MartShop martShop = martRepository.findById(itemAddRequestDto.getMartShopId()).get();
+
+        Item item = itemAddRequestDto.toEntity(martShop);
+
+        ImageDto.ImageRequest imageRequest = new ImageDto.ImageRequest("item", (long) item.getItemId());
+        String profileUrl = imageService.createImage(profileImage, imageRequest);
+        String contentUrl = imageService.createImage(contentImage, imageRequest);
+
+        item.setPic(profileUrl, contentUrl);
+
+        itemRepository.save(item);
     }
 }

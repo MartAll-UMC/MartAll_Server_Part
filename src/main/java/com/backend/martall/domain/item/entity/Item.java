@@ -70,4 +70,9 @@ public class Item extends BaseTime {
     public void deleteLike(ItemLike itemLike) {
         this.itemLikeList.remove(itemLike);
     }
+
+    public void setPic(String profileUrl, String contentUrl) {
+        this.profilePhoto = profileUrl;
+        this.content = contentUrl;
+    }
 }
