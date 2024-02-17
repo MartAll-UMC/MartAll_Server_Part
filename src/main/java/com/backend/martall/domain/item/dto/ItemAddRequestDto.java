@@ -17,7 +17,7 @@ public class ItemAddRequestDto {
 
     private int itemId;
     private Long martShopId;
-    private ItemCategory categoryId;
+    private String categoryId;
     private String itemName;
     private int price;
     private int inventoryQuantity;
@@ -28,7 +28,7 @@ public class ItemAddRequestDto {
         return Item.builder()
                 .itemId(this.itemId)
                 .martShop(martShop)
-                .categoryId(this.categoryId)
+                .categoryId(ItemCategory.findByName(this.categoryId))
                 .itemName(this.itemName)
                 .price(this.price)
                 .inventoryQuantity(this.inventoryQuantity)
