@@ -62,9 +62,9 @@ public class ItemController {
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
-    @PostMapping("/test/add")
-    public ResponseEntity<JsonResponse> addItem(@RequestPart(name = "profileImage") MultipartFile profileImage, @RequestPart(name = "contentImage") MultipartFile contentImage, @RequestBody ItemAddRequestDto itemAddRequestDto) {
-        itemService.addItemWithImage(profileImage, contentImage, itemAddRequestDto);
+    @PostMapping("/test/add/{itemId}")
+    public ResponseEntity<JsonResponse> addItem(@RequestPart(name = "profileImage") MultipartFile profileImage, @RequestPart(name = "contentImage") MultipartFile contentImage, @PathVariable int itemId) {
+        itemService.addItemWithImage(profileImage, contentImage, itemId);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 }

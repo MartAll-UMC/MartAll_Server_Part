@@ -174,10 +174,9 @@ public class ItemService {
     }
 
     @Transactional
-    public void addItemWithImage(MultipartFile profileImage, MultipartFile contentImage, ItemAddRequestDto itemAddRequestDto) {
-        MartShop martShop = martRepository.findById(itemAddRequestDto.getMartShopId()).get();
+    public void addItemWithImage(MultipartFile profileImage, MultipartFile contentImage, int itemId) {
 
-        Item item = itemAddRequestDto.toEntity(martShop);
+        Item item = itemRepository.findByItemId(itemId).get();
 
         ImageDto.ImageRequest imageRequest = new ImageDto.ImageRequest("item", (long) item.getItemId());
         String profileUrl = imageService.createImage(profileImage, imageRequest);
