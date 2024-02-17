@@ -15,7 +15,6 @@ public class CartMartShopCategoryResponse {
     public static CartMartShopCategoryResponse of (MartCategory martCategory) {
         return CartMartShopCategoryResponse.builder()
                 .categoryName(martCategory.getCategoryName())
-                .index(martCategory.getCategoryIndex())
                 .build();
     }
 }
