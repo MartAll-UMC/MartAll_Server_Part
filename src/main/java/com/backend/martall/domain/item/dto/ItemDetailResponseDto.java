@@ -17,6 +17,7 @@ public class ItemDetailResponseDto {
     private ItemMartShopResponseDto mart; // 마트 정보가 필요해서 ItemMartShopResponseDto를 추가
     private String categoryName;
     private String itemName;
+    private String pic;
     private int price;
     private String content;
     private boolean like;
@@ -26,6 +27,7 @@ public class ItemDetailResponseDto {
                 .itemId(item.getItemId())
                 .categoryName(item.getCategoryId().getName())
                 .itemName(item.getItemName())
+                .pic(item.getProfilePhoto())
                 .price(item.getPrice())
                 .content(item.getContent())
                 .build();
