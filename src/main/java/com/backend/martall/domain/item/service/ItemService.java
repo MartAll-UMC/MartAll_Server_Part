@@ -50,10 +50,10 @@ public class ItemService {
 
         List<Item> items = itemRepository.searchByItemName(itemName);
 
-        // 검색 결과가 없으면 예외처리
-        if (items.isEmpty()) {
-            throw new BadRequestException(ITEM_SEARCH_EMPTY);
-        }
+//        // 검색 결과가 없으면 예외처리
+//        if (items.isEmpty()) {
+//            throw new BadRequestException(ITEM_SEARCH_EMPTY);
+//        }
 
         User user = userRepository.findByUserIdx(userIdx).get();
 
