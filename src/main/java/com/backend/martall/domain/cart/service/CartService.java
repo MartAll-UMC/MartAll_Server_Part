@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,8 +48,14 @@ public class CartService {
 
         // 장바구니에 상품이 없으면 에러
         if (cartItemList.isEmpty()) {
-            log.info("장바구니에 상품이 존재하지 않음, userIdx = {}", userIdx);
-            throw new BadRequestException(CART_ITEM_NOT_EXIST);
+            CartMartShopResponse cartMartShopResponse = new CartMartShopResponse();
+
+            List<CartItemResponse> cartResponseDtoList = Collections.emptyList();
+
+            return CartInquiryResponse.builder()
+                    .mart(cartMartShopResponse)
+                    .cartItemResponseList(cartResponseDtoList)
+                    .build();
         }
 
         // 장바구니에서 상품 아이디

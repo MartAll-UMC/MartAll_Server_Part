@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.Order;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -132,7 +133,15 @@ public class UserOrderService {
             orderInfo = orderInfoOptional.get();
         } catch (RuntimeException e) {
             log.info("준비중인 주문이 존재하지 않음, userIdx = {}", userIdx);
-            throw new BadRequestException(ORDER_NOT_EXIST);
+//            throw new BadRequestException(ORDER_NOT_EXIST);
+            List<OrderItemResponse> orderItemResponseList = Collections.emptyList();
+
+            OrderInfoResponse orderInfoResponse = new OrderInfoResponse();
+
+            return OrderInquiryResponse.builder()
+                    .order(orderInfoResponse)
+                    .orderItem(orderItemResponseList)
+                    .build();
         }
 
         // orderInfo로 해당 주문 상품 리스트 조회
