@@ -9,6 +9,7 @@ import com.backend.martall.domain.item.entity.ItemPic;
 import com.backend.martall.domain.item.repository.ItemPicRepository;
 import com.backend.martall.domain.item.repository.ItemRepository;
 import com.backend.martall.domain.itemlike.service.ItemLikeService;
+import com.backend.martall.domain.mart.entity.MartCategory;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartRepository;
 import com.backend.martall.domain.user.entity.User;
@@ -94,6 +95,9 @@ public class ItemService {
         ItemMartShopResponseDto itemMartShopResponseDto = ItemMartShopResponseDto.builder()
                 .martShopId(martShop.getMartShopId())
                 .martName(martShop.getName())
+                .martCategory(martShop.getMartCategories().stream()
+                        .map(MartCategory::getCategoryName)
+                        .collect(Collectors.toList()))
                 .bookmarkCount(martShop.getMartBookmarks().size())
                 .likeCount(itemLikeService.countItemLikeByMart(martShop))
                 .build();
