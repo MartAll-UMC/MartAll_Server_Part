@@ -12,6 +12,7 @@ public class ItemCategoryResponseDto {
     private int itemId;
     private String pic;
     private String itemName;
+    private String martShopName;
     private int price;
     private boolean like;
 
@@ -20,6 +21,7 @@ public class ItemCategoryResponseDto {
                 .itemId(item.getItemId())
                 .pic(item.getProfilePhoto())
                 .itemName(item.getItemName())
+                .martShopName(item.getMartShop().getName())
                 .price(item.getPrice())
                 .build();
     }

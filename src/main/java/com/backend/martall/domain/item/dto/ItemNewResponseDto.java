@@ -13,6 +13,7 @@ public class ItemNewResponseDto {
     private String pic;
     private String categoryName;
     private String itemName;
+    private String martShopName;
     private int price;
     private String content;
     private boolean like;
@@ -23,6 +24,7 @@ public class ItemNewResponseDto {
                 .pic(item.getProfilePhoto())
                 .categoryName(item.getCategoryId().getName())
                 .itemName(item.getItemName())
+                .martShopName(item.getMartShop().getName())
                 .price(item.getPrice())
                 .content(item.getContent())
                 .build();
