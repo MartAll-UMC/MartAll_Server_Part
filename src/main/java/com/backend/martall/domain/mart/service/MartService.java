@@ -5,7 +5,6 @@ import com.backend.martall.domain.itemlike.service.ItemLikeService;
 import com.backend.martall.domain.mart.dto.*;
 import com.backend.martall.domain.mart.entity.MartTag;
 import com.backend.martall.domain.user.entity.User;
-import com.backend.martall.domain.mart.entity.MartBookmark;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartRepository;
 import com.backend.martall.domain.user.entity.UserRepository;
@@ -52,20 +51,7 @@ public class MartService {
                 .orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
 
         // 마트 정보 업데이트 로직
-        if (requestDto.getName() != null) martShop.setName(requestDto.getName());
-        if (requestDto.getIntroduction() != null) martShop.setIntroduction(requestDto.getIntroduction());
-        if (requestDto.getAddress() != null) martShop.setAddress(requestDto.getAddress());
-        if (requestDto.getOperatingTime() != null) martShop.setOperatingTime(requestDto.getOperatingTime());
-        if (requestDto.getPickupTime() != null) martShop.setPickupTime(requestDto.getPickupTime());
-        if (requestDto.getVisitor() != null) martShop.setVisitor(requestDto.getVisitor());
-        if (requestDto.getSale() != null) martShop.setSale(requestDto.getSale());
-        if (requestDto.getProfilePhoto() != null) martShop.setProfilePhoto(requestDto.getProfilePhoto());
-        if (requestDto.getManagerName() != null) martShop.setManagerName(requestDto.getManagerName());
-        if (requestDto.getShopNumber() != null) martShop.setShopNumber(requestDto.getShopNumber());
-        if (requestDto.getLinkKakao() != null) martShop.setLinkKakao(requestDto.getLinkKakao());
-        if (requestDto.getLinkNaver() != null) martShop.setLinkNaver(requestDto.getLinkNaver());
-        if (requestDto.getLongitude() != null) martShop.setLongitude(requestDto.getLongitude());
-        if (requestDto.getLatitude() != null) martShop.setLatitude(requestDto.getLatitude());
+        martShop.updateMartShop(requestDto);
 
         // 저장 및 DTO 변환
         MartShop updatedMartShop = martRepository.save(martShop);
@@ -92,52 +78,6 @@ public class MartService {
         return martDetailResponseDto;
     }
 
-    // 단골 마트 추가
-    @Transactional
-    public void followMart(Long userId, Long shopId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
-        MartShop martShop = martRepository.findById(shopId).orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
-        boolean isAlreadyFavorite = martBookmarkRepository.existsByUserAndMartShop(user, martShop);
-        if (isAlreadyFavorite) {
-            throw new BadRequestException(ResponseStatus.MART_FAVORITE_ALREADY);
-        }
-        MartBookmark martBookmark = new MartBookmark();
-        martShop.addBookmark(martBookmark);
-        martBookmark.setUser(user);
-        martBookmarkRepository.save(martBookmark);
-    }
-
-    // 단골 마트에서 삭제
-    @Transactional
-    public void unfollowMart(Long userId, Long shopId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
-        MartShop martShop = martRepository.findById(shopId).orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
-        MartBookmark martBookmark = martBookmarkRepository.findByUserAndMartShop(user, martShop).orElseThrow(() -> new BadRequestException(ResponseStatus.MART_FAVORITE_NOT_FOUND));
-        martShop.removeBookmark(martBookmark);
-        martBookmarkRepository.delete(martBookmark);
-    }
-
-    // 단골 마트 목록 조회
-    public List<FollowedMartResponseDto> getFollowedMarts(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
-        List<MartBookmark> bookmarks = martBookmarkRepository.findByUser(user);
-
-        return bookmarks.stream().map(bookmark -> {
-            MartShop martShop = bookmark.getMartShop();
-            FollowedMartResponseDto dto = new FollowedMartResponseDto();
-
-            dto.setBookmarkId(bookmark.getBookmarkId());
-            dto.setMartShopId(martShop.getMartShopId());
-            dto.setMartName(martShop.getName());
-            dto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
-            dto.setBookmarkCount(martShop.getMartBookmarks().size());
-            dto.setMartCategory(martShop.getMartCategories().stream()
-                    .map(MartCategory::getCategoryName)
-                    .collect(Collectors.toList()));
-
-            return dto;
-        }).collect(Collectors.toList());
-    }
 
     //search mart by keyword
     public List<MartSearchResponseDto> searchMarts(String keyword, Long userId) {
@@ -163,7 +103,7 @@ public class MartService {
 
 
     // 카테고리 지수 검색
-    public List<MartFilterResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
+    public List<MartListResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
         User user = userRepository.findByUserIdx(userIdx).get();
 
         // 존재하지 않는 태그면 예외처리
@@ -184,57 +124,82 @@ public class MartService {
             throw new BadRequestException(ResponseStatus.MART_SORT_WRONG);
         }
 
-        List<MartFilterResponseDto> martFilterResponseDtoList = martShopList.stream()
-                .map(martShop -> {
-                    MartFilterResponseDto martFilterResponseDto = MartFilterResponseDto.of(martShop);
+//        List<MartListResponseDto> martListResponseDtoList = martShopList.stream()
+//                .map(martShop -> {
+//                    MartListResponseDto martListResponseDto = MartListResponseDto.of(martShop);
+//
+//                    // 카테고리 채우기
+//                    List<String> categoryList = martShop.getMartCategories().stream()
+//                            .map(martCategory -> martCategory.getCategoryName())
+//                            .collect(Collectors.toList());
+//                    martListResponseDto.setCategories(categoryList);
+//
+//                    martListResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
+//
+//                    martListResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
+//
+//                    // 아이템 리스트 채우기
+//                    martListResponseDto.setItems(itemService.getMartNewItem(martShop, user));
+//                    return martListResponseDto;
+//
+//                })
+//                .collect(Collectors.toList());
 
-                    // 카테고리 채우기
-                    List<String> categoryList = martShop.getMartCategories().stream()
-                            .map(martCategory -> martCategory.getCategoryName())
-                            .collect(Collectors.toList());
-                    martFilterResponseDto.setCategories(categoryList);
-
-                    martFilterResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
-
-                    martFilterResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
-
-                    // 아이템 리스트 채우기
-                    martFilterResponseDto.setItems(itemService.getMartNewItem(martShop, user));
-                    return martFilterResponseDto;
-
-                })
-                .collect(Collectors.toList());
-
-        return martFilterResponseDtoList;
+        return generateMartListResponseDtoList(martShopList, user);
     }
 
 
     //mart 전체 조회
-    public List<MartFilterResponseDto> findAllMarts(Long userId) {
+    public List<MartListResponseDto> findAllMarts(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
         List<MartShop> martShopList = martRepository.findAll();
-        List<MartFilterResponseDto> martFilterResponseDtoList = martShopList.stream()
+//        List<MartListResponseDto> martListResponseDtoList = martShopList.stream()
+//                .map(martShop -> {
+//                    MartListResponseDto martListResponseDto = MartListResponseDto.of(martShop);
+//
+//                    // 카테고리 채우기
+//                    List<String> categoryList = martShop.getMartCategories().stream()
+//                            .map(martCategory -> martCategory.getCategoryName())
+//                            .collect(Collectors.toList());
+//                    martListResponseDto.setCategories(categoryList);
+//
+//                    martListResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
+//
+//                    martListResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
+//
+//                    // 아이템 리스트 채우기
+//                    martListResponseDto.setItems(itemService.getMartNewItem(martShop, user));
+//                    return martListResponseDto;
+//
+//                })
+//                .collect(Collectors.toList());
+
+        return generateMartListResponseDtoList(martShopList, user);
+    }
+
+    public List<MartListResponseDto> generateMartListResponseDtoList(List<MartShop> martShopList, User user) {
+        List<MartListResponseDto> martListResponseDtoList = martShopList.stream()
                 .map(martShop -> {
-                    MartFilterResponseDto martFilterResponseDto = MartFilterResponseDto.of(martShop);
+                    MartListResponseDto martListResponseDto = MartListResponseDto.of(martShop);
 
                     // 카테고리 채우기
                     List<String> categoryList = martShop.getMartCategories().stream()
                             .map(martCategory -> martCategory.getCategoryName())
                             .collect(Collectors.toList());
-                    martFilterResponseDto.setCategories(categoryList);
+                    martListResponseDto.setCategories(categoryList);
 
-                    martFilterResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
+                    martListResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
 
-                    martFilterResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
+                    martListResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
 
                     // 아이템 리스트 채우기
-                    martFilterResponseDto.setItems(itemService.getMartNewItem(martShop, user));
-                    return martFilterResponseDto;
+                    martListResponseDto.setItems(itemService.getMartNewItem(martShop, user));
+                    return martListResponseDto;
 
                 })
                 .collect(Collectors.toList());
 
-        return martFilterResponseDtoList;
+        return martListResponseDtoList;
     }
 
 }
