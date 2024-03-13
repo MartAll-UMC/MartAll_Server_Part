@@ -2,6 +2,7 @@ package com.backend.martall.domain.mart.service;
 
 import com.backend.martall.domain.itemlike.service.ItemLikeService;
 import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
+import com.backend.martall.domain.mart.dto.MartResponseDto;
 import com.backend.martall.domain.mart.entity.MartBookmark;
 import com.backend.martall.domain.mart.entity.MartCategory;
 import com.backend.martall.domain.mart.entity.MartShop;
@@ -20,11 +21,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class MartBookmartService {
+public class MartBookmarkService {
     private UserRepository userRepository;
     private MartRepository martRepository;
     private MartBookmarkRepository martBookmarkRepository;
     private ItemLikeService itemLikeService;
+
+    private MartService martService;
 
     @Transactional
     public void followMart(Long userId, Long shopId) {
@@ -50,24 +53,19 @@ public class MartBookmartService {
         martBookmarkRepository.delete(martBookmark);
     }
 
-    public List<FollowedMartResponseDto> getFollowedMarts(Long userId) {
+    // 단골마트 조회
+    public List<MartResponseDto> getFollowedMarts(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
-        List<MartBookmark> bookmarks = martBookmarkRepository.findByUser(user);
 
-        return bookmarks.stream().map(bookmark -> {
-            MartShop martShop = bookmark.getMartShop();
-            FollowedMartResponseDto dto = new FollowedMartResponseDto();
+        // 단골마트 조회
+        List<MartBookmark> bookmarkList = martBookmarkRepository.findByUser(user);
 
-            dto.setBookmarkId(bookmark.getBookmarkId());
-            dto.setMartShopId(martShop.getMartShopId());
-            dto.setMartName(martShop.getName());
-            dto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
-            dto.setBookmarkCount(martShop.getMartBookmarks().size());
-            dto.setMartCategory(martShop.getMartCategories().stream()
-                    .map(MartCategory::getCategoryName)
-                    .collect(Collectors.toList()));
+        // 단골마트 마트 리스트
+        List<MartShop> martShopList = bookmarkList.stream()
+                .map(martBookmark -> martBookmark.getMartShop())
+                .collect(Collectors.toList());
 
-            return dto;
-        }).collect(Collectors.toList());
+        // dto 리스트 반환
+        return martService.generateMartList(martShopList, user);
     }
 }

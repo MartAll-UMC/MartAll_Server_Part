@@ -46,7 +46,7 @@ public class MartService {
 
     //마트 정보 업데이트
     @Transactional
-    public MartResponseDto updateMart(Long shopId, MartRequestDto requestDto, Long userId) {
+    public MartUpdateResponseDto updateMart(Long shopId, MartRequestDto requestDto, Long userId) {
         MartShop martShop = martRepository.findById(shopId)
                 .orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
 
@@ -55,55 +55,51 @@ public class MartService {
 
         // 저장 및 DTO 변환
         MartShop updatedMartShop = martRepository.save(martShop);
-        return MartResponseDto.from(updatedMartShop, userId, martBookmarkRepository, userRepository);
+        return MartUpdateResponseDto.from(updatedMartShop, userId, martBookmarkRepository, userRepository);
     }
 
     // shopId로 마트샵의 상세정보 조회
-    public MartDetailResponseDto getMartDetail(Long shopId) {
+    public MartDetailResponseDto getMartDetail(Long shopId, Long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx).get();
+
         MartShop martShop = martRepository.findById(shopId)
                 .orElseThrow(() -> new BadRequestException(ResponseStatus.MART_DETAIL_FAIL));
+
+        // dto 생성
         MartDetailResponseDto martDetailResponseDto = MartDetailResponseDto.builder()
-                .martshopId(martShop.getMartShopId())
-                .name(martShop.getName())
-                .ownerName(martShop.getManagerName())
-                .shopnumber(martShop.getShopNumber())
-                .email("martall@gmail.com")
-                .phonenumber("010-xxxx-xxxx")
-                .operatingHours(martShop.getOperatingTime())
-                .pickuptime(martShop.getPickupTime())
-                .payment("카드결제")
-                .address(martShop.getAddress())
-                .kakaoTalkLink(martShop.getLinkKakao())
+                .martId(martShop.getMartShopId())
+                .martImg(martShop.getProfilePhoto())
+                .martName(martShop.getName())
+                .martCategory(martShop.getMartCategories().stream()
+                        .map(MartCategory::getCategoryName)
+                        .collect(Collectors.toList()))
+                .bookmarkCount(martShop.getMartBookmarks().size())
+                .likeCount(itemLikeService.countItemLikeByMart(martShop))
+                .isBookmark(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
+                .martAddress(martShop.getAddress())
+                // --> 나중에 만든 회원명으로 교체
+                .martOwner(martShop.getManagerName())
+                .martNumber(martShop.getShopNumber())
+                .martOperationTime(martShop.getOperatingTime())
                 .build();
+
         return martDetailResponseDto;
     }
 
 
-    //search mart by keyword
-    public List<MartSearchResponseDto> searchMarts(String keyword, Long userId) {
-        User user = userRepository.findByUserIdx(userId).get();
-        List<MartShop> martShops = martRepository.findByKeyword(keyword);
-        return martShops.stream()
-                .map(martShop -> {
-                    MartSearchResponseDto martSearchResponseDto = MartSearchResponseDto.builder()
-                            .martShopId(martShop.getMartShopId())
-                            .name(martShop.getName())
-                            .martcategory(martShop.getMartCategories().stream()
-                                    .map(MartCategory::getCategoryName)
-                                    .collect(Collectors.toList()))
-                            .followersCount(martShop.getMartBookmarks().size())
-                            .visitorsCount(itemLikeService.countItemLikeByMart(martShop))
-                            .isFavorite(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
-                            .build();
+    //키워드로 마트 검색
+    // -> 페이징 추가 필요
+    public List<MartResponseDto> searchMarts(String keyword, Long userIdx) {
 
-                    return martSearchResponseDto;
-                })
-                .collect(Collectors.toList());
+        User user = userRepository.findByUserIdx(userIdx).get();
+        List<MartShop> martShopList = martRepository.findByKeyword(keyword);
+
+        return generateMartList(martShopList, user);
     }
 
 
     // 카테고리 지수 검색
-    public List<MartListResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
+    public List<MartWithItemResponseDto> searchMartsByCategoryAndRating(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike, String sort, Long userIdx) {
         User user = userRepository.findByUserIdx(userIdx).get();
 
         // 존재하지 않는 태그면 예외처리
@@ -124,82 +120,65 @@ public class MartService {
             throw new BadRequestException(ResponseStatus.MART_SORT_WRONG);
         }
 
-//        List<MartListResponseDto> martListResponseDtoList = martShopList.stream()
-//                .map(martShop -> {
-//                    MartListResponseDto martListResponseDto = MartListResponseDto.of(martShop);
-//
-//                    // 카테고리 채우기
-//                    List<String> categoryList = martShop.getMartCategories().stream()
-//                            .map(martCategory -> martCategory.getCategoryName())
-//                            .collect(Collectors.toList());
-//                    martListResponseDto.setCategories(categoryList);
-//
-//                    martListResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
-//
-//                    martListResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
-//
-//                    // 아이템 리스트 채우기
-//                    martListResponseDto.setItems(itemService.getMartNewItem(martShop, user));
-//                    return martListResponseDto;
-//
-//                })
-//                .collect(Collectors.toList());
-
-        return generateMartListResponseDtoList(martShopList, user);
+        return generateMartWithItemList(martShopList, user);
     }
 
 
     //mart 전체 조회
-    public List<MartListResponseDto> findAllMarts(Long userId) {
+    public List<MartWithItemResponseDto> findAllMarts(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
         List<MartShop> martShopList = martRepository.findAll();
-//        List<MartListResponseDto> martListResponseDtoList = martShopList.stream()
-//                .map(martShop -> {
-//                    MartListResponseDto martListResponseDto = MartListResponseDto.of(martShop);
-//
-//                    // 카테고리 채우기
-//                    List<String> categoryList = martShop.getMartCategories().stream()
-//                            .map(martCategory -> martCategory.getCategoryName())
-//                            .collect(Collectors.toList());
-//                    martListResponseDto.setCategories(categoryList);
-//
-//                    martListResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
-//
-//                    martListResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
-//
-//                    // 아이템 리스트 채우기
-//                    martListResponseDto.setItems(itemService.getMartNewItem(martShop, user));
-//                    return martListResponseDto;
-//
-//                })
-//                .collect(Collectors.toList());
 
-        return generateMartListResponseDtoList(martShopList, user);
+        return generateMartWithItemList(martShopList, user);
     }
 
-    public List<MartListResponseDto> generateMartListResponseDtoList(List<MartShop> martShopList, User user) {
-        List<MartListResponseDto> martListResponseDtoList = martShopList.stream()
+    // 상품 없는 마트 정보 반환
+    // (키워드 검색, 단골마트 조회)
+    public List<MartResponseDto> generateMartList(List<MartShop> martShopList, User user) {
+        List<MartResponseDto> martResponseDtoList = martShopList.stream()
+                // 각 martshop 객체 dto로 변경
                 .map(martShop -> {
-                    MartListResponseDto martListResponseDto = MartListResponseDto.of(martShop);
+                    MartResponseDto martKeywordSearchResponseDto = MartResponseDto.builder()
+                            .martId(martShop.getMartShopId())
+                            .martName(martShop.getName())
+                            .martCategory(martShop.getMartCategories().stream()
+                                    .map(MartCategory::getCategoryName)
+                                    .collect(Collectors.toList()))
+                            .bookmarkCount(martShop.getMartBookmarks().size())
+                            .likeCount(itemLikeService.countItemLikeByMart(martShop))
+                            .isBookmark(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
+                            .build();
 
-                    // 카테고리 채우기
-                    List<String> categoryList = martShop.getMartCategories().stream()
-                            .map(martCategory -> martCategory.getCategoryName())
-                            .collect(Collectors.toList());
-                    martListResponseDto.setCategories(categoryList);
+                    return martKeywordSearchResponseDto;
+                })
+                .collect(Collectors.toList());
 
-                    martListResponseDto.setLikeCount(itemLikeService.countItemLikeByMart(martShop));
+        return martResponseDtoList;
+    }
 
-                    martListResponseDto.setBookmarkYn(martBookmarkRepository.existsByUserAndMartShop(user, martShop));
+    // 상품과 함께 마트 정보 반환
+    // (마트 전체 검색, 마트 필터 검색)
+    public List<MartWithItemResponseDto> generateMartWithItemList(List<MartShop> martShopList, User user) {
+        List<MartWithItemResponseDto> martWithItemResponseDtoList = martShopList.stream()
+                .map(martShop -> {
+                    MartWithItemResponseDto martWithItemResponseDto = MartWithItemResponseDto.builder()
+                            .martId(martShop.getMartShopId())
+                            .martName(martShop.getName())
+                            .martCategory(martShop.getMartCategories().stream()
+                                    .map(martCategory -> martCategory.getCategoryName())
+                                    .collect(Collectors.toList()))
+                            .bookmarkCount(martShop.getMartBookmarks().size())
+                            .likeCount(itemLikeService.countItemLikeByMart(martShop))
+                            .isBookmark(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
+                            .items(itemService.getMartNewItem(martShop, user))
+                            .build();
 
-                    // 아이템 리스트 채우기
-                    martListResponseDto.setItems(itemService.getMartNewItem(martShop, user));
-                    return martListResponseDto;
+                    return martWithItemResponseDto;
 
                 })
                 .collect(Collectors.toList());
 
-        return martListResponseDtoList;
+        return martWithItemResponseDtoList;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.backend.martall.domain.mart.controller;
 
 import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
-import com.backend.martall.domain.mart.service.MartBookmartService;
+import com.backend.martall.domain.mart.service.MartBookmarkService;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MartBookmarkController {
     private JwtTokenProvider jwtTokenProvider;
-    private MartBookmartService martBookmartService;
+    private MartBookmarkService martBookmartService;
 
     // 단골 마트 팔로우
     @PostMapping("/{shopId}/follow")
@@ -40,7 +40,6 @@ public class MartBookmarkController {
     @GetMapping("/follows")
     public ResponseEntity<JsonResponse> getFollowedMarts() {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<FollowedMartResponseDto> followedMarts = martBookmartService.getFollowedMarts(userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, followedMarts));
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martBookmartService.getFollowedMarts(userIdx)));
     }
 }

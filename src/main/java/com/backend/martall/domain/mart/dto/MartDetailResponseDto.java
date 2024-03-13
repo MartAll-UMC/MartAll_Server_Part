@@ -1,6 +1,13 @@
 package com.backend.martall.domain.mart.dto;
 
+import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
+import com.backend.martall.domain.itemlike.service.ItemLikeService;
+import com.backend.martall.domain.mart.entity.MartCategory;
+import com.backend.martall.domain.mart.entity.MartShop;
 import lombok.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -8,15 +15,17 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MartDetailResponseDto {
-    private Long martshopId;
-    private String name;
-    private String ownerName;
-    private String shopnumber;
-    private String email;
-    private String phonenumber;
-    private String operatingHours;
-    private String pickuptime;
-    private String payment;
-    private String address;
-    private String kakaoTalkLink;
+
+    private Long martId;
+    private String martImg;
+    private String martName;
+    private List<String> martCategory;
+    private int bookmarkCount;
+    private int likeCount;
+    private boolean isBookmark;
+    private String martAddress;
+    private String martOwner;
+    private String martNumber;
+    private String martOperationTime;
+
 }

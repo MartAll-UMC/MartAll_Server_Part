@@ -32,7 +32,7 @@ public class MartController {
     @PatchMapping("/{shopId}")
     public ResponseEntity<JsonResponse> updateMartShop(@PathVariable Long shopId, @RequestBody MartRequestDto requestDto) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        MartResponseDto responseDto = martService.updateMart(shopId, requestDto, userIdx);
+        MartUpdateResponseDto responseDto = martService.updateMart(shopId, requestDto, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDto));
     }
 
@@ -40,14 +40,15 @@ public class MartController {
     @GetMapping("/search")
     public ResponseEntity<JsonResponse> searchMarts(@RequestParam String keyword) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<MartSearchResponseDto> responseDtos = martService.searchMarts(keyword, userIdx);
+        List<MartResponseDto> responseDtos = martService.searchMarts(keyword, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
     }
 
     // 마트 상세 정보 조회
     @GetMapping("/{shopId}/detail")
     public ResponseEntity<JsonResponse> getMartDetail(@PathVariable Long shopId) {
-        MartDetailResponseDto martDetailResponseDto = martService.getMartDetail(shopId);
+        Long userIdx = jwtTokenProvider.resolveToken();
+        MartDetailResponseDto martDetailResponseDto = martService.getMartDetail(shopId, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martDetailResponseDto));
     }
 
@@ -62,14 +63,14 @@ public class MartController {
             @RequestParam(required = false) Integer maxLike,
             @RequestParam(defaultValue = "기본") String sort) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<MartListResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
+        List<MartWithItemResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
     }
 
     @GetMapping("/all")
     public ResponseEntity<JsonResponse> getAllMarts() {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<MartListResponseDto> marts = martService.findAllMarts(userIdx);
+        List<MartWithItemResponseDto> marts = martService.findAllMarts(userIdx);
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
     }
 }
