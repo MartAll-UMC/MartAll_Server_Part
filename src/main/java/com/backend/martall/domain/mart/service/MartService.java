@@ -32,15 +32,26 @@ public class MartService {
     private final ItemService itemService;
 
 
-    // 마트샵 생성
+    // 마트샵 생성 (테스트)
     @Transactional
-    public void createMart(MartRequestDto requestDto) {
+    public void createMartTest(MartRequestDto requestDto) {
         try {
             MartShop martShop = requestDto.toEntity();
             martRepository.save(martShop);
         } catch (Exception e) {
             throw new BadRequestException(ResponseStatus.MART_CREATE_FAIL);
         }
+    }
+
+
+    // 마트 생성
+    public void createMart(Long userIdx, MartCreateRequestDto martCreateRequestDto) {
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        MartShop martShop = martCreateRequestDto.toEntity();
+        martShop.addUser(user);
+
+        martRepository.save(martShop);
     }
 
     //마트 정보 업데이트

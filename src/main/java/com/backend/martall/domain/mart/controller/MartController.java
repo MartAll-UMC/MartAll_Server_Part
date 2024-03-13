@@ -24,7 +24,7 @@ public class MartController {
     // 마트 생성
     @PostMapping
     public ResponseEntity<JsonResponse> createMart(@RequestBody MartRequestDto requestDto) {
-        martService.createMart(requestDto);
+        martService.createMartTest(requestDto);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 

@@ -99,6 +99,10 @@ public class MartShop extends BaseTime {
         this.martBookmarks.remove(martBookmark);
     }
 
+    public void addUser(User user) {
+        this.user = user;
+    }
+
     public void updateMartShop(MartRequestDto martRequestDto) {
         if (martRequestDto.getName() != null) this.name = martRequestDto.getName();
         if (martRequestDto.getIntroduction() != null) this.introduction = martRequestDto.getIntroduction();

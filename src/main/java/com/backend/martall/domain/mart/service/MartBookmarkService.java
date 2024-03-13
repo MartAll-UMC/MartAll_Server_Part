@@ -1,10 +1,8 @@
 package com.backend.martall.domain.mart.service;
 
-import com.backend.martall.domain.itemlike.service.ItemLikeService;
-import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
+
 import com.backend.martall.domain.mart.dto.MartResponseDto;
 import com.backend.martall.domain.mart.entity.MartBookmark;
-import com.backend.martall.domain.mart.entity.MartCategory;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
 import com.backend.martall.domain.mart.repository.MartRepository;

@@ -1,6 +1,5 @@
 package com.backend.martall.domain.mart.controller;
 
-import com.backend.martall.domain.mart.dto.FollowedMartResponseDto;
 import com.backend.martall.domain.mart.service.MartBookmarkService;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.global.dto.JsonResponse;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/mart/shops")

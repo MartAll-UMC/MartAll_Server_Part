@@ -1,13 +1,9 @@
 package com.backend.martall.domain.mart.dto;
 
-import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
-import com.backend.martall.domain.itemlike.service.ItemLikeService;
-import com.backend.martall.domain.mart.entity.MartCategory;
-import com.backend.martall.domain.mart.entity.MartShop;
+
 import lombok.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
