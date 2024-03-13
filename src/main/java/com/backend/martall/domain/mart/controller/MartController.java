@@ -48,8 +48,7 @@ public class MartController {
     @GetMapping("/{shopId}/detail")
     public ResponseEntity<JsonResponse> getMartDetail(@PathVariable Long shopId) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        MartDetailResponseDto martDetailResponseDto = martService.getMartDetail(shopId, userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martDetailResponseDto));
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martService.getMartDetail(shopId, userIdx)));
     }
 
 

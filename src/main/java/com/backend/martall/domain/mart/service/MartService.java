@@ -26,7 +26,6 @@ public class MartService {
 
     private final MartRepository martRepository;
     private final UserRepository userRepository;
-    private final MartCategoryRepository martCategoryRepository;
     private final MartBookmarkRepository martBookmarkRepository;
     private final ItemLikeService itemLikeService;
 

@@ -22,12 +22,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MartBookmarkService {
-    private UserRepository userRepository;
-    private MartRepository martRepository;
-    private MartBookmarkRepository martBookmarkRepository;
-    private ItemLikeService itemLikeService;
-
-    private MartService martService;
+    private final UserRepository userRepository;
+    private final MartRepository martRepository;
+    private final MartBookmarkRepository martBookmarkRepository;
+    private final MartService martService;
 
     @Transactional
     public void followMart(Long userId, Long shopId) {
