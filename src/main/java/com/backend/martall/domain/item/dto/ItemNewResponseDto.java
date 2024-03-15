@@ -10,21 +10,19 @@ import lombok.*;
 @NoArgsConstructor
 public class ItemNewResponseDto {
     private int itemId;
-    private String pic;
-    private String categoryName;
+    private String itemImg;
     private String itemName;
-    private int price;
-    private String content;
-    private boolean like;
+    private int itemPrice;
+    private boolean isLike;
+    private Mart mart;
 
-    public static ItemNewResponseDto from(Item item) {
-        return ItemNewResponseDto.builder()
-                .itemId(item.getItemId())
-                .pic(item.getProfilePhoto())
-                .categoryName(item.getCategoryId().getName())
-                .itemName(item.getItemName())
-                .price(item.getPrice())
-                .content(item.getContent())
-                .build();
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Mart {
+        private Long martId;
+        private String martName;
     }
 }
