@@ -1,7 +1,6 @@
 package com.backend.martall.domain.item.controller;
 
 import com.backend.martall.domain.item.dto.*;
-import com.backend.martall.domain.item.entity.ItemCategory;
 import com.backend.martall.domain.item.service.ItemService;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.global.dto.JsonResponse;
@@ -23,18 +22,16 @@ public class ItemController {
 
     // 검색
     @GetMapping("/search")
-    public ResponseEntity<JsonResponse> searchItems(@RequestParam String itemName) {
+    public ResponseEntity<JsonResponse> searchItems(@RequestParam(required = false) String keyword) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<ItemListResponseDto> itemListResponseDtos = itemService.searchItems(itemName, userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemListResponseDtos));
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemService.searchItems(keyword, userIdx)));
     }
 
     // 상세정보
     @GetMapping("/{shopId}/{itemId}")
     public ResponseEntity<JsonResponse> getItemById(@PathVariable Long shopId, @PathVariable int itemId) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        ItemDetailResponseDto itemDetailResponseDto = itemService.getItemDetail(shopId, itemId, userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemDetailResponseDto));
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemService.getItemDetail(shopId, itemId, userIdx)));
     }
 
     // 새로나온 상품
@@ -51,7 +48,7 @@ public class ItemController {
                                                       @RequestParam(required = false) Integer maxPrice,
                                                       @RequestParam(defaultValue = "기본") String sort) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<ItemCategoryResponseDto> itemCategoryResponseDtoList = itemService.getCategoryItem(category, minPrice, maxPrice, sort, userIdx);
+        List<ItemCategorySearchResponseDto> itemCategoryResponseDtoList = itemService.getCategoryItem(category, minPrice, maxPrice, sort, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemCategoryResponseDtoList));
     }
 
