@@ -3,7 +3,6 @@ package com.backend.martall.domain.itemlike.service;
 import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.item.repository.ItemRepository;
 import com.backend.martall.domain.itemlike.dto.ItemLikeInquiryResponse;
-import com.backend.martall.domain.itemlike.dto.ItemLikeResponse;
 import com.backend.martall.domain.itemlike.entity.ItemLike;
 import com.backend.martall.domain.itemlike.repository.ItemLikeRepository;
 import com.backend.martall.domain.mart.entity.MartShop;
@@ -30,44 +29,44 @@ public class ItemLikeService {
     private final ItemRepository itemRepository;
 
     // 찜한 상품 조회
-    public ItemLikeInquiryResponse inquiryItemLike(Long userIdx) {
+    public List<ItemLikeInquiryResponse> inquiryItemLike(Long userIdx) {
         User user = userRepository.findByUserIdx(userIdx).get();
 
         // userIdx의 찜한 상품 목록 불러오기
         List<ItemLike> itemLikeList = itemLikeRepository.findByUser(user);
 
-        // 찜한 상품이 없으면 예외처리
-        if(itemLikeList.isEmpty()) {
-            log.info("찜한 상품이 존재하지 않음, userIdx = {}", userIdx);
-            throw new BadRequestException(ITEMLIKE_NOT_EXIST);
-        }
+//        // 찜한 상품이 없으면 예외처리
+//        if(itemLikeList.isEmpty()) {
+//            log.info("찜한 상품이 존재하지 않음, userIdx = {}", userIdx);
+//            throw new BadRequestException(ITEMLIKE_NOT_EXIST);
+//        }
 
         // entity -> DTO
         // 상품, 마트 에서 데이터 불러오기
-        List<ItemLikeResponse> itemLikeResponseList = itemLikeList.stream()
+        List<ItemLikeInquiryResponse> itemLikeInquiryResponseList = itemLikeList.stream()
                 .map(itemLike -> {
                     Item item  = itemLike.getItem();
                     MartShop martShop = item.getMartShop();
-                    ItemLikeResponse itemLikeResponse = ItemLikeResponse.builder()
+                    ItemLikeInquiryResponse itemLikeInquiryResponse = ItemLikeInquiryResponse.builder()
                             // 상품 정보에서 불러오기
                             .itemId(item.getItemId())
-                            .picName(item.getProfilePhoto())
+                            .itemImg(item.getProfilePhoto())
                             .itemName(item.getItemName())
-                            .price(item.getPrice())
+                            .itemPrice(item.getPrice())
+                            .itemLike(checkItemLike(item, user))
                             // 마트 정보에서 불러오기
-                            .martShopId(martShop.getMartShopId())
-                            .martName(martShop.getName())
-                            .like(checkItemLike(item, user))
+                            .mart(ItemLikeInquiryResponse.Mart.builder()
+                                    .martId(martShop.getMartShopId())
+                                    .martName(martShop.getName())
+                                    .build())
                             .build();
-                    return itemLikeResponse;
+                    return itemLikeInquiryResponse;
                 })
                 .collect(Collectors.toList());
 
         log.info("찜한 상품 조회, userIdx = {}", userIdx);
 
-        return ItemLikeInquiryResponse.builder()
-                .item(itemLikeResponseList)
-                .build();
+        return itemLikeInquiryResponseList;
     }
 
     // 상품 찜하기
