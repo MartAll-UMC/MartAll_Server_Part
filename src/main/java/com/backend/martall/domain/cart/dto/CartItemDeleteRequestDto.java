@@ -11,6 +11,14 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartItemRequestList {
-    private List<CartItemRequest> cartItemList;
+public class CartItemDeleteRequestDto {
+    private List<DeleteItem> cartItems;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteItem {
+        private Long cartItemId;
+    }
 }

@@ -1,6 +1,6 @@
 package com.backend.martall.domain.cart.entity;
 
-import com.backend.martall.domain.cart.dto.CartItemRequest;
+import com.backend.martall.domain.cart.dto.CartItemUpdateRequestDto;
 import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -33,7 +33,7 @@ public class CartItem {
     @Column(name = "count")
     private int count;
 
-    public void updateCartItem(CartItemRequest cartRequestDto) {
-        this.count = cartRequestDto.getCount();
+    public void updateCartItem(CartItemUpdateRequestDto cartItemUpdateRequestDto) {
+        this.count = cartItemUpdateRequestDto.getCartItemCount();
     }
 }

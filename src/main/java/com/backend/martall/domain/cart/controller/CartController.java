@@ -1,7 +1,8 @@
 package com.backend.martall.domain.cart.controller;
 
-import com.backend.martall.domain.cart.dto.CartItemRequest;
-import com.backend.martall.domain.cart.dto.CartItemRequestList;
+import com.backend.martall.domain.cart.dto.CartItemAddRequestDto;
+import com.backend.martall.domain.cart.dto.CartItemDeleteRequestDto;
+import com.backend.martall.domain.cart.dto.CartItemUpdateRequestDto;
 import com.backend.martall.domain.cart.service.CartService;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.global.dto.JsonResponse;
@@ -27,25 +28,25 @@ public class CartController {
 
     // 장바구니 상품 추가
     @PostMapping("/cart")
-    public ResponseEntity<JsonResponse> addCart(@RequestBody CartItemRequest cartItemRequest) {
+    public ResponseEntity<JsonResponse> addCart(@RequestBody CartItemAddRequestDto cartItemAddRequestDto) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        cartService.addCartItem(cartItemRequest, userIdx);
+        cartService.addCartItem(cartItemAddRequestDto, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
     // 장바구니 수정
     @PatchMapping("/cart")
-    public ResponseEntity<JsonResponse> updateCart(@RequestBody CartItemRequest cartItemRequest) {
+    public ResponseEntity<JsonResponse> updateCart(@RequestBody CartItemUpdateRequestDto cartItemUpdateRequestDto) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        cartService.updateCartItem(cartItemRequest, userIdx);
+        cartService.updateCartItem(cartItemUpdateRequestDto, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
     // 장바구니 상품 삭제
     @DeleteMapping("/cart")
-    public ResponseEntity<JsonResponse> deleteCart(@RequestBody CartItemRequestList cartItemRequestList) {
+    public ResponseEntity<JsonResponse> deleteCart(@RequestBody CartItemDeleteRequestDto cartItemDeleteRequestDto) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        cartService.deleteCartItem(cartItemRequestList, userIdx);
+        cartService.deleteCartItem(cartItemDeleteRequestDto, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 }
