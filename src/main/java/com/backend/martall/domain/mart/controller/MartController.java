@@ -24,7 +24,7 @@ public class MartController {
     // 마트 생성
     @PostMapping
     public ResponseEntity<JsonResponse> createMart(@RequestBody MartRequestDto requestDto) {
-        martService.createMart(requestDto);
+        martService.createMartTest(requestDto);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
@@ -32,50 +32,23 @@ public class MartController {
     @PatchMapping("/{shopId}")
     public ResponseEntity<JsonResponse> updateMartShop(@PathVariable Long shopId, @RequestBody MartRequestDto requestDto) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        MartResponseDto responseDto = martService.updateMart(shopId, requestDto, userIdx);
+        MartUpdateResponseDto responseDto = martService.updateMart(shopId, requestDto, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDto));
     }
-
-    // 단골 마트 팔로우
-    @PostMapping("/{shopId}/follow")
-    public ResponseEntity<JsonResponse> followMart(@PathVariable Long shopId) {
-
-        Long userIdx = jwtTokenProvider.resolveToken();
-        martService.followMart(userIdx, shopId);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, "단골 마트로 추가되었습니다."));
-
-    }
-
-    // 단골 마트 팔로우 취소
-    @DeleteMapping("/{shopId}/unfollow")
-    public ResponseEntity<JsonResponse> unfollowMart(@PathVariable Long shopId) {
-        Long userIdx = jwtTokenProvider.resolveToken();
-        martService.unfollowMart(userIdx, shopId);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, "단골 마트에서 제거되었습니다."));
-    }
-
-    // 단골 마트 내역 조회
-    @GetMapping("/follows")
-    public ResponseEntity<JsonResponse> getFollowedMarts() {
-        Long userIdx = jwtTokenProvider.resolveToken();
-        List<FollowedMartResponseDto> followedMarts = martService.getFollowedMarts(userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, followedMarts));
-    }
-
 
     // 마트 검색
     @GetMapping("/search")
     public ResponseEntity<JsonResponse> searchMarts(@RequestParam String keyword) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<MartSearchResponseDto> responseDtos = martService.searchMarts(keyword, userIdx);
+        List<MartResponseDto> responseDtos = martService.searchMarts(keyword, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
     }
 
     // 마트 상세 정보 조회
     @GetMapping("/{shopId}/detail")
     public ResponseEntity<JsonResponse> getMartDetail(@PathVariable Long shopId) {
-        MartDetailResponseDto martDetailResponseDto = martService.getMartDetail(shopId);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martDetailResponseDto));
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martService.getMartDetail(shopId, userIdx)));
     }
 
 
@@ -89,14 +62,14 @@ public class MartController {
             @RequestParam(required = false) Integer maxLike,
             @RequestParam(defaultValue = "기본") String sort) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<MartFilterResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
+        List<MartWithItemResponseDto> responseDtos = martService.searchMartsByCategoryAndRating(tag, minBookmark, maxBookmark, minLike, maxLike, sort, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
     }
 
     @GetMapping("/all")
     public ResponseEntity<JsonResponse> getAllMarts() {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<MartFilterResponseDto> marts = martService.findAllMarts(userIdx);
+        List<MartWithItemResponseDto> marts = martService.findAllMarts(userIdx);
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
     }
 }

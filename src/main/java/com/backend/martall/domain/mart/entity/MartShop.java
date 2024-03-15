@@ -1,6 +1,7 @@
 package com.backend.martall.domain.mart.entity;
 
 import com.backend.martall.domain.BaseTime;
+import com.backend.martall.domain.mart.dto.MartRequestDto;
 import com.backend.martall.domain.user.entity.User;
 import lombok.*;
 import jakarta.persistence.*;
@@ -96,5 +97,26 @@ public class MartShop extends BaseTime {
 
     public void removeBookmark(MartBookmark martBookmark) {
         this.martBookmarks.remove(martBookmark);
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
+
+    public void updateMartShop(MartRequestDto martRequestDto) {
+        if (martRequestDto.getName() != null) this.name = martRequestDto.getName();
+        if (martRequestDto.getIntroduction() != null) this.introduction = martRequestDto.getIntroduction();
+        if (martRequestDto.getAddress() != null) this.address = martRequestDto.getAddress();
+        if (martRequestDto.getOperatingTime() != null) this.operatingTime = martRequestDto.getOperatingTime();
+        if (martRequestDto.getPickupTime() != null) this.pickupTime = martRequestDto.getPickupTime();
+        if (martRequestDto.getVisitor() != null) this.visitor = martRequestDto.getVisitor();
+        if (martRequestDto.getSale() != null) this.sale = martRequestDto.getSale();
+        if (martRequestDto.getProfilePhoto() != null) this.profilePhoto = martRequestDto.getProfilePhoto();
+        if (martRequestDto.getManagerName() != null) this.managerName = martRequestDto.getManagerName();
+        if (martRequestDto.getShopNumber() != null) this.shopNumber = martRequestDto.getShopNumber();
+        if (martRequestDto.getLinkKakao() != null) this.linkKakao = martRequestDto.getLinkKakao();
+        if (martRequestDto.getLinkNaver() != null) this.linkNaver = martRequestDto.getLinkNaver();
+        if (martRequestDto.getLongitude() != null) this.longitude = martRequestDto.getLongitude();
+        if (martRequestDto.getLatitude() != null) this.latitude = martRequestDto.getLatitude();
     }
 }
