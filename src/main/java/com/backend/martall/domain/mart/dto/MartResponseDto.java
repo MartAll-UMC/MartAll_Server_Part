@@ -16,5 +16,5 @@ public class MartResponseDto {
     private List<String> martCategory;
     private int bookmarkCount;
     private int likeCount;
-    private boolean isBookmark;
+    private boolean martBookmark;
 }

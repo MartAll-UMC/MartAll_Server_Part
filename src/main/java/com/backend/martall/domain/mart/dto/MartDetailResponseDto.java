@@ -18,7 +18,7 @@ public class MartDetailResponseDto {
     private List<String> martCategory;
     private int bookmarkCount;
     private int likeCount;
-    private boolean isBookmark;
+    private boolean martBookmark;
     private String martAddress;
     private String martOwner;
     private String martNumber;
