@@ -13,7 +13,7 @@ public class ItemMartNewResponseDto {
     private String itemName;
     private String itemImg;
     private int itemPrice;
-    private boolean isLike;
+    private boolean itemLike;
     private Mart mart;
 
     @Getter

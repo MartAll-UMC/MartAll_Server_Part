@@ -18,7 +18,7 @@ public class ItemDetailResponseDto {
     private String itemImg;
     private String itemName;
     private int itemPrice;
-    private boolean isLike;
+    private boolean itemLike;
     private String itemContentImg;
     private Mart mart;
 
@@ -33,6 +33,6 @@ public class ItemDetailResponseDto {
         private List<String> martCategory;
         private int bookmarkCount;
         private int likeCount;
-        private boolean isBookmark;
+        private boolean martBookmark;
     }
 }

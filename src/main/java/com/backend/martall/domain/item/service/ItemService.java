@@ -32,12 +32,10 @@ public class ItemService {
 
 
     private final ItemRepository itemRepository;
-    private final ItemPicRepository itemPicRepository;
     private final MartRepository martRepository;
     private final UserRepository userRepository;
     private final ItemLikeService itemLikeService;
     private final ImageService imageService;
-    private final MartBookmarkRepository martBookmarkRepository;
 
     public List<ItemKeywordSearchResponseDto> searchItems(String keyword, Long userIdx) {
         User user = userRepository.findByUserIdx(userIdx).get();
@@ -57,7 +55,7 @@ public class ItemService {
                             .itemImg(item.getProfilePhoto())
                             .itemName(item.getItemName())
                             .itemPrice(item.getPrice())
-                            .isLike(itemLikeService.checkItemLike(item, user))
+                            .itemLike(itemLikeService.checkItemLike(item, user))
                             .mart(ItemKeywordSearchResponseDto.Mart.builder()
                                     .martId(item.getMartShop().getMartShopId())
                                     .martName(item.getMartShop().getName())
@@ -91,7 +89,7 @@ public class ItemService {
                 .itemImg(item.getProfilePhoto())
                 .itemName(item.getItemName())
                 .itemPrice(item.getPrice())
-                .isLike(itemLikeService.checkItemLike(item, user))
+                .itemLike(itemLikeService.checkItemLike(item, user))
                 .itemContentImg(item.getContent())
                 // 마트 정보
                 .mart(ItemDetailResponseDto.Mart.builder()
@@ -102,7 +100,7 @@ public class ItemService {
                                 .collect(Collectors.toList()))
                         .bookmarkCount(martShop.getMartBookmarks().size())
                         .likeCount(itemLikeService.countItemLikeByMart(martShop))
-                        .isBookmark(martShop.getMartBookmarks().stream()
+                        .martBookmark(martShop.getMartBookmarks().stream()
                                 .anyMatch(bookmark -> bookmark.getUser().equals(user)))
                         .build())
                 .build();
@@ -128,7 +126,7 @@ public class ItemService {
                             .itemImg(item.getProfilePhoto())
                             .itemName(item.getItemName())
                             .itemPrice(item.getPrice())
-                            .isLike(itemLikeService.checkItemLike(item, user))
+                            .itemLike(itemLikeService.checkItemLike(item, user))
                             // 마트 정보
                             .mart(ItemNewResponseDto.Mart.builder()
                                     .martId(martShop.getMartShopId())
@@ -170,7 +168,7 @@ public class ItemService {
                             .itemImg(item.getProfilePhoto())
                             .itemName(item.getItemName())
                             .itemPrice(item.getPrice())
-                            .isLike(itemLikeService.checkItemLike(item, user))
+                            .itemLike(itemLikeService.checkItemLike(item, user))
                             // 마트 정보
                             .mart(ItemCategorySearchResponseDto.Mart.builder()
                                     .martId(martShop.getMartShopId())
@@ -197,7 +195,7 @@ public class ItemService {
                             .itemImg(item.getProfilePhoto())
                             .itemName(item.getItemName())
                             .itemPrice(item.getPrice())
-                            .isLike(itemLikeService.checkItemLike(item, user))
+                            .itemLike(itemLikeService.checkItemLike(item, user))
                             // 마트 정보
                             .mart(ItemMartNewResponseDto.Mart.builder()
                                     .martId(martShop.getMartShopId())
