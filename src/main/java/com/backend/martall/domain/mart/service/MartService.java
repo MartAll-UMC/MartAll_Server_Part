@@ -85,7 +85,7 @@ public class MartService {
                         .collect(Collectors.toList()))
                 .bookmarkCount(martShop.getMartBookmarks().size())
                 .likeCount(itemLikeService.countItemLikeByMart(martShop))
-                .isBookmark(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
+                .martBookmark(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
                 .martAddress(martShop.getAddress())
                 // --> 나중에 만든 회원명으로 교체
                 .martOwner(martShop.getManagerName())
@@ -156,7 +156,7 @@ public class MartService {
                                     .collect(Collectors.toList()))
                             .bookmarkCount(martShop.getMartBookmarks().size())
                             .likeCount(itemLikeService.countItemLikeByMart(martShop))
-                            .isBookmark(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
+                            .martBookmark(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
                             .build();
 
                     return martKeywordSearchResponseDto;
@@ -179,7 +179,7 @@ public class MartService {
                                     .collect(Collectors.toList()))
                             .bookmarkCount(martShop.getMartBookmarks().size())
                             .likeCount(itemLikeService.countItemLikeByMart(martShop))
-                            .isBookmark(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
+                            .martBookmark(martBookmarkRepository.existsByUserAndMartShop(user, martShop))
                             .items(itemService.getMartNewItem(martShop, user))
                             .build();
 
