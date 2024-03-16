@@ -1,6 +1,6 @@
 package com.backend.martall.domain.order.controller;
 
-import com.backend.martall.domain.order.dto.OrderCreateRequest;
+import com.backend.martall.domain.order.dto.OrderCreateRequestDto;
 import com.backend.martall.domain.order.service.UserOrderService;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.global.dto.JsonResponse;
@@ -17,9 +17,9 @@ public class UserOrderController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/order")
-    public ResponseEntity<JsonResponse> createOrder(@RequestBody OrderCreateRequest orderCreateRequest) {
+    public ResponseEntity<JsonResponse> createOrder(@RequestBody OrderCreateRequestDto orderCreateRequestDto) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        userOrderService.createOrder(orderCreateRequest, userIdx);
+        userOrderService.createOrder(orderCreateRequestDto, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, null));
     }
 
