@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface OrderInfoRepository extends JpaRepository<OrderInfo, Long> {
     Optional<OrderInfo> findByUserAndOrderState(User user, String orderState);
 
+    boolean existsByUserAndOrderState(User user, String orderState);
+
     Optional<OrderInfo> findByUser(User user);
 
 }
