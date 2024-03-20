@@ -3,6 +3,7 @@ package com.backend.martall.domain.image.controller;
 
 import com.backend.martall.domain.image.dto.ImageDto;
 import com.backend.martall.domain.image.service.ImageService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Hidden
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
