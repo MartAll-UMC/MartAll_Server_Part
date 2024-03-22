@@ -1,6 +1,7 @@
 package com.backend.martall.domain.user.dto;
 
 import com.backend.martall.domain.user.entity.User;
+import com.backend.martall.domain.user.entity.UserType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -34,22 +35,22 @@ public class UserDto {
     @NoArgsConstructor
     @Data
     public static class UserInfoResponseDto {
-        private String id;
+        private Long userId;
         private String username;
         private String phoneNumber;
         private String imgUrl;
         private String email;
         private String provider;
-        private Integer money;
+        private UserType userType;
 
         public UserInfoResponseDto(User user) {
-            this.id = user.getId();
+            this.userId = user.getUserIdx();
             this.username = user.getUsername();
             this.phoneNumber = user.getPhoneNumber();
             this.imgUrl = user.getImgUrl();
             this.email = user.getEmail();
             this.provider = user.getEmail();
-            this.money = user.getMoney();
+            this.userType = UserType.findByTypeCode(user.getUserType());
         }
 
     }
