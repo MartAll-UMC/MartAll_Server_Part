@@ -3,6 +3,7 @@ package com.backend.martall.domain.mart.controller;
 
 import java.util.List;
 
+import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
 import com.backend.martall.domain.mart.dto.*;
 import com.backend.martall.domain.mart.service.MartService;
 import com.backend.martall.global.dto.JsonResponse;
@@ -108,5 +109,16 @@ public class MartController {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<MartWithItemResponseDto> marts = martService.findAllMarts(userIdx);
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
+    }
+
+    @Operation(summary = "마트 상품 조회")
+    @ApiResponse(responseCode = "200", description = "마트 상품 조회",
+            content = @Content(mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = ItemMartNewResponseDto.class) )))
+    @GetMapping("/{shopId}/item")
+    public ResponseEntity<JsonResponse> getMartItem(@PathVariable Long shopId){
+        Long userIdx = jwtTokenProvider.resolveToken();
+        List<ItemMartNewResponseDto> itemMartNewResponseDtoList = martService.getMartItem(shopId, userIdx);
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, itemMartNewResponseDtoList));
     }
 }
