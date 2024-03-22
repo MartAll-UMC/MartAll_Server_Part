@@ -203,6 +203,23 @@ public class MartService {
         return itemService.getMartNewItem(martShop, user);
     }
 
+    public List<MartRecommendedResponseDto> getRecommendedMart() {
+        List<MartShop> martShopList = martRepository.findRandomMart();
+        List<MartRecommendedResponseDto> martRecommendedResponseDtoList = martShopList.stream()
+                .map(martShop -> {
+                    MartRecommendedResponseDto martRecommendedResponseDto = MartRecommendedResponseDto.builder()
+                            .martId(martShop.getMartShopId())
+                            .martImg(martShop.getProfilePhoto())
+                            .martName(martShop.getName())
+                            .martCategory(martShop.getMartCategories().stream()
+                                    .map(martCategory -> martCategory.getCategoryName())
+                                    .collect(Collectors.toList()))
+                            .build();
+                    return martRecommendedResponseDto;
+                })
+                .collect(Collectors.toList());
+        return martRecommendedResponseDtoList;
+    }
 }
 
 

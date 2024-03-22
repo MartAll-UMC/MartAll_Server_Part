@@ -47,6 +47,10 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
             "AND (:minLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) >= :minLike)" +
             "AND (:maxLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) <= :maxLike)")
     List<MartShop> searchByFilterLikeDesc(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike);
+//    findTop8ByOrderByCreatedAtDesc
+
+    @Query(nativeQuery = true, value = "SELECT * FROM mart_shop m ORDER BY RAND() LIMIT 8")
+    List<MartShop> findRandomMart();
 }
 
 
