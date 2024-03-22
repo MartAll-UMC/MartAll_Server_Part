@@ -1,5 +1,6 @@
 package com.backend.martall.domain.mart.service;
 
+import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
 import com.backend.martall.domain.item.service.ItemService;
 import com.backend.martall.domain.itemlike.service.ItemLikeService;
 import com.backend.martall.domain.mart.dto.*;
@@ -19,6 +20,8 @@ import com.backend.martall.domain.mart.entity.MartCategory;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.backend.martall.global.exception.ResponseStatus.MART_NAME_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +61,7 @@ public class MartService {
     @Transactional
     public MartUpdateResponseDto updateMart(Long shopId, MartRequestDto requestDto, Long userId) {
         MartShop martShop = martRepository.findById(shopId)
-                .orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
+                .orElseThrow(() -> new BadRequestException(MART_NAME_NOT_FOUND));
 
         // 마트 정보 업데이트 로직
         martShop.updateMartShop(requestDto);
@@ -189,6 +192,15 @@ public class MartService {
                 .collect(Collectors.toList());
 
         return martWithItemResponseDtoList;
+    }
+
+    public List<ItemMartNewResponseDto> getMartItem(Long martId, Long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        MartShop martShop = martRepository.findById(martId)
+                .orElseThrow(()-> new BadRequestException(MART_NAME_NOT_FOUND));
+
+        return itemService.getMartNewItem(martShop, user);
     }
 
 }
