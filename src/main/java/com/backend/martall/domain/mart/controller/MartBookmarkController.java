@@ -51,11 +51,9 @@ public class MartBookmarkController {
 
     // 단골 마트 내역 조회
     @Operation(summary = "단골 마트 목록")
-    @ApiResponse(responseCode = "200", description = "단골 마트 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = MartResponseDto.class) )))
+    @ApiResponse(responseCode = "200", description = "단골 마트 목록",useReturnTypeSchema = true)
     @GetMapping("/follows")
-    public ResponseEntity<JsonResponse> getFollowedMarts() {
+    public ResponseEntity<JsonResponse<List<MartResponseDto>>> getFollowedMarts() {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<MartResponseDto> martResponseDtoList = martBookmarkService.getFollowedMarts(userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martResponseDtoList));
