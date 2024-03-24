@@ -38,11 +38,9 @@ public class UserOrderController {
 
     // 주문 조회
     @Operation(summary = "주문 조회")
-    @ApiResponse(responseCode = "200", description = "주문 조회",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = OrderInquiryResponseDto.class))))
+    @ApiResponse(responseCode = "200", description = "주문 조회", useReturnTypeSchema = true)
     @GetMapping("/order")
-    public ResponseEntity<JsonResponse> inquiryOrder() {
+    public ResponseEntity<JsonResponse<OrderInquiryResponseDto>> inquiryOrder() {
         Long userIdx = jwtTokenProvider.resolveToken();
         OrderInquiryResponseDto orderInquiryResponseDto = userOrderService.getOrder(userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, orderInquiryResponseDto));

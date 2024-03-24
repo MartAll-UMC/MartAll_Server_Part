@@ -33,11 +33,9 @@ public class ItemController {
     // 검색
     @Operation(summary = "상품 키워드 검색")
     @Parameter(name = "keyword", description = "검색할 키워드")
-    @ApiResponse(responseCode = "200", description = "상품 키워드 검색 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = ItemKeywordSearchResponseDto.class))))
+    @ApiResponse(responseCode = "200", description = "상품 키워드 검색 목록", useReturnTypeSchema = true)
     @GetMapping("/search")
-    public ResponseEntity<JsonResponse> searchItems(@RequestParam(required = false) String keyword) {
+    public ResponseEntity<JsonResponse<List<ItemCategorySearchResponseDto>>> searchItems(@RequestParam(required = false) String keyword) {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<ItemKeywordSearchResponseDto> itemKeywordSearchResponseDtoList = itemService.searchItems(keyword, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemKeywordSearchResponseDtoList));
@@ -47,11 +45,9 @@ public class ItemController {
     @Operation(summary = "상품 상세정보")
     @Parameter(name = "shopId", description = "마트의 아이디")
     @Parameter(name = "itemId", description = "상품의 아이디")
-    @ApiResponse(responseCode = "200", description = "상품 상세정보",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ItemDetailResponseDto.class)))
+    @ApiResponse(responseCode = "200", description = "상품 상세정보", useReturnTypeSchema = true)
     @GetMapping("/{shopId}/{itemId}")
-    public ResponseEntity<JsonResponse> getItemById(@PathVariable Long shopId, @PathVariable int itemId) {
+    public ResponseEntity<JsonResponse<List<ItemCategorySearchResponseDto>>> getItemById(@PathVariable Long shopId, @PathVariable int itemId) {
         Long userIdx = jwtTokenProvider.resolveToken();
         ItemDetailResponseDto itemDetailResponseDto = itemService.getItemDetail(shopId, itemId, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemDetailResponseDto));
@@ -59,11 +55,9 @@ public class ItemController {
 
     // 새로나온 상품
     @Operation(summary = "새로 나온 상품 조회")
-    @ApiResponse(responseCode = "200", description = "새로 나온 상품 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = ItemNewResponseDto.class))))
+    @ApiResponse(responseCode = "200", description = "새로 나온 상품 목록", useReturnTypeSchema = true)
     @GetMapping("/new-item")
-    public ResponseEntity<JsonResponse> newItems() {
+    public ResponseEntity<JsonResponse<List<ItemCategorySearchResponseDto>>> newItems() {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<ItemNewResponseDto> itemNewResponseDtos = itemService.newItems(userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemNewResponseDtos));
@@ -75,11 +69,9 @@ public class ItemController {
     @Parameter(name = "minPrice", description = "최소 가격")
     @Parameter(name = "maxPrice", description = "최대 가격")
     @Parameter(name = "sort", description = "정렬 기준")
-    @ApiResponse(responseCode = "200", description = "상품 카테고리 검색 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = ItemCategorySearchResponseDto.class))))
+    @ApiResponse(responseCode = "200", description = "상품 카테고리 검색 목록", useReturnTypeSchema = true)
     @GetMapping("/category")
-    public ResponseEntity<JsonResponse> categoryItems(@RequestParam(defaultValue = "전체") String category,
+    public ResponseEntity<JsonResponse<List<ItemCategorySearchResponseDto>>> categoryItems(@RequestParam(defaultValue = "전체") String category,
                                                       @RequestParam(required = false) Integer minPrice,
                                                       @RequestParam(required = false) Integer maxPrice,
                                                       @RequestParam(defaultValue = "기본") String sort) {

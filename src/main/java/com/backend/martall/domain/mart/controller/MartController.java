@@ -52,7 +52,7 @@ public class MartController {
     // 마트 검색
     @Operation(summary = "마트 키워드 검색")
     @Parameter(name = "keyword", description = "검색할 키워드")
-    @ApiResponse(responseCode = "200", description = "마트 키워드 검색 목록",useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "200", description = "마트 키워드 검색 목록", useReturnTypeSchema = true)
     @GetMapping("/search")
     public ResponseEntity<JsonResponse<List<MartResponseDto>>> searchMarts(@RequestParam String keyword) {
         Long userIdx = jwtTokenProvider.resolveToken();
@@ -62,7 +62,7 @@ public class MartController {
 
     @Operation(summary = "마트 상세정보")
     @Parameter(name = "shopId", description = "마트의 아이디")
-    @ApiResponse(responseCode = "200", description = "마트 상세정보",useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "200", description = "마트 상세정보", useReturnTypeSchema = true)
     // 마트 상세 정보 조회
     @GetMapping("/{shopId}/detail")
     public ResponseEntity<JsonResponse<MartDetailResponseDto>> getMartDetail(@PathVariable Long shopId) {
@@ -80,7 +80,7 @@ public class MartController {
     @Parameter(name = "minLike", description = "최소 마트 상품 찜 수")
     @Parameter(name = "maxLike", description = "최대 마트 상품 찜 수")
     @Parameter(name = "sort", description = "정렬 기준 - 기본, 최신, 단골, 찜")
-    @ApiResponse(responseCode = "200", description = "마트 필터 검색 목록",useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "200", description = "마트 필터 검색 목록", useReturnTypeSchema = true)
     @GetMapping("/search/filter")
     public ResponseEntity<JsonResponse<List<MartWithItemResponseDto>>> searchMartsWithFilters(
             @RequestParam(defaultValue = "전체") String tag,
@@ -95,7 +95,7 @@ public class MartController {
     }
 
     @Operation(summary = "마트 전체 조회")
-    @ApiResponse(responseCode = "200", description = "마트 전체 조회 목록",useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "200", description = "마트 전체 조회 목록", useReturnTypeSchema = true)
     @GetMapping("/all")
     public ResponseEntity<JsonResponse<List<MartWithItemResponseDto>>> getAllMarts() {
         Long userIdx = jwtTokenProvider.resolveToken();
@@ -104,7 +104,7 @@ public class MartController {
     }
 
     @Operation(summary = "마트 상품 조회")
-    @ApiResponse(responseCode = "200", description = "마트 상품 조회",useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "200", description = "마트 상품 조회", useReturnTypeSchema = true)
     @GetMapping("/{shopId}/item")
     public ResponseEntity<JsonResponse<List<ItemMartNewResponseDto>>> getMartItem(@PathVariable Long shopId) {
         Long userIdx = jwtTokenProvider.resolveToken();

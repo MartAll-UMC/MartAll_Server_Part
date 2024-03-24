@@ -30,11 +30,9 @@ public class ItemLikeController {
 
     // 찜 상품 조회
     @Operation(summary = "찜한 상품 목록 조회")
-    @ApiResponse(responseCode = "200", description = "찜 상품 조회 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = ItemLikeInquiryResponse.class))))
+    @ApiResponse(responseCode = "200", description = "찜 상품 조회 목록", useReturnTypeSchema = true)
     @GetMapping("")
-    public ResponseEntity<JsonResponse> inquiryItemLike() {
+    public ResponseEntity<JsonResponse<List<ItemLikeInquiryResponse>>> inquiryItemLike() {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<ItemLikeInquiryResponse> itemLikeInquiryResponseList = itemLikeService.inquiryItemLike(userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemLikeInquiryResponseList));
