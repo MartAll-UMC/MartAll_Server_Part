@@ -31,11 +31,9 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "카카오 로그인")
-    @ApiResponse(responseCode = "200", description = "로그인 성공",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = JwtDto.TwoJwtDateDto.class)))
+    @ApiResponse(responseCode = "200", description = "로그인 성공", useReturnTypeSchema = true)
     @PostMapping("/login-kakao")
-    public ResponseEntity<JsonResponse> joinUser(@RequestBody UserDto.UserRequestDto userRequestDto) {
+    public ResponseEntity<JsonResponse<JwtDto.TwoJwtDateDto>> joinUser(@RequestBody UserDto.UserRequestDto userRequestDto) {
 
         JwtDto.TwoJwtDateDto token = userService.join(userRequestDto);
 
@@ -43,11 +41,9 @@ public class UserController {
     }
 
     @Operation(summary = "토큰 재발급")
-    @ApiResponse(responseCode = "200", description = "토큰 재발급",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = JwtDto.JwtDateDto.class)))
+    @ApiResponse(responseCode = "200", description = "토큰 재발급", useReturnTypeSchema = true)
     @GetMapping("/refresh")
-    public ResponseEntity<JsonResponse> refreshToken() {
+    public ResponseEntity<JsonResponse<JwtDto.JwtDateDto>> refreshToken() {
         String refresh_token = jwtTokenProvider.resolveRefreshToken();
 
         JwtDto.JwtDateDto accessToken = userService.recreateAccessToken(refresh_token);
@@ -57,11 +53,9 @@ public class UserController {
 
 
     @Operation(summary = "회원정보 조회")
-    @ApiResponse(responseCode = "200", description = "회원정보 조회",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = UserDto.UserInfoResponseDto.class)))
+    @ApiResponse(responseCode = "200", description = "회원정보 조회", useReturnTypeSchema = true)
     @GetMapping("/profile")
-    public ResponseEntity<JsonResponse> getProfile() {
+    public ResponseEntity<JsonResponse<UserDto.UserInfoResponseDto>> getProfile() {
         Long id = jwtTokenProvider.resolveToken();
         UserDto.UserInfoResponseDto userInfoResponseDto = userService.getUserInformation(id);
 
@@ -97,11 +91,9 @@ public class UserController {
     }
 
     @Operation(summary = "위치 조회")
-    @ApiResponse(responseCode = "200", description = "위치 조회",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = UserDto.UserLocationDto.class))))
+    @ApiResponse(responseCode = "200", description = "위치 조회", useReturnTypeSchema = true)
     @GetMapping("/location")
-    public ResponseEntity<JsonResponse> getLocation() {
+    public ResponseEntity<JsonResponse<UserDto.UserLocationDto>> getLocation() {
         Long id = jwtTokenProvider.resolveToken();
         UserDto.UserLocationDto userLocationDto = userService.getLocation(id);
 
@@ -109,11 +101,9 @@ public class UserController {
     }
 
     @Operation(summary = "위치 및 범위 조회")
-    @ApiResponse(responseCode = "200", description = "위치 및 범위 조회",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = UserDto.UserLocationRangeDto.class))))
+    @ApiResponse(responseCode = "200", description = "위치 및 범위 조회", useReturnTypeSchema = true)
     @GetMapping("/location-range")
-    public ResponseEntity<JsonResponse> getLocationRange() {
+    public ResponseEntity<JsonResponse<UserDto.UserLocationRangeDto>> getLocationRange() {
         Long id = jwtTokenProvider.resolveToken();
         UserDto.UserLocationRangeDto userLocationRangeDto = userService.getLocationRange(id);
 

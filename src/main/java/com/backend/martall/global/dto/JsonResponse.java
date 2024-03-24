@@ -1,6 +1,7 @@
 package com.backend.martall.global.dto;
 
 import com.backend.martall.global.exception.ResponseStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,9 @@ public class JsonResponse<T> {
     private boolean isSuccess;
     private int status;
     private String message;
-    private Object result;
+
+    @Schema(description = "응답 데이터")
+    private T result;
 
     // 요청 성공
     public JsonResponse(ResponseStatus status, T result){

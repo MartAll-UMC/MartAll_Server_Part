@@ -52,11 +52,9 @@ public class MartController {
     // 마트 검색
     @Operation(summary = "마트 키워드 검색")
     @Parameter(name = "keyword", description = "검색할 키워드")
-    @ApiResponse(responseCode = "200", description = "마트 키워드 검색 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = MartResponseDto.class))))
+    @ApiResponse(responseCode = "200", description = "마트 키워드 검색 목록", useReturnTypeSchema = true)
     @GetMapping("/search")
-    public ResponseEntity<JsonResponse> searchMarts(@RequestParam String keyword) {
+    public ResponseEntity<JsonResponse<List<MartResponseDto>>> searchMarts(@RequestParam String keyword) {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<MartResponseDto> responseDtos = martService.searchMarts(keyword, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, responseDtos));
@@ -64,12 +62,10 @@ public class MartController {
 
     @Operation(summary = "마트 상세정보")
     @Parameter(name = "shopId", description = "마트의 아이디")
-    @ApiResponse(responseCode = "200", description = "마트 상세정보",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = MartDetailResponseDto.class)))
+    @ApiResponse(responseCode = "200", description = "마트 상세정보", useReturnTypeSchema = true)
     // 마트 상세 정보 조회
     @GetMapping("/{shopId}/detail")
-    public ResponseEntity<JsonResponse> getMartDetail(@PathVariable Long shopId) {
+    public ResponseEntity<JsonResponse<MartDetailResponseDto>> getMartDetail(@PathVariable Long shopId) {
         Long userIdx = jwtTokenProvider.resolveToken();
         MartDetailResponseDto martDetailResponseDto = martService.getMartDetail(shopId, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martDetailResponseDto));
@@ -84,11 +80,9 @@ public class MartController {
     @Parameter(name = "minLike", description = "최소 마트 상품 찜 수")
     @Parameter(name = "maxLike", description = "최대 마트 상품 찜 수")
     @Parameter(name = "sort", description = "정렬 기준 - 기본, 최신, 단골, 찜")
-    @ApiResponse(responseCode = "200", description = "마트 필터 검색 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = MartWithItemResponseDto.class))))
+    @ApiResponse(responseCode = "200", description = "마트 필터 검색 목록", useReturnTypeSchema = true)
     @GetMapping("/search/filter")
-    public ResponseEntity<JsonResponse> searchMartsWithFilters(
+    public ResponseEntity<JsonResponse<List<MartWithItemResponseDto>>> searchMartsWithFilters(
             @RequestParam(defaultValue = "전체") String tag,
             @RequestParam(required = false) Integer minBookmark,
             @RequestParam(required = false) Integer maxBookmark,
@@ -101,33 +95,27 @@ public class MartController {
     }
 
     @Operation(summary = "마트 전체 조회")
-    @ApiResponse(responseCode = "200", description = "마트 전체 조회 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = MartWithItemResponseDto.class))))
+    @ApiResponse(responseCode = "200", description = "마트 전체 조회 목록", useReturnTypeSchema = true)
     @GetMapping("/all")
-    public ResponseEntity<JsonResponse> getAllMarts() {
+    public ResponseEntity<JsonResponse<List<MartWithItemResponseDto>>> getAllMarts() {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<MartWithItemResponseDto> marts = martService.findAllMarts(userIdx);
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, marts));
     }
 
     @Operation(summary = "마트 상품 조회")
-    @ApiResponse(responseCode = "200", description = "마트 상품 조회",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = ItemMartNewResponseDto.class))))
+    @ApiResponse(responseCode = "200", description = "마트 상품 조회", useReturnTypeSchema = true)
     @GetMapping("/{shopId}/item")
-    public ResponseEntity<JsonResponse> getMartItem(@PathVariable Long shopId) {
+    public ResponseEntity<JsonResponse<List<ItemMartNewResponseDto>>> getMartItem(@PathVariable Long shopId) {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<ItemMartNewResponseDto> itemMartNewResponseDtoList = martService.getMartItem(shopId, userIdx);
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, itemMartNewResponseDtoList));
     }
 
     @Operation(summary = "마트 랜덤 추천")
-    @ApiResponse(responseCode = "200", description = "마트 랜덤 추천 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = MartRecommendedResponseDto.class))))
+    @ApiResponse(responseCode = "200", description = "마트 랜덤 추천 목록", useReturnTypeSchema = true)
     @GetMapping("/recommended")
-    public ResponseEntity<JsonResponse> getRecommendedMart() {
+    public ResponseEntity<JsonResponse<List<MartRecommendedResponseDto>>> getRecommendedMart() {
         List<MartRecommendedResponseDto> martRecommendedResponseDtoList = martService.getRecommendedMart();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, martRecommendedResponseDtoList));
     }

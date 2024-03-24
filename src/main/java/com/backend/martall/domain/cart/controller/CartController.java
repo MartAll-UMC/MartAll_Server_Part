@@ -31,11 +31,9 @@ public class CartController {
 
     // 장바구니 조회
     @Operation(summary = "장바구니 조회")
-    @ApiResponse(responseCode = "200", description = "장바구니 조회",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = CartInquiryResponseDto.class)))
+    @ApiResponse(responseCode = "200", description = "장바구니 조회", useReturnTypeSchema = true)
     @GetMapping("/cart")
-    public ResponseEntity<JsonResponse> inquiryCart() {
+    public ResponseEntity<JsonResponse<CartInquiryResponseDto>> inquiryCart() {
         Long userIdx = jwtTokenProvider.resolveToken();
         CartInquiryResponseDto cartInquiryResponseDto = cartService.inquiryCart(userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, cartInquiryResponseDto));
