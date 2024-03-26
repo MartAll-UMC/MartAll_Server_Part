@@ -33,7 +33,10 @@ public class UserController {
     @Operation(summary = "카카오 로그인")
     @ApiResponse(responseCode = "200", description = "로그인 성공", useReturnTypeSchema = true)
     @PostMapping("/login-kakao")
-    public ResponseEntity<JsonResponse<JwtDto.TwoJwtDateDto>> joinUser(@RequestBody UserDto.UserRequestDto userRequestDto) {
+    public ResponseEntity<JsonResponse<JwtDto.TwoJwtDateDto>> joinUser(@RequestBody UserDto.UserKakaoRequestDto userKakaoRequestDto) {
+
+        UserDto.UserRequestDto userRequestDto = new UserDto.UserRequestDto();
+        userRequestDto.ofKakao(userKakaoRequestDto);
 
         JwtDto.TwoJwtDateDto token = userService.join(userRequestDto);
 

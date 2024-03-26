@@ -20,6 +20,24 @@ public class UserDto {
         private Long providerId;
         private Integer userType;
         private String imgUrl;
+
+        public void ofKakao (UserKakaoRequestDto userKakaoRequestDto) {
+            this.username = userKakaoRequestDto.getUsername();
+            this.imgUrl = userKakaoRequestDto.getImgUrl();
+            this.provider = userKakaoRequestDto.getProvider();
+            this.providerId = userKakaoRequestDto.getProviderId();
+            this.userType = userKakaoRequestDto.getUserType();
+        }
+    }
+
+    @NoArgsConstructor
+    @Data
+    public static class UserKakaoRequestDto {
+        private String username;
+        private String imgUrl;
+        private String provider;
+        private Long providerId;
+        private Integer userType;
     }
 
     @NoArgsConstructor
