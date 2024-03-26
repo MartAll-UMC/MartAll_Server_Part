@@ -9,12 +9,18 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 public class JsonResponse<T> {
+    @Schema(example = "2024-03-25 19:22:59")
     private final String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+    @Schema(example = "true")
     private boolean isSuccess;
+
+    @Schema(example = "200")
     private int status;
+
+    @Schema(example = "요청이 성공했습니다")
     private String message;
 
-    @Schema(description = "응답 데이터")
     private T result;
 
     // 요청 성공
