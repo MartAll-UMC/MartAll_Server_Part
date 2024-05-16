@@ -1,23 +1,20 @@
 package com.backend.martall.domain.user.controller;
 
-import com.backend.martall.domain.item.dto.ItemKeywordSearchResponseDto;
 import com.backend.martall.domain.user.dto.JwtDto;
 import com.backend.martall.domain.user.dto.UserDto;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
+import com.backend.martall.domain.user.service.AccountService;
 import com.backend.martall.domain.user.service.UserService;
 import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "User", description = "User API")
@@ -29,6 +26,7 @@ public class UserController {
 
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AccountService accountService;
 
     @Operation(summary = "카카오 로그인")
     @ApiResponse(responseCode = "200", description = "로그인 성공", useReturnTypeSchema = true)
@@ -42,6 +40,24 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, token));
     }
+
+    @Operation(summary = "회원가입")
+    @ApiResponse(responseCode = "200", description = "회원가입 성공", useReturnTypeSchema = true)
+    @PostMapping("/join")
+    public ResponseEntity<JsonResponse> joinInAppUser(@Validated @RequestBody UserDto.UserJoinDto userJoinDto) {
+
+        accountService.joinInApp(userJoinDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS));
+    }
+
+    @Operation(summary = "회원가입 아이디 중복체크")
+    @ApiResponse(responseCode = "200", description = "아이디 중복체크 성공", useReturnTypeSchema = true)
+    @GetMapping("/join/idDupCheck")
+    public ResponseEntity<JsonResponse<UserDto.IdDupCheckResponseDto>> joinIdDupCheck(@Validated @RequestBody UserDto.IdDupCheckRequestDto idDupCheckRequestDto) {
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, accountService.joinIdDupCheck(idDupCheckRequestDto)));
+    }
+
 
     @Operation(summary = "토큰 재발급")
     @ApiResponse(responseCode = "200", description = "토큰 재발급", useReturnTypeSchema = true)

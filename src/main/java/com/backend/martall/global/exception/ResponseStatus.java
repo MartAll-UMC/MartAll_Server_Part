@@ -20,6 +20,7 @@ public enum ResponseStatus {
     NOT_EXIST_USER(false, 4105, "존재하지 않는 유저입니다."),
     REQUIRE_RETRY_LOGIN(false, 4106, "다시 로그인해주세요"),
     WRONG_USERTYPE(false, 4107, "존재하지 않는 회원 유형입니다."),
+    ALREADY_EXISTS_USER_ID(false, 4108, "이미 존재하는 아이디입니다."),
 
     // 4150 ~ 이미지
     NO_SELECT_IMAGE(false, 4150, "선택된 이미지가 존재하지 않습니다."),
