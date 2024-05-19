@@ -20,7 +20,7 @@ public class AccountService {
     public void joinInApp(UserDto.UserJoinDto userJoinDto) {
 
         // 같은 아이디의 회원이 있는지 검사
-        if(!userRepository.existsById(userJoinDto.getId())) {
+        if(userRepository.existsById(userJoinDto.getId())) {
             throw new BadRequestException(ResponseStatus.ALREADY_EXISTS_USER_ID);
         }
 
