@@ -3,8 +3,10 @@ package com.backend.martall.domain.user.dto;
 import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.user.entity.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import lombok.*;
 
 public class UserDto {
 
@@ -117,4 +119,44 @@ public class UserDto {
         }
 
     }
+
+    @Getter
+    public static class UserJoinDto {
+
+        @NotBlank(message = "이름은 필수 입력 값입니다.")
+        private String name;
+
+        @NotBlank(message = "아이디는 필수 입력 값입니다.")
+        private String id;
+
+        @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
+        @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+={}|:<>?]).{8,}$",
+                message = "비밀번호는 문자, 숫자, 특수기호를 포함한 8자 이상이어야 합니다.")
+        private String password;
+
+        @NotBlank(message = "이메일은 필수 입력 값입니다.")
+        @Email
+        private String email;
+
+    }
+
+    @Getter
+    public static class IdDupCheckRequestDto {
+
+        @NotBlank(message = "아이디는 필수 입력 값입니다.")
+        private String id;
+
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class IdDupCheckResponseDto {
+
+        private boolean idDupCheck;
+
+    }
+
 }
