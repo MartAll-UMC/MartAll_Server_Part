@@ -1,5 +1,6 @@
 package com.backend.martall.domain.user.controller;
 
+import com.backend.martall.domain.user.dto.AccountDto;
 import com.backend.martall.domain.user.dto.JwtDto;
 import com.backend.martall.domain.user.dto.UserDto;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
@@ -128,4 +129,16 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, userLocationRangeDto));
     }
+
+
+    @Operation(summary = "아이디 찾기 이메일 인증")
+    @ApiResponse(responseCode = "200", description = "이메일 인증 요청 성공", useReturnTypeSchema = true)
+    @PostMapping("/idInquiry/email")
+    public ResponseEntity<JsonResponse> idInquiryEmailCertification(@Validated @RequestBody AccountDto.IdInquiryEmailRequestDto idInquiryEmailRequestDto) {
+
+        accountService.idInquiryEmailCertification(idInquiryEmailRequestDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS));
+    }
+
 }
