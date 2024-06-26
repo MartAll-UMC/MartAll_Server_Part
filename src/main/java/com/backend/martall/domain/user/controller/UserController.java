@@ -1,5 +1,6 @@
 package com.backend.martall.domain.user.controller;
 
+import com.backend.martall.domain.user.dto.AccountDto;
 import com.backend.martall.domain.user.dto.JwtDto;
 import com.backend.martall.domain.user.dto.UserDto;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "User", description = "User API")
 @Slf4j
@@ -127,5 +130,40 @@ public class UserController {
         UserDto.UserLocationRangeDto userLocationRangeDto = userService.getLocationRange(id);
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, userLocationRangeDto));
+    }
+
+
+    @Operation(summary = "아이디 찾기 이메일 인증코드 요청")
+    @ApiResponse(responseCode = "200", description = "이메일 인증 요청 성공", useReturnTypeSchema = true)
+    @PostMapping("/idInquiry/email")
+    public ResponseEntity<JsonResponse> requestIdInquiryEmailCertification(@Validated @RequestBody AccountDto.IdInquiryEmailRequestDto idInquiryEmailRequestDto) {
+
+        accountService.requestEmailCertification(idInquiryEmailRequestDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS));
+    }
+
+    @Operation(summary = "아이디 찾기 이메일 인증코드 입력")
+    @ApiResponse(responseCode = "200", description = "이메일 인증 성공", useReturnTypeSchema = true)
+    @GetMapping("/idInquiry/email")
+    public ResponseEntity<JsonResponse<AccountDto.IdInquiryCertificationCodeResponseDto>> responseIdInquiryEmailCertification(
+            @Validated @RequestBody AccountDto.IdInquiryCertificationCodeRequestDto idInquiryCertificationCodeRequestDto) {
+
+        AccountDto.IdInquiryCertificationCodeResponseDto idInquiryCertificationCodeResponseDto
+                = accountService.responseEmailCertification(idInquiryCertificationCodeRequestDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, idInquiryCertificationCodeResponseDto));
+    }
+
+    @Operation(summary = "아이디 찾기")
+    @ApiResponse(responseCode = "200", description = "아이디 찾기 성공", useReturnTypeSchema = true)
+    @GetMapping("/idInquiry")
+    public ResponseEntity<JsonResponse<List<AccountDto.IdInquiryResponseDto>>> idInquiry(
+            @Validated @RequestBody AccountDto.IdInquiryRequestDto idInquiryRequestDto) {
+
+        List<AccountDto.IdInquiryResponseDto> idInquiryResponseDtoList
+                = accountService.idInquiry(idInquiryRequestDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, idInquiryResponseDtoList));
     }
 }

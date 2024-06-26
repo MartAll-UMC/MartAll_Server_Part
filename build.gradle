@@ -46,11 +46,20 @@ dependencies {
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	//Swagger
+	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// Random String
+	implementation 'org.apache.commons:commons-lang3'
+
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 }
 
