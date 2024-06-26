@@ -131,14 +131,26 @@ public class UserController {
     }
 
 
-    @Operation(summary = "아이디 찾기 이메일 인증")
+    @Operation(summary = "아이디 찾기 이메일 인증코드 요청")
     @ApiResponse(responseCode = "200", description = "이메일 인증 요청 성공", useReturnTypeSchema = true)
     @PostMapping("/idInquiry/email")
-    public ResponseEntity<JsonResponse> idInquiryEmailCertification(@Validated @RequestBody AccountDto.IdInquiryEmailRequestDto idInquiryEmailRequestDto) {
+    public ResponseEntity<JsonResponse> requestIdInquiryEmailCertification(@Validated @RequestBody AccountDto.IdInquiryEmailRequestDto idInquiryEmailRequestDto) {
 
-        accountService.idInquiryEmailCertification(idInquiryEmailRequestDto);
+        accountService.requestEmailCertification(idInquiryEmailRequestDto);
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS));
+    }
+
+    @Operation(summary = "아이디 찾기 이메일 인증코드 입력")
+    @ApiResponse(responseCode = "200", description = "이메일 인증 성공", useReturnTypeSchema = true)
+    @GetMapping("/idInquiry/email")
+    public ResponseEntity<JsonResponse<AccountDto.IdInquiryCertificationCodeResponseDto>> responseIdInquiryEmailCertification(
+            @Validated @RequestBody AccountDto.IdInquiryCertificationCodeRequestDto idInquiryCertificationCodeRequestDto) {
+
+        AccountDto.IdInquiryCertificationCodeResponseDto idInquiryCertificationCodeResponseDto
+                = accountService.responseEmailCertification(idInquiryCertificationCodeRequestDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, idInquiryCertificationCodeResponseDto));
     }
 
 }

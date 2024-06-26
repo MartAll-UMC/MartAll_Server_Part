@@ -22,6 +22,7 @@ public enum ResponseStatus {
     WRONG_USERTYPE(false, 4107, "존재하지 않는 회원 유형입니다."),
     ALREADY_EXISTS_USER_ID(false, 4108, "이미 존재하는 아이디입니다."),
     ID_INQUIRY_FAIL_SEND_MAIL(false, 4109, "아이디 찾기 메일 전송 실패"),
+    ID_INQUIRY_FAIL_NOT_EXIST_MAIL(false, 4109, "없거나 인증요청하지 않은 메일입니다."),
 
     // 4150 ~ 이미지
     NO_SELECT_IMAGE(false, 4150, "선택된 이미지가 존재하지 않습니다."),

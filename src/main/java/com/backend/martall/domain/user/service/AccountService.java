@@ -29,10 +29,12 @@ public class AccountService {
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
     private final RedisTemplate<String, Object> redisTemplate;
+
+    // 인앱 회원가입
     public void joinInApp(UserDto.UserJoinDto userJoinDto) {
 
         // 같은 아이디의 회원이 있는지 검사
-        if(userRepository.existsById(userJoinDto.getId())) {
+        if (userRepository.existsById(userJoinDto.getId())) {
             throw new BadRequestException(ResponseStatus.ALREADY_EXISTS_USER_ID);
         }
 
@@ -54,6 +56,7 @@ public class AccountService {
 
     }
 
+    // 아이디 중복 검사
     public UserDto.IdDupCheckResponseDto joinIdDupCheck(UserDto.IdDupCheckRequestDto idDupCheckRequestDto) {
 
         return UserDto.IdDupCheckResponseDto.builder()
@@ -61,48 +64,75 @@ public class AccountService {
                 .build();
     }
 
-    public void idInquiryEmailCertification(AccountDto.IdInquiryEmailRequestDto idInquiryEmailRequestDto) {
-        // 숫자와 대문자 영어로 구성된 6자리 랜덤 문자열 생성
+    //
+    public void requestEmailCertification(AccountDto.IdInquiryEmailRequestDto idInquiryEmailRequestDto) {
+        // 인증번호 : 숫자와 대문자 영어로 구성된 6자리 랜덤 문자열 생성
         String authNumber = RandomStringUtils.randomNumeric(6);
 
         String toMail = idInquiryEmailRequestDto.getEmail();
         String title = "아이디 찾기 이메일 인증"; // 이메일 제목
-        String content =
-                "인증 번호 :" + 	//html 형식으로 작성 !
+        String content = // 이메일 내용 html 형식으로 작성
+                "인증 번호 :" +
                         "<br>" +
                         authNumber +
                         "<br>" +
-                        "인증번호를 입력하고 인증하기를 눌러주세요"; //이메일 내용 삽입
+                        "인증번호를 입력하고 인증하기를 눌러주세요";
 
         mailSend(toMail, title, content);
 
-        this.saveVerificationCode(toMail, authNumber);
+        this.saveCertificationCode(toMail, authNumber);
     }
 
-    public void saveVerificationCode(String email, String authNumber) {
+    // 아이디찾기 이메일 인증 코드 확인
+    public AccountDto.IdInquiryCertificationCodeResponseDto responseEmailCertification(
+            AccountDto.IdInquiryCertificationCodeRequestDto idInquiryCertificationCodeRequestDto) {
+
+        return AccountDto.IdInquiryCertificationCodeResponseDto.builder()
+                .emailCheck(checkCertificationCode(idInquiryCertificationCodeRequestDto.getEmail(),
+                        idInquiryCertificationCodeRequestDto.getVerificationCode()))
+                .build();
+    }
+
+    // redis에 인증 코드 저장
+    // key : email
+    // 유지시간 : 3분
+    public void saveCertificationCode(String email, String authNumber) {
         try {
-            // redis에 저장
-            // 유지시간 3분
             ValueOperations<String, Object> vop = redisTemplate.opsForValue();
             vop.set(email, authNumber, 3, TimeUnit.MINUTES);
         } catch (RuntimeException e) {
+            log.error(e.getMessage());
             throw new BadRequestException(ResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    public boolean checkCertificationCode(String email, String authNumber) {
+        try {
+            ValueOperations<String, Object> vop = redisTemplate.opsForValue();
+            // authNumber가 redis에 있는 인증번호와 같으면 true
+            return vop.get(email).equals(authNumber);
+        } catch (RuntimeException e) {
+            log.error(e.getMessage());
+            throw new BadRequestException(ResponseStatus.ID_INQUIRY_FAIL_NOT_EXIST_MAIL);
         }
     }
 
     //이메일 전송
     public void mailSend(String toMail, String title, String content) {
-        MimeMessage message = javaMailSender.createMimeMessage();//JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성
+        //JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성
+        MimeMessage message = javaMailSender.createMimeMessage();
 
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message,false,"utf-8");//이메일 메시지와 관련된 설정
+            MimeMessageHelper helper = new MimeMessageHelper(message, false, "utf-8");//이메일 메시지와 관련된 설정
             helper.setTo(toMail); //이메일의 수신자 주소 설정
             helper.setFrom("martallofficial@gmail.com");
             helper.setSubject(title); //이메일의 제목을 설정
-            helper.setText(content,true); //content 및 html 설정
+            helper.setText(content, true); //content 및 html 설정
             javaMailSender.send(message);
         } catch (Exception e) {
             throw new BadRequestException(ResponseStatus.ID_INQUIRY_FAIL_SEND_MAIL);
         }
     }
+
+
 }
