@@ -19,7 +19,10 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -134,5 +137,35 @@ public class AccountService {
         }
     }
 
+    public List<AccountDto.IdInquiryResponseDto> idInquiry(AccountDto.IdInquiryRequestDto idInquiryRequestDto) {
 
+        List<User> userList = userRepository.findAllByUsernameAndEmail(idInquiryRequestDto.getName(), idInquiryRequestDto.getEmail());
+
+        if(userList.isEmpty()) {
+            throw new BadRequestException(ResponseStatus.ID_INQUIRY_WRONG_NAME_AND_EMAIL);
+        }
+
+        List<AccountDto.IdInquiryResponseDto> idInquiryResponseDtoList = userList.stream()
+                .map(user -> {
+                    return AccountDto.IdInquiryResponseDto.builder()
+                            .id(maskId(user.getId()))
+                            .registerDate(user.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return idInquiryResponseDtoList;
+    }
+
+    public String maskId(String id) {
+        StringBuilder maskedId = new StringBuilder();
+
+        maskedId.append((id.substring(0, id.length()-4)));
+
+        for (int i = id.length()-4; i < id.length(); i++) {
+            maskedId.append("*");
+        }
+
+        return maskedId.toString();
+    }
 }

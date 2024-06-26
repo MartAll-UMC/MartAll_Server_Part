@@ -39,5 +39,29 @@ public class AccountDto {
         private boolean emailCheck;
     }
 
+    @Getter
+    public static class IdInquiryRequestDto {
+
+        @NotBlank(message = "이메일을 입력해주세요.")
+        private String name;
+
+        @NotBlank(message = "이메일을 입력해주세요.")
+        @Email(message = "이메일 형식을 지켜주세요")
+        private String email;
+
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class IdInquiryResponseDto {
+
+        private String id;
+        private String registerDate;
+
+    }
+
 
 }

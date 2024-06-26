@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,4 +28,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Long findIdByRefreshToken(@Param("refreshToken") String refreshToken);
 
     Boolean existsById(String email);
+
+    List<User> findAllByUsernameAndEmail(String userName, String id);
 }
