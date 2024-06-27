@@ -5,18 +5,17 @@ import com.backend.martall.domain.image.service.ImageService;
 import com.backend.martall.domain.item.dto.*;
 import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.item.entity.ItemCategory;
-import com.backend.martall.domain.item.repository.ItemPicRepository;
 import com.backend.martall.domain.item.repository.ItemRepository;
 import com.backend.martall.domain.itemlike.service.ItemLikeService;
 import com.backend.martall.domain.mart.entity.MartCategory;
 import com.backend.martall.domain.mart.entity.MartShop;
-import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
 import com.backend.martall.domain.mart.repository.MartRepository;
 import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -231,5 +230,17 @@ public class ItemService {
         item.setPic(profileUrl, contentUrl);
 
         itemRepository.save(item);
+    }
+
+    public List<String> recommendItemKeyword() {
+
+        // 10개의 상품 리스트(랜덤) 불러오기
+        List<Item> itemList = itemRepository.findRandomItem(PageRequest.of(0, 10));
+
+        List<String> keywordList = itemList.stream()
+                .map(item -> item.getItemName())
+                .toList();
+
+        return keywordList;
     }
 }
