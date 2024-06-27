@@ -21,10 +21,13 @@ public enum ResponseStatus {
     REQUIRE_RETRY_LOGIN(false, 4106, "다시 로그인해주세요"),
     WRONG_USERTYPE(false, 4107, "존재하지 않는 회원 유형입니다."),
     ALREADY_EXISTS_USER_ID(false, 4108, "이미 존재하는 아이디입니다."),
-    ID_INQUIRY_FAIL_SEND_MAIL(false, 4109, "아이디 찾기 메일 전송 실패"),
+    FAIL_SEND_MAIL(false, 4109, "메일 전송 실패"),
     ID_INQUIRY_FAIL_NOT_EXIST_MAIL(false, 4110, "없거나 인증요청하지 않은 메일입니다."),
     ID_INQUIRY_WRONG_NAME_AND_EMAIL(false, 4111, "이름 또는 이메일이 일치하지 않습니다."),
-    ALREADY_EXISTS_EMAIL(false, 4112, "이미 존재하는 이메일입니다."),
+    PWD_INQUIRY_WRONG_NAME_AND_EMAIL(false, 4112, "이름 또는 이메일이 일치하지 않습니다."),
+    PWD_RESET_NOT_EXIST_EMAIL(false, 4113, "이메일로 계정을 찾을 수 없습니다."),
+    PWD_RESET_NOT_EXIST_RESET_NUM(false, 4114, "존재하지 않는 비밀번호 재설정 링크입니다."),
+    ALREADY_EXISTS_EMAIL(false, 4115, "이미 존재하는 이메일입니다."),
 
     // 4150 ~ 이미지
     NO_SELECT_IMAGE(false, 4150, "선택된 이미지가 존재하지 않습니다."),

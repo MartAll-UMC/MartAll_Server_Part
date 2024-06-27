@@ -161,4 +161,24 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, accountService.idInquiry(idInquiryRequestDto)));
     }
+
+    @Operation(summary = "비밀번호 찾기")
+    @ApiResponse(responseCode = "200", description = "비밀번호 찾기 성공", useReturnTypeSchema = true)
+    @GetMapping("/passwordInquiry")
+    public ResponseEntity<JsonResponse<AccountDto.PwdInquiryResponseDto>> pwdInquiry(
+            @Validated @RequestBody AccountDto.PwdInquiryRequestDto pwdInquiryRequestDto) {
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, accountService.pwdInquiry(pwdInquiryRequestDto)));
+    }
+
+    @Operation(summary = "비밀번호 재설정")
+    @ApiResponse(responseCode = "200", description = "비밀번호 재설정 성공", useReturnTypeSchema = true)
+    @PatchMapping("/passwordReset/{resetNum}")
+    public ResponseEntity<JsonResponse> pwdReset(@PathVariable String resetNum,
+            @Validated @RequestBody AccountDto.PwdResetRequestDto pwdResetRequestDto) {
+
+        accountService.pwdReset(resetNum, pwdResetRequestDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS));
+    }
 }
