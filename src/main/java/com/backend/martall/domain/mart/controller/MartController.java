@@ -1,25 +1,22 @@
 package com.backend.martall.domain.mart.controller;
 
 
-import java.util.List;
-
 import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
 import com.backend.martall.domain.mart.dto.*;
 import com.backend.martall.domain.mart.service.MartService;
-import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
+import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Tag(name = "Mart", description = "Mart API")
@@ -112,11 +109,20 @@ public class MartController {
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, itemMartNewResponseDtoList));
     }
 
-    @Operation(summary = "마트 랜덤 추천")
+//    @Operation(summary = "마트 랜덤 추천")
+//    @ApiResponse(responseCode = "200", description = "마트 랜덤 추천 목록", useReturnTypeSchema = true)
+//    @GetMapping("/recommended")
+//    public ResponseEntity<JsonResponse<List<MartRecommendedResponseDto>>> getRecommendedMart() {
+//        List<MartRecommendedResponseDto> martRecommendedResponseDtoList = martService.getRecommendedMart();
+//        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, martRecommendedResponseDtoList));
+//    }
+
+    @Operation(summary = "오늘의 마트")
     @ApiResponse(responseCode = "200", description = "마트 랜덤 추천 목록", useReturnTypeSchema = true)
-    @GetMapping("/recommended")
-    public ResponseEntity<JsonResponse<List<MartRecommendedResponseDto>>> getRecommendedMart() {
-        List<MartRecommendedResponseDto> martRecommendedResponseDtoList = martService.getRecommendedMart();
+    @GetMapping("/today")
+    public ResponseEntity<JsonResponse<List<MartRecommendedResponseDto>>> todayMart() {
+        List<MartRecommendedResponseDto> martRecommendedResponseDtoList = martService.getTodayMart();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, martRecommendedResponseDtoList));
     }
+
 }

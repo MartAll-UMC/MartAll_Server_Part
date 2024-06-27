@@ -1,11 +1,13 @@
 package com.backend.martall.domain.mart.repository;
 
+import com.backend.martall.domain.mart.entity.MartShop;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.backend.martall.domain.mart.entity.MartShop;
+
 import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 
 @Repository
@@ -49,8 +51,8 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
     List<MartShop> searchByFilterLikeDesc(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike);
 //    findTop8ByOrderByCreatedAtDesc
 
-    @Query(nativeQuery = true, value = "SELECT * FROM mart_shop m ORDER BY RAND() LIMIT 8")
-    List<MartShop> findRandomMart();
+    @Query("SELECT martShop FROM MartShop martShop ORDER BY FUNCTION('RAND')")
+    List<MartShop> findRandomMart(Pageable pageable);
 }
 
 

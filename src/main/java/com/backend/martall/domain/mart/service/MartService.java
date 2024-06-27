@@ -4,19 +4,19 @@ import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
 import com.backend.martall.domain.item.service.ItemService;
 import com.backend.martall.domain.itemlike.service.ItemLikeService;
 import com.backend.martall.domain.mart.dto.*;
-import com.backend.martall.domain.mart.entity.MartTag;
-import com.backend.martall.domain.user.entity.User;
+import com.backend.martall.domain.mart.entity.MartCategory;
 import com.backend.martall.domain.mart.entity.MartShop;
-import com.backend.martall.domain.mart.repository.MartRepository;
-import com.backend.martall.domain.user.entity.UserRepository;
-import com.backend.martall.domain.mart.repository.MartCategoryRepository;
+import com.backend.martall.domain.mart.entity.MartTag;
 import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
+import com.backend.martall.domain.mart.repository.MartRepository;
+import com.backend.martall.domain.user.entity.User;
+import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import com.backend.martall.global.exception.ResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.backend.martall.domain.mart.entity.MartCategory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -203,8 +203,8 @@ public class MartService {
         return itemService.getMartNewItem(martShop, user);
     }
 
-    public List<MartRecommendedResponseDto> getRecommendedMart() {
-        List<MartShop> martShopList = martRepository.findRandomMart();
+    public List<MartRecommendedResponseDto> getTodayMart() {
+        List<MartShop> martShopList = martRepository.findRandomMart(PageRequest.of(0, 8));
         List<MartRecommendedResponseDto> martRecommendedResponseDtoList = martShopList.stream()
                 .map(martShop -> {
                     MartRecommendedResponseDto martRecommendedResponseDto = MartRecommendedResponseDto.builder()
