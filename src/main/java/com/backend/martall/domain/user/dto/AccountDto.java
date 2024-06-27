@@ -2,6 +2,7 @@ package com.backend.martall.domain.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -83,4 +84,13 @@ public class AccountDto {
         private boolean pwdInfoCheck;
     }
 
+    @Getter
+    public static class PwdResetRequestDto {
+
+        @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
+        @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+={}|:<>?]).{8,}$",
+                message = "비밀번호는 문자, 숫자, 특수기호를 포함한 8자 이상이어야 합니다.")
+        private String password;
+
+    }
 }

@@ -25,6 +25,8 @@ public enum ResponseStatus {
     ID_INQUIRY_FAIL_NOT_EXIST_MAIL(false, 4110, "없거나 인증요청하지 않은 메일입니다."),
     ID_INQUIRY_WRONG_NAME_AND_EMAIL(false, 4111, "이름 또는 이메일이 일치하지 않습니다."),
     PWD_INQUIRY_WRONG_NAME_AND_EMAIL(false, 4112, "이름 또는 이메일이 일치하지 않습니다."),
+    PWD_RESET_NOT_EXIST_EMAIL(false, 4113, "이메일로 계정을 찾을 수 없습니다."),
+    PWD_RESET_NOT_EXIST_RESET_NUM(false, 4114, "존재하지 않는 비밀번호 재설정 링크입니다."),
 
     // 4150 ~ 이미지
     NO_SELECT_IMAGE(false, 4150, "선택된 이미지가 존재하지 않습니다."),

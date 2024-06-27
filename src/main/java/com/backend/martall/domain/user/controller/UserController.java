@@ -175,4 +175,15 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, accountService.pwdInquiry(pwdInquiryRequestDto)));
     }
+
+    @Operation(summary = "비밀번호 재설정")
+    @ApiResponse(responseCode = "200", description = "비밀번호 재설정 성공", useReturnTypeSchema = true)
+    @PatchMapping("/passwordReset/{resetNum}")
+    public ResponseEntity<JsonResponse> pwdReset(@PathVariable String resetNum,
+            @Validated @RequestBody AccountDto.PwdResetRequestDto pwdResetRequestDto) {
+
+        accountService.pwdReset(resetNum, pwdResetRequestDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS));
+    }
 }

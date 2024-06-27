@@ -220,4 +220,30 @@ public class AccountService {
 
         mailSend(toMail, title, content);
     }
+
+    // 비밀번호 재설정
+    public void pwdReset(String resetNum, AccountDto.PwdResetRequestDto pwdResetRequestDto) {
+
+        // redis에서 resetNum으로 이메일 가져오기
+        ValueOperations<String, Object> vop = redisTemplate.opsForValue();
+
+        String userEmail = String.valueOf(vop.get(resetNum));
+
+        // resetNum으로 조회한 메일 null 예외처리
+        if (userEmail.equals("null")) {
+            throw new BadRequestException(ResponseStatus.PWD_RESET_NOT_EXIST_RESET_NUM);
+        }
+
+        // 메일에 해당하는 회원 관련 예외처리
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new BadRequestException(ResponseStatus.PWD_RESET_NOT_EXIST_EMAIL));
+
+        // 비밀번호 인코더
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        // 회원 비밀번호 수정
+        user.setPassword(encoder.encode(pwdResetRequestDto.getPassword()));
+
+        userRepository.save(user);
+    }
 }

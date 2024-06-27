@@ -2,11 +2,9 @@ package com.backend.martall.domain.user.entity;
 
 import com.backend.martall.domain.BaseTime;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.ColumnDefault;
 
 @Table(name = "user")
@@ -77,4 +75,6 @@ public class User extends BaseTime {
     public String getAddress() { return address; }
     public Integer getLocationRange() { return locationRange; }
     public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
+
+    public void setPassword(String password) { this.password = password; }
 }
