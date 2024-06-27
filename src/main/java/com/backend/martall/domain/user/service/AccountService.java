@@ -133,7 +133,7 @@ public class AccountService {
             helper.setText(content, true); //content 및 html 설정
             javaMailSender.send(message);
         } catch (Exception e) {
-            throw new BadRequestException(ResponseStatus.ID_INQUIRY_FAIL_SEND_MAIL);
+            throw new BadRequestException(ResponseStatus.FAIL_SEND_MAIL);
         }
     }
 
@@ -167,5 +167,57 @@ public class AccountService {
         }
 
         return maskedId.toString();
+    }
+
+
+    // 이름과 이메일 일치하는지 확인
+    // 재설정 이메일 전송
+    public AccountDto.PwdInquiryResponseDto pwdInquiry(AccountDto.PwdInquiryRequestDto pwdInquiryRequestDto) {
+
+        String userName = pwdInquiryRequestDto.getName();
+        String userEmail = pwdInquiryRequestDto.getEmail();
+
+        // 이름과 이메일 일치하는지 확인
+        boolean infoCheck = userRepository.existsByUsernameAndEmail(userName, userEmail);
+
+        // redis에 랜덤 번호(key)로 이메일 저장
+        // 이메일 전송
+        if(infoCheck) {
+
+            ValueOperations<String, Object> vop = redisTemplate.opsForValue();
+            String resetNum = RandomStringUtils.randomNumeric(6);
+
+            // key가 이미 존재하면 새로운 키 생성
+            while(vop.get(resetNum) != null) {
+                resetNum = RandomStringUtils.randomNumeric(6);
+            }
+
+            // redis에 resetNum(key), email(value) 저장
+            vop.set(resetNum, userEmail, 3, TimeUnit.MINUTES);
+
+            // 이메일 전송
+            sendPwdResetEmail(userEmail, resetNum);
+        }
+
+
+        return AccountDto.PwdInquiryResponseDto.builder()
+                .pwdInfoCheck(infoCheck)
+                .build();
+    }
+
+    public void sendPwdResetEmail(String email, String resetNum) {
+
+        String toMail = email;
+        String title = "비밀번호 재설정 링크"; // 이메일 제목
+        String content = // 이메일 내용 html 형식으로 작성
+                "링크 :" +
+                        "<br>" +
+                        "<a href=\"https://3.35.184.100:8080/user/passwordReset/" + resetNum + "\">" +
+                        "https://3.35.184.100:8080/user/passwordReset/" + resetNum +
+                        "</a>" +
+                        "<br>" +
+                        "링크에 접속해 비밀번호를 재설정해주세요";
+
+        mailSend(toMail, title, content);
     }
 }

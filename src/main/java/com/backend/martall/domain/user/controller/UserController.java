@@ -166,4 +166,13 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, idInquiryResponseDtoList));
     }
+
+    @Operation(summary = "비밀번호 찾기")
+    @ApiResponse(responseCode = "200", description = "비밀번호 찾기 성공", useReturnTypeSchema = true)
+    @GetMapping("/passwordInquiry")
+    public ResponseEntity<JsonResponse<AccountDto.PwdInquiryResponseDto>> pwdInquiry(
+            @Validated @RequestBody AccountDto.PwdInquiryRequestDto pwdInquiryRequestDto) {
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, accountService.pwdInquiry(pwdInquiryRequestDto)));
+    }
 }

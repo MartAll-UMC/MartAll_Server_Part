@@ -4,9 +4,9 @@ import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.user.entity.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 public class UserDto {
@@ -127,7 +127,7 @@ public class UserDto {
         @NotBlank(message = "이름은 필수 입력 값입니다.")
         private String name;
 
-        @Min(6)
+        @Size(min = 6)
         @NotBlank(message = "아이디는 필수 입력 값입니다.")
         private String id;
 
