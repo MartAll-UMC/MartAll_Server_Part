@@ -18,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Tag(name = "User", description = "User API")
 @Slf4j
 @RequestMapping("/user")
@@ -158,13 +156,10 @@ public class UserController {
     @Operation(summary = "아이디 찾기")
     @ApiResponse(responseCode = "200", description = "아이디 찾기 성공", useReturnTypeSchema = true)
     @GetMapping("/idInquiry")
-    public ResponseEntity<JsonResponse<List<AccountDto.IdInquiryResponseDto>>> idInquiry(
+    public ResponseEntity<JsonResponse<AccountDto.IdInquiryResponseDto>> idInquiry(
             @Validated @RequestBody AccountDto.IdInquiryRequestDto idInquiryRequestDto) {
 
-        List<AccountDto.IdInquiryResponseDto> idInquiryResponseDtoList
-                = accountService.idInquiry(idInquiryRequestDto);
-
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, idInquiryResponseDtoList));
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, accountService.idInquiry(idInquiryRequestDto)));
     }
 
     @Operation(summary = "비밀번호 찾기")

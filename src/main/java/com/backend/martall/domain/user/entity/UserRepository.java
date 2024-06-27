@@ -27,11 +27,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.userIdx FROM User u WHERE u.refreshToken = :refreshToken")
     Long findIdByRefreshToken(@Param("refreshToken") String refreshToken);
 
-    Boolean existsById(String email);
+    Boolean existsById(String id);
 
     List<User> findAllByUsernameAndEmail(String userName, String id);
 
     boolean existsByUsernameAndEmail(String userName, String id);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByUsernameAndEmail(String userName, String email);
+
+    Boolean existsByEmail(String email);
 }
