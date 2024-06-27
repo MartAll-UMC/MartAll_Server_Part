@@ -220,6 +220,16 @@ public class MartService {
                 .collect(Collectors.toList());
         return martRecommendedResponseDtoList;
     }
+
+    public List<String> recommendMartKeyword() {
+        List<MartShop> martShopList = martRepository.findRandomMart(PageRequest.of(0, 10));
+
+        List<String> keywordList = martShopList.stream()
+                .map(martShop -> martShop.getName())
+                .toList();
+
+        return keywordList;
+    }
 }
 
 

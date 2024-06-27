@@ -46,5 +46,5 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findByMartShopOrderByCreatedAtDesc(MartShop martShop);
 
     @Query("SELECT item FROM Item item ORDER BY FUNCTION('RAND')")
-    List<Item> findRandom(Pageable pageable);
+    List<Item> findRandomItem(Pageable pageable);
 }

@@ -232,10 +232,10 @@ public class ItemService {
         itemRepository.save(item);
     }
 
-    public List<String> recommendKeyword() {
+    public List<String> recommendItemKeyword() {
 
         // 10개의 상품 리스트(랜덤) 불러오기
-        List<Item> itemList = itemRepository.findRandom(PageRequest.of(0, 10));
+        List<Item> itemList = itemRepository.findRandomItem(PageRequest.of(0, 10));
 
         List<String> keywordList = itemList.stream()
                 .map(item -> item.getItemName())

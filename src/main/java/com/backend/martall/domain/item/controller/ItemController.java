@@ -79,9 +79,9 @@ public class ItemController {
     @Operation(summary = "상품 검색 키워드 추천")
     @ApiResponse(responseCode = "200", description = "상품 검색 키워드 추천 목록", useReturnTypeSchema = true)
     @GetMapping("/recommendKeyword")
-    public ResponseEntity<JsonResponse<ItemCategorySearchResponseDto>> itemKeyword() {
+    public ResponseEntity<JsonResponse<List<String>>> itemKeyword() {
 
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemService.recommendKeyword()));
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemService.recommendItemKeyword()));
     }
 
     // 상품 추가 테스트 컨트롤러

@@ -125,4 +125,11 @@ public class MartController {
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, martRecommendedResponseDtoList));
     }
 
+    @Operation(summary = "마트 검색 키워드 추천")
+    @ApiResponse(responseCode = "200", description = "마트 검색 키워드 추천 목록", useReturnTypeSchema = true)
+    @GetMapping("/recommendKeyword")
+    public ResponseEntity<JsonResponse<List<String>>> martKeyword() {
+
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, martService.recommendMartKeyword()));
+    }
 }
