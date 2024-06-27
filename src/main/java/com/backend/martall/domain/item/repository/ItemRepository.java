@@ -3,6 +3,7 @@ package com.backend.martall.domain.item.repository;
 import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.item.entity.ItemCategory;
 import com.backend.martall.domain.mart.entity.MartShop;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -43,4 +44,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findTop8ByOrderByCreatedAtDesc(); //"createdAt" 컬럼을 기준으로 내림차순으로 정렬된 최대 8개의 항목을 가져옴
 
     List<Item> findByMartShopOrderByCreatedAtDesc(MartShop martShop);
+
+    @Query("SELECT item FROM Item item ORDER BY FUNCTION('RAND')")
+    List<Item> findRandom(Pageable pageable);
 }

@@ -2,16 +2,12 @@ package com.backend.martall.domain.item.controller;
 
 import com.backend.martall.domain.item.dto.*;
 import com.backend.martall.domain.item.service.ItemService;
-import com.backend.martall.domain.mart.dto.MartResponseDto;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +74,14 @@ public class ItemController {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<ItemCategorySearchResponseDto> itemCategoryResponseDtoList = itemService.getCategoryItem(category, minPrice, maxPrice, sort, userIdx);
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemCategoryResponseDtoList));
+    }
+
+    @Operation(summary = "상품 검색 키워드 추천")
+    @ApiResponse(responseCode = "200", description = "상품 검색 키워드 추천 목록", useReturnTypeSchema = true)
+    @GetMapping("/recommendKeyword")
+    public ResponseEntity<JsonResponse<ItemCategorySearchResponseDto>> itemKeyword() {
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemService.recommendKeyword()));
     }
 
     // 상품 추가 테스트 컨트롤러
