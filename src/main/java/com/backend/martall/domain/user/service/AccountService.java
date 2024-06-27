@@ -20,9 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +37,10 @@ public class AccountService {
         // 같은 아이디의 회원이 있는지 검사
         if (userRepository.existsById(userJoinDto.getId())) {
             throw new BadRequestException(ResponseStatus.ALREADY_EXISTS_USER_ID);
+        }
+
+        if (userRepository.existsByEmail(userJoinDto.getEmail())) {
+            throw new BadRequestException(ResponseStatus.ALREADY_EXISTS_EMAIL);
         }
 
         // 비밀번호 인코더
@@ -137,24 +139,16 @@ public class AccountService {
         }
     }
 
-    public List<AccountDto.IdInquiryResponseDto> idInquiry(AccountDto.IdInquiryRequestDto idInquiryRequestDto) {
+    public AccountDto.IdInquiryResponseDto idInquiry(AccountDto.IdInquiryRequestDto idInquiryRequestDto) {
 
-        List<User> userList = userRepository.findAllByUsernameAndEmail(idInquiryRequestDto.getName(), idInquiryRequestDto.getEmail());
+        User user = userRepository.findByUsernameAndEmail(idInquiryRequestDto.getName(), idInquiryRequestDto.getEmail())
+                .orElseThrow(() -> new BadRequestException(ResponseStatus.ID_INQUIRY_WRONG_NAME_AND_EMAIL));
 
-        if(userList.isEmpty()) {
-            throw new BadRequestException(ResponseStatus.ID_INQUIRY_WRONG_NAME_AND_EMAIL);
-        }
 
-        List<AccountDto.IdInquiryResponseDto> idInquiryResponseDtoList = userList.stream()
-                .map(user -> {
-                    return AccountDto.IdInquiryResponseDto.builder()
-                            .id(maskId(user.getId()))
-                            .registerDate(user.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        return idInquiryResponseDtoList;
+        return AccountDto.IdInquiryResponseDto.builder()
+                .id(maskId(user.getId()))
+                .registerDate(user.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                .build();
     }
 
     public String maskId(String id) {
