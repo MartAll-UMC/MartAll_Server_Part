@@ -1,6 +1,7 @@
 package com.backend.martall.domain.mart.repository;
 
 import com.backend.martall.domain.mart.entity.MartShop;
+import com.backend.martall.domain.user.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -53,6 +54,8 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
 
     @Query("SELECT martShop FROM MartShop martShop ORDER BY FUNCTION('RAND')")
     List<MartShop> findRandomMart(Pageable pageable);
+
+    boolean existsByUser(User user);
 }
 
 

@@ -228,6 +228,14 @@ public class MartService {
 
         return keywordList;
     }
+
+    public MartExistResponseDto checkOwnMart(Long userIdx) {
+        User user = userRepository.findById(userIdx).get();
+
+        return MartExistResponseDto.builder()
+                .martExist(martRepository.existsByUser(user))
+                .build();
+    }
 }
 
 
