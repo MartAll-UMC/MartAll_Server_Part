@@ -181,4 +181,14 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS));
     }
+
+    @Operation(summary = "자체 로그인")
+    @ApiResponse(responseCode = "200", description = "로그인 성공", useReturnTypeSchema = true)
+    @PostMapping("/login")
+    public ResponseEntity<JsonResponse<JwtDto.TwoJwtDateDto>> inAppLogin(@RequestBody UserDto.inAppLoginRequestDto inAppLoginRequestDto) {
+
+        JwtDto.TwoJwtDateDto token = accountService.inAppLogin(inAppLoginRequestDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, token));
+    }
 }

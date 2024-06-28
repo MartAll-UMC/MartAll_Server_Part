@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,8 +28,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsById(String id);
 
-    List<User> findAllByUsernameAndEmail(String userName, String id);
-
     boolean existsByUsernameAndEmail(String userName, String id);
 
     Optional<User> findByEmail(String email);
@@ -38,4 +35,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsernameAndEmail(String userName, String email);
 
     Boolean existsByEmail(String email);
+
+    Optional<User> findById(String id);
 }
