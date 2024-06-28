@@ -161,4 +161,11 @@ public class UserDto {
 
     }
 
+    @Getter
+    public static class inAppLoginRequestDto {
+
+        private String id;
+        private String password;
+    }
+
 }

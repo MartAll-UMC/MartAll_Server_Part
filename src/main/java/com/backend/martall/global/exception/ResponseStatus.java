@@ -28,6 +28,7 @@ public enum ResponseStatus {
     PWD_RESET_NOT_EXIST_EMAIL(false, 4113, "이메일로 계정을 찾을 수 없습니다."),
     PWD_RESET_NOT_EXIST_RESET_NUM(false, 4114, "존재하지 않는 비밀번호 재설정 링크입니다."),
     ALREADY_EXISTS_EMAIL(false, 4115, "이미 존재하는 이메일입니다."),
+    LOGIN_FAIL_WRONG_PASSWORD(false, 4116, "비밀번호를 확인해주세요."),
 
     // 4150 ~ 이미지
     NO_SELECT_IMAGE(false, 4150, "선택된 이미지가 존재하지 않습니다."),

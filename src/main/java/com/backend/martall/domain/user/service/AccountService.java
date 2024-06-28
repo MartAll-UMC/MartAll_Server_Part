@@ -1,12 +1,15 @@
 package com.backend.martall.domain.user.service;
 
 import com.backend.martall.domain.user.dto.AccountDto;
+import com.backend.martall.domain.user.dto.JwtDto;
 import com.backend.martall.domain.user.dto.UserDto;
 import com.backend.martall.domain.user.entity.Provider;
 import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.domain.user.entity.UserType;
+import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.global.exception.BadRequestException;
+import com.backend.martall.global.exception.GlobalException;
 import com.backend.martall.global.exception.ResponseStatus;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,40 @@ public class AccountService {
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public JwtDto.TwoJwtDateDto inAppLogin(UserDto.inAppLoginRequestDto inAppLoginRequestDto) {
+        JwtDto.JwtDateDto accessToken = null;
+        JwtDto.JwtDateDto refreshToken = null;
+
+        String userId = inAppLoginRequestDto.getId();
+        String userPwd = inAppLoginRequestDto.getPassword();
+
+        // ID로 회원이 있는지 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        // 비밀번호 비교 후 Refresh 토큰 및 Access 토큰 발급
+        if(encoder.matches(userPwd, user.getPassword())) {
+            refreshToken = jwtTokenProvider.createRefreshToken();
+
+            user.setRefreshToken(refreshToken.getToken());
+
+            accessToken = jwtTokenProvider.createAccessToken(user.getUserIdx());
+        } else {
+            throw new BadRequestException(ResponseStatus.LOGIN_FAIL_WRONG_PASSWORD);
+        }
+
+        // 데이터베이스에 저장
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new GlobalException(ResponseStatus.DATABASE_ERROR);
+        }
+
+        return new JwtDto.TwoJwtDateDto(accessToken.getToken(), accessToken.getExpiredDate(), refreshToken.getToken(), refreshToken.getExpiredDate());
+    }
 
     // 인앱 회원가입
     public void joinInApp(UserDto.UserJoinDto userJoinDto) {
