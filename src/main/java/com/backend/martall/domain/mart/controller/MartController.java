@@ -132,4 +132,14 @@ public class MartController {
 
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, martService.recommendMartKeyword()));
     }
+
+    @Operation(summary = "가게 등록 여부 조회")
+    @ApiResponse(responseCode = "200", description = "가게 등록 여부 조회", useReturnTypeSchema = true)
+    @GetMapping("/exist")
+    public ResponseEntity<JsonResponse<MartExistResponseDto>> checkOwnMart() {
+
+        Long userIdx = jwtTokenProvider.resolveToken();
+
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, martService.checkOwnMart(userIdx)));
+    }
 }

@@ -205,20 +205,18 @@ public class MartService {
 
     public List<MartRecommendedResponseDto> getTodayMart() {
         List<MartShop> martShopList = martRepository.findRandomMart(PageRequest.of(0, 8));
-        List<MartRecommendedResponseDto> martRecommendedResponseDtoList = martShopList.stream()
+        return martShopList.stream()
                 .map(martShop -> {
-                    MartRecommendedResponseDto martRecommendedResponseDto = MartRecommendedResponseDto.builder()
+                    return MartRecommendedResponseDto.builder()
                             .martId(martShop.getMartShopId())
                             .martImg(martShop.getProfilePhoto())
                             .martName(martShop.getName())
-                            .martCategory(martShop.getMartCategories().stream()
+                            .category(martShop.getMartCategories().stream()
                                     .map(martCategory -> martCategory.getCategoryName())
                                     .collect(Collectors.toList()))
                             .build();
-                    return martRecommendedResponseDto;
                 })
                 .collect(Collectors.toList());
-        return martRecommendedResponseDtoList;
     }
 
     public List<String> recommendMartKeyword() {
@@ -229,6 +227,14 @@ public class MartService {
                 .toList();
 
         return keywordList;
+    }
+
+    public MartExistResponseDto checkOwnMart(Long userIdx) {
+        User user = userRepository.findById(userIdx).get();
+
+        return MartExistResponseDto.builder()
+                .martExist(martRepository.existsByUser(user))
+                .build();
     }
 }
 

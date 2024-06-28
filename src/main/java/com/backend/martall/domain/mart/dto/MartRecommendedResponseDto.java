@@ -1,6 +1,5 @@
 package com.backend.martall.domain.mart.dto;
 
-import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -20,5 +19,5 @@ public class MartRecommendedResponseDto {
     @Schema(example = "바나나올")
     private String martName;
     @ArraySchema(schema = @Schema(example = "식품"))
-    private List<String> martCategory;
+    private List<String> category;
 }
