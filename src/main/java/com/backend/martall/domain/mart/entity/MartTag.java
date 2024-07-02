@@ -9,13 +9,15 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum MartTag {
     ALL("전체"),
-    CHILD("육아용품"),
-    COSMETIC("화장품"),
-    FOOD("식품"),
+//    CHILD("육아용품"),
+//    COSMETIC("화장품"),
+//    FOOD("식품"),
     SEAFOOD("수산"),
-    HEALTH("건강식품"),
-    PET("반려동물"),
-    MEAT("정육")
+//    HEALTH("건강식품"),
+//    PET("반려동물"),
+    MEAT("정육"),
+    FRUTVEG("과일채소"),
+    SNACK("간식")
     ;
 
     private final String name;
