@@ -1,6 +1,5 @@
 package com.backend.martall.domain.mart.controller;
 
-import com.backend.martall.domain.mart.dto.MartDetailResponseDto;
 import com.backend.martall.domain.mart.dto.MartResponseDto;
 import com.backend.martall.domain.mart.service.MartBookmarkService;
 import com.backend.martall.domain.user.jwt.JwtTokenProvider;
@@ -8,9 +7,6 @@ import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +52,6 @@ public class MartBookmarkController {
     public ResponseEntity<JsonResponse<List<MartResponseDto>>> getFollowedMarts() {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<MartResponseDto> martResponseDtoList = martBookmarkService.getFollowedMarts(userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, martResponseDtoList));
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, martResponseDtoList));
     }
 }
