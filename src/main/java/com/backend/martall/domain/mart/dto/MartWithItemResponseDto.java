@@ -1,6 +1,5 @@
 package com.backend.martall.domain.mart.dto;
 
-import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -25,6 +24,19 @@ public class MartWithItemResponseDto {
     private int likeCount;
     @Schema(example = "true")
     private boolean martBookmark;
-    private List<ItemMartNewResponseDto> items;
+    private List<ItemDto> items;
 
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ItemDto {
+        private int itemId;
+        private String itemImg;
+        private String itemName;
+        private int itemPrice;
+        private boolean itemLike;
+
+    }
 }

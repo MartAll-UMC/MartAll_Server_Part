@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,41 +24,56 @@ public class MartBookmarkService {
     private final MartBookmarkRepository martBookmarkRepository;
     private final MartService martService;
 
+    // 단골마트 등록
     @Transactional
     public void followMart(Long userId, Long shopId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
-        MartShop martShop = martRepository.findById(shopId).orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
+
+        MartShop martShop = martRepository.findById(shopId)
+                .orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
+
         boolean isAlreadyFavorite = martBookmarkRepository.existsByUserAndMartShop(user, martShop);
+
         if (isAlreadyFavorite) {
             throw new BadRequestException(ResponseStatus.MART_FAVORITE_ALREADY);
         }
+
         MartBookmark martBookmark = new MartBookmark();
         martShop.addBookmark(martBookmark);
         martBookmark.setUser(user);
+
         martBookmarkRepository.save(martBookmark);
     }
 
     // 단골 마트에서 삭제
     @Transactional
     public void unfollowMart(Long userId, Long shopId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
-        MartShop martShop = martRepository.findById(shopId).orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
-        MartBookmark martBookmark = martBookmarkRepository.findByUserAndMartShop(user, martShop).orElseThrow(() -> new BadRequestException(ResponseStatus.MART_FAVORITE_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
+
+        MartShop martShop = martRepository.findById(shopId)
+                .orElseThrow(() -> new BadRequestException(ResponseStatus.MART_NAME_NOT_FOUND));
+
+        MartBookmark martBookmark = martBookmarkRepository.findByUserAndMartShop(user, martShop)
+                .orElseThrow(() -> new BadRequestException(ResponseStatus.MART_FAVORITE_NOT_FOUND));
+
         martShop.removeBookmark(martBookmark);
         martBookmarkRepository.delete(martBookmark);
     }
 
     // 단골마트 조회
     public List<MartResponseDto> getFollowedMarts(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
+        User user = userRepository.findById(userId).
+                orElseThrow(() -> new BadRequestException(ResponseStatus.NOT_EXIST_USER));
 
         // 단골마트 조회
         List<MartBookmark> bookmarkList = martBookmarkRepository.findByUser(user);
 
         // 단골마트 마트 리스트
         List<MartShop> martShopList = bookmarkList.stream()
-                .map(martBookmark -> martBookmark.getMartShop())
-                .collect(Collectors.toList());
+                .map(MartBookmark::getMartShop)
+                .toList();
 
         // dto 리스트 반환
         return martService.generateMartList(martShopList, user);
