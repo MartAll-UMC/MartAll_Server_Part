@@ -31,10 +31,10 @@ public class ItemController {
     @Parameter(name = "keyword", description = "검색할 키워드")
     @ApiResponse(responseCode = "200", description = "상품 키워드 검색 목록", useReturnTypeSchema = true)
     @GetMapping("/search")
-    public ResponseEntity<JsonResponse<List<ItemCategorySearchResponseDto>>> searchItems(@RequestParam(required = false) String keyword) {
+    public ResponseEntity<JsonResponse<List<ItemKeywordSearchResponseDto>>> searchItems(@RequestParam(required = false) String keyword) {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<ItemKeywordSearchResponseDto> itemKeywordSearchResponseDtoList = itemService.searchItems(keyword, userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemKeywordSearchResponseDtoList));
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, itemKeywordSearchResponseDtoList));
     }
 
     // 상세정보
@@ -43,20 +43,20 @@ public class ItemController {
     @Parameter(name = "itemId", description = "상품의 아이디")
     @ApiResponse(responseCode = "200", description = "상품 상세정보", useReturnTypeSchema = true)
     @GetMapping("/{shopId}/{itemId}")
-    public ResponseEntity<JsonResponse<List<ItemCategorySearchResponseDto>>> getItemById(@PathVariable Long shopId, @PathVariable int itemId) {
+    public ResponseEntity<JsonResponse<ItemDetailResponseDto>> getItemById(@PathVariable Long shopId, @PathVariable int itemId) {
         Long userIdx = jwtTokenProvider.resolveToken();
         ItemDetailResponseDto itemDetailResponseDto = itemService.getItemDetail(shopId, itemId, userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemDetailResponseDto));
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, itemDetailResponseDto));
     }
 
     // 새로나온 상품
     @Operation(summary = "새로 나온 상품 조회")
     @ApiResponse(responseCode = "200", description = "새로 나온 상품 목록", useReturnTypeSchema = true)
     @GetMapping("/new-item")
-    public ResponseEntity<JsonResponse<List<ItemCategorySearchResponseDto>>> newItems() {
+    public ResponseEntity<JsonResponse<List<ItemNewResponseDto>>> newItems() {
         Long userIdx = jwtTokenProvider.resolveToken();
-        List<ItemNewResponseDto> itemNewResponseDtos = itemService.newItems(userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemNewResponseDtos));
+        List<ItemNewResponseDto> itemNewResponseDtoList = itemService.newItems(userIdx);
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, itemNewResponseDtoList));
     }
 
     // 아이템 카테고리 검색
@@ -73,7 +73,7 @@ public class ItemController {
                                                       @RequestParam(defaultValue = "기본") String sort) {
         Long userIdx = jwtTokenProvider.resolveToken();
         List<ItemCategorySearchResponseDto> itemCategoryResponseDtoList = itemService.getCategoryItem(category, minPrice, maxPrice, sort, userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemCategoryResponseDtoList));
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, itemCategoryResponseDtoList));
     }
 
     @Operation(summary = "상품 검색 키워드 추천")
@@ -81,7 +81,7 @@ public class ItemController {
     @GetMapping("/recommendKeyword")
     public ResponseEntity<JsonResponse<List<String>>> itemKeyword() {
 
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, itemService.recommendItemKeyword()));
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, itemService.recommendItemKeyword()));
     }
 
     // 상품 추가 테스트 컨트롤러
