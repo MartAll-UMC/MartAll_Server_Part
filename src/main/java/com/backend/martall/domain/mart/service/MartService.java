@@ -166,6 +166,7 @@ public class MartService {
         return martShopList.stream()
                 .map(martShop -> MartWithItemResponseDto.builder()
                         .martId(martShop.getMartShopId())
+                        .martImg(martShop.getProfilePhoto())
                         .martName(martShop.getName())
                         .martCategory(martShop.getMartCategories().stream()
                                 .map(MartCategory::getCategoryName)

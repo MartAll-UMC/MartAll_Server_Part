@@ -14,6 +14,7 @@ import java.util.List;
 public class MartWithItemResponseDto {
     @Schema(example = "1")
     private Long martId;
+    private String martImg;
     @Schema(example = "바나나올")
     private String martName;
     @ArraySchema(schema = @Schema(example = "식품"))

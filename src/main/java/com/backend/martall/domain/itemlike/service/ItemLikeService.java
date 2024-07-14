@@ -35,19 +35,13 @@ public class ItemLikeService {
         // userIdx의 찜한 상품 목록 불러오기
         List<ItemLike> itemLikeList = itemLikeRepository.findByUser(user);
 
-//        // 찜한 상품이 없으면 예외처리
-//        if(itemLikeList.isEmpty()) {
-//            log.info("찜한 상품이 존재하지 않음, userIdx = {}", userIdx);
-//            throw new BadRequestException(ITEMLIKE_NOT_EXIST);
-//        }
-
         // entity -> DTO
         // 상품, 마트 에서 데이터 불러오기
         List<ItemLikeInquiryResponse> itemLikeInquiryResponseList = itemLikeList.stream()
                 .map(itemLike -> {
                     Item item  = itemLike.getItem();
                     MartShop martShop = item.getMartShop();
-                    ItemLikeInquiryResponse itemLikeInquiryResponse = ItemLikeInquiryResponse.builder()
+                    return ItemLikeInquiryResponse.builder()
                             // 상품 정보에서 불러오기
                             .itemId(item.getItemId())
                             .itemImg(item.getProfilePhoto())
@@ -60,7 +54,6 @@ public class ItemLikeService {
                                     .martName(martShop.getName())
                                     .build())
                             .build();
-                    return itemLikeInquiryResponse;
                 })
                 .collect(Collectors.toList());
 
@@ -75,13 +68,7 @@ public class ItemLikeService {
         User user = userRepository.findByUserIdx(userIdx).get();
 
         // 해당하는 상품이 존재하지 않으면 예외
-        Item item;
-        try {
-            item = itemRepository.findById(itemId).get();
-        } catch (RuntimeException e) {
-            throw new BadRequestException(ITEMLIKE_ITEM_NOT_EXIST);
-        }
-
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new BadRequestException(ITEMLIKE_ITEM_NOT_EXIST));
 
         // 이미 찜 목록에 존재하면 에러
         if(itemLikeRepository.existsByUserAndItem(user, item)) {
@@ -108,12 +95,7 @@ public class ItemLikeService {
         User user = userRepository.findByUserIdx(userIdx).get();
 
         // 해당하는 상품이 존재하지 않으면 예외
-        Item item;
-        try {
-            item = itemRepository.findById(itemId).get();
-        } catch (RuntimeException e) {
-            throw new BadRequestException(ITEMLIKE_ITEM_NOT_EXIST);
-        }
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new BadRequestException(ITEMLIKE_ITEM_NOT_EXIST));
 
         // 찜 목록에 상품이 존재하지 않으면 에러
         if(!itemLikeRepository.existsByUserAndItem(user, item)) {
@@ -135,9 +117,7 @@ public class ItemLikeService {
     }
 
     // 회원이 상품을 좋아요 했는지 안했는지 반환
-    @Transactional
     public boolean checkItemLike(Item item, User user) {
-        boolean itemLikeYN = itemLikeRepository.existsByUserAndItem(user, item);
-        return itemLikeYN;
+        return itemLikeRepository.existsByUserAndItem(user, item);
     }
 }
