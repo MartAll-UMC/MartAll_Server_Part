@@ -1,6 +1,5 @@
 package com.backend.martall.domain.order.controller;
 
-import com.backend.martall.domain.item.dto.ItemKeywordSearchResponseDto;
 import com.backend.martall.domain.order.dto.OrderCreateRequestDto;
 import com.backend.martall.domain.order.dto.OrderInquiryResponseDto;
 import com.backend.martall.domain.order.service.UserOrderService;
@@ -8,10 +7,6 @@ import com.backend.martall.domain.user.jwt.JwtTokenProvider;
 import com.backend.martall.global.dto.JsonResponse;
 import com.backend.martall.global.exception.ResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +38,7 @@ public class UserOrderController {
     public ResponseEntity<JsonResponse<OrderInquiryResponseDto>> inquiryOrder() {
         Long userIdx = jwtTokenProvider.resolveToken();
         OrderInquiryResponseDto orderInquiryResponseDto = userOrderService.getOrder(userIdx);
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, orderInquiryResponseDto));
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, orderInquiryResponseDto));
     }
 
 }
