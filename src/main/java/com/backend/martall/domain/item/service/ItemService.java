@@ -47,9 +47,10 @@ public class ItemService {
         List<Item> items = itemRepository.searchByItemName(keyword);
 
         // dto 리스트 생성
-        List<ItemKeywordSearchResponseDto> itemKeywordSearchResponseDtoList = items.stream()
+
+        return items.stream()
                 .map(item -> {
-                    ItemKeywordSearchResponseDto itemKeywordSearchResponseDto = ItemKeywordSearchResponseDto.builder()
+                    return ItemKeywordSearchResponseDto.builder()
                             .itemId(item.getItemId())
                             .itemImg(item.getProfilePhoto())
                             .itemName(item.getItemName())
@@ -60,11 +61,8 @@ public class ItemService {
                                     .martName(item.getMartShop().getName())
                                     .build())
                             .build();
-                    return itemKeywordSearchResponseDto;
                 })
                 .collect(Collectors.toList());
-
-        return itemKeywordSearchResponseDtoList;
     }
 
     // 상품 상세정보
@@ -83,7 +81,9 @@ public class ItemService {
         }
 
         // dto 생성
-        ItemDetailResponseDto itemDetailResponseDto = ItemDetailResponseDto.builder()
+
+
+        return ItemDetailResponseDto.builder()
                 .itemId(item.getItemId())
                 .itemImg(item.getProfilePhoto())
                 .itemName(item.getItemName())
@@ -103,9 +103,6 @@ public class ItemService {
                                 .anyMatch(bookmark -> bookmark.getUser().equals(user)))
                         .build())
                 .build();
-
-
-        return itemDetailResponseDto;
     }
 
 
@@ -117,10 +114,11 @@ public class ItemService {
         List<Item> itemList = itemRepository.findTop8ByOrderByCreatedAtDesc();
 
         // dto 생성
-        List<ItemNewResponseDto> itemNewResponseDtoList = itemList.stream()
+
+        return itemList.stream()
                 .map(item -> {
                     MartShop martShop = item.getMartShop();
-                    ItemNewResponseDto itemNewResponseDto = ItemNewResponseDto.builder()
+                    return ItemNewResponseDto.builder()
                             .itemId(item.getItemId())
                             .itemImg(item.getProfilePhoto())
                             .itemName(item.getItemName())
@@ -132,11 +130,8 @@ public class ItemService {
                                     .martName(martShop.getName())
                                     .build())
                             .build();
-                    return itemNewResponseDto;
                 })
                 .collect(Collectors.toList());
-
-        return itemNewResponseDtoList;
     }
 
     // 카테고리 검색
@@ -159,10 +154,11 @@ public class ItemService {
         }
 
         // dto 생성
-        List<ItemCategorySearchResponseDto> itemCategorySearchResponseDtoList = itemList.stream()
+
+        return itemList.stream()
                 .map(item -> {
                     MartShop martShop = item.getMartShop();
-                    ItemCategorySearchResponseDto itemCategorySearchResponseDto = ItemCategorySearchResponseDto.builder()
+                    return ItemCategorySearchResponseDto.builder()
                             .itemId(item.getItemId())
                             .itemImg(item.getProfilePhoto())
                             .itemName(item.getItemName())
@@ -174,11 +170,8 @@ public class ItemService {
                                     .martName(martShop.getName())
                                     .build())
                             .build();
-                    return itemCategorySearchResponseDto;
                 })
                 .collect(Collectors.toList());
-
-        return itemCategorySearchResponseDtoList;
     }
 
     // 마트 상품 최신순
@@ -187,9 +180,9 @@ public class ItemService {
     public List<ItemMartNewResponseDto> getMartNewItem(MartShop martShop, User user) {
         List<Item> itemList = itemRepository.findByMartShopOrderByCreatedAtDesc(martShop);
 
-        List<ItemMartNewResponseDto> itemMartNewResponseDtoList = itemList.stream()
+        return itemList.stream()
                 .map(item -> {
-                    ItemMartNewResponseDto itemMartNewResponseDto = ItemMartNewResponseDto.builder()
+                    return ItemMartNewResponseDto.builder()
                             .itemId(item.getItemId())
                             .itemImg(item.getProfilePhoto())
                             .itemName(item.getItemName())
@@ -201,11 +194,8 @@ public class ItemService {
                                     .martName(martShop.getName())
                                     .build())
                             .build();
-                    return itemMartNewResponseDto;
                 })
                 .collect(Collectors.toList());
-
-        return itemMartNewResponseDtoList;
     }
 
     // 테스트 코드
@@ -237,10 +227,8 @@ public class ItemService {
         // 10개의 상품 리스트(랜덤) 불러오기
         List<Item> itemList = itemRepository.findRandomItem(PageRequest.of(0, 10));
 
-        List<String> keywordList = itemList.stream()
-                .map(item -> item.getItemName())
+        return itemList.stream()
+                .map(Item::getItemName)
                 .toList();
-
-        return keywordList;
     }
 }
