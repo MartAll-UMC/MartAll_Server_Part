@@ -5,7 +5,8 @@ import com.backend.martall.domain.cart.repository.CartItemRepository;
 import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartRepository;
-import com.backend.martall.domain.order.dto.*;
+import com.backend.martall.domain.order.dto.OrderCreateRequestDto;
+import com.backend.martall.domain.order.dto.OrderInquiryResponseDto;
 import com.backend.martall.domain.order.entity.OrderInfo;
 import com.backend.martall.domain.order.entity.OrderItem;
 import com.backend.martall.domain.order.repository.OrderInfoRepository;
@@ -18,12 +19,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.backend.martall.domain.order.entity.OrderState.ORDER_PREPARE;
+import static com.backend.martall.domain.order.entity.OrderState.ORDER_WAIT;
 import static com.backend.martall.global.exception.ResponseStatus.*;
 
 @Slf4j
@@ -44,8 +45,6 @@ public class UserOrderService {
     @Transactional
     public void createOrder(OrderCreateRequestDto orderCreateRequestDto, Long userIdx) {
 
-
-
         User user = userRepository.findByUserIdx(userIdx).get();
 
         // 해당 아이디에 주문이 있는지 확인
@@ -62,7 +61,7 @@ public class UserOrderService {
         OrderInfo orderInfo = OrderInfo.builder()
                 .user(user) // --> 실제 아이디 추가로 변경
                 .martShop(martShop)
-                .orderState(ORDER_PREPARE.getCode())
+                .orderState(ORDER_WAIT.getCode())
                 .build();
 
         log.info("주문생성, userIdx = {}", userIdx);
@@ -118,7 +117,6 @@ public class UserOrderService {
             throw new BadRequestException(ORDER_PAYMENT_NOT_EQUAL);
         }
 
-        orderAsyncService.changeOrderState(orderInfo);
     }
 
     public OrderInquiryResponseDto getOrder(Long userIdx) {

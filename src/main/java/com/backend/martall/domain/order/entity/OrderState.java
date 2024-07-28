@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public enum OrderState {
     ORDER_PREPARE("P"),
-    ORDER_COMPLETE("C")
+    ORDER_COMPLETE("C"),
+    ORDER_WAIT("W")
     ;
 
     private final String code;
