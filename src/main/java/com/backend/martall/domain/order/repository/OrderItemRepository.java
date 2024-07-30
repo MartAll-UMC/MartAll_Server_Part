@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     List<OrderItem> findByOrderInfo(OrderInfo orderInfo);
+
+    Long countByOrderInfo(OrderInfo orderInfo);
 }

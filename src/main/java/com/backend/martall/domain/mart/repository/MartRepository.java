@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -56,6 +57,8 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
     List<MartShop> findRandomMart(Pageable pageable);
 
     boolean existsByUser(User user);
+
+    Optional<MartShop> findByUser(User user);
 }
 
 

@@ -77,6 +77,9 @@ public enum ResponseStatus {
     ORDER_CART_EMPTY(false, 4423, "주문하려는 장바구니 상품 목록이 비어있습니다."),
     ORDER_CARTITEM_NOT_EXIST(false, 4424, "장바구니에 존재하지 않는 상품입니다."),
 
+    // 사장님 4450 ~
+    OWNER_NOT_EXIST_MART(false, 4450, "마트가 등록되어 있지 않습니다."),
+
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),
 
