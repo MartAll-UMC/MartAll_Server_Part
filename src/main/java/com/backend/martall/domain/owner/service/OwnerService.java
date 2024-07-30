@@ -30,7 +30,7 @@ public class OwnerService {
     private final OrderItemRepository orderItemRepository;
 
 
-    public OwnerDto.OrderListDto getOrderList(String state, Long userIdx) {
+    public OwnerDto.OrderListResponseDto getOrderList(String state, Long userIdx) {
 
         User user = userRepository.findByUserIdx(userIdx).get();
         MartShop martShop = martRepository.findByUser(user).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_MART));
@@ -41,7 +41,7 @@ public class OwnerService {
         }
 
         // 대기중(W), 준비중(P), 완료 순(C)
-        return OwnerDto.OrderListDto.builder()
+        return OwnerDto.OrderListResponseDto.builder()
                 .wCount(orderInfoRepository.countByMartShopAndOrderState(martShop, "W"))
                 .pCount(orderInfoRepository.countByMartShopAndOrderState(martShop, "P"))
                 .cCount(orderInfoRepository.countByMartShopAndOrderState(martShop, "C"))
@@ -53,7 +53,7 @@ public class OwnerService {
                             int otherItemsCount = orderItemList.size() - 1;
                             String orderName = otherItemsCount > 0 ? firstItemName + " 외 " + otherItemsCount + "개" : firstItemName;
 
-                            return OwnerDto.OrderListDto.Order.builder()
+                            return OwnerDto.OrderListResponseDto.Order.builder()
                                     .customerName(orderUser.getUsername())
                                     .regularState(martBookmarkRepository.existsByUserAndMartShop(orderUser, martShop))
                                     .orderAt(orderInfo.getCreatedAt())

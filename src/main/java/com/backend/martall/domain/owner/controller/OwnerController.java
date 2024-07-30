@@ -28,7 +28,7 @@ public class OwnerController {
     @Operation(summary = "주문 내역 조회")
     @ApiResponse(responseCode = "200", description = "주문 내역 조회", useReturnTypeSchema = true)
     @GetMapping("/order/list")
-    public ResponseEntity<JsonResponse<OwnerDto.OrderListDto>> inquiryOrder(@RequestParam String state) {
+    public ResponseEntity<JsonResponse<OwnerDto.OrderListResponseDto>> inquiryOrder(@RequestParam String state) {
         Long userIdx = jwtTokenProvider.resolveToken();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.getOrderList(state, userIdx)));
     }

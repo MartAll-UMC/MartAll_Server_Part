@@ -12,7 +12,7 @@ public class OwnerDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class OrderListDto {
+    public static class OrderListResponseDto {
         private Long wCount;
         private Long pCount;
         private Long cCount;
