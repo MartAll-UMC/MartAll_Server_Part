@@ -15,4 +15,13 @@ public enum OrderState {
 
     private final String code;
 
+    public static boolean isValidState(String state) {
+        for (OrderState orderState : OrderState.values()) {
+            if (orderState.getCode().equals(state)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

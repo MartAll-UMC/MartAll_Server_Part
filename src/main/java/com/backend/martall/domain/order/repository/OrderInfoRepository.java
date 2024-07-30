@@ -4,6 +4,7 @@ import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.order.entity.OrderInfo;
 import com.backend.martall.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -25,5 +26,9 @@ public interface OrderInfoRepository extends JpaRepository<OrderInfo, Long> {
     List<OrderInfo> findTodayCompleteByMartShop(MartShop martShop);
 
     Long countByMartShopAndOrderState(MartShop martShop, String orderState);
+
+    @Modifying
+    @Query("UPDATE OrderInfo o SET o.orderState = :state WHERE o.orderId = :orderId")
+    Integer updateStateById(Long orderId, String state);
 
 }

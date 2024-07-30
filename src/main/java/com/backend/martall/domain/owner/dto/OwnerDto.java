@@ -35,11 +35,17 @@ public class OwnerDto {
     }
 
     @Getter
+    public static class OrderStateUpdateRequestDto {
+        private Long orderId;
+        private String orderState;
+    }
+
+    @Getter
     @Setter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class OrderStateUpdateRequestDto {
+    public static class OrderStateUpdateResponseDto {
         private Long orderId;
         private String orderState;
     }
