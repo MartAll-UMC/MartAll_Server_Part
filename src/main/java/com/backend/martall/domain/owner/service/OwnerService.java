@@ -34,6 +34,7 @@ public class OwnerService {
     private final OrderItemRepository orderItemRepository;
 
 
+    // 주문 내역 조회
     public OwnerDto.OrderListResponseDto getOrderList(String state, Long userIdx) {
 
         // 로그인한 유저(사장) 의 마트 정보 및 주문 내역 불러오기
@@ -77,11 +78,22 @@ public class OwnerService {
     }
 
 
+    // 주문 상태 수정
     @Transactional
-    public OwnerDto.OrderStateUpdateResponseDto updateOrderState(OwnerDto.OrderStateUpdateRequestDto orderStateUpdateRequestDto) {
+    public OwnerDto.OrderStateUpdateResponseDto updateOrderState(OwnerDto.OrderStateUpdateRequestDto orderStateUpdateRequestDto,
+                                                                 Long userIdx) {
 
         Long orderId = orderStateUpdateRequestDto.getOrderId();
         String orderState = orderStateUpdateRequestDto.getOrderState();
+
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        MartShop martShop = martRepository.findByUser(user).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_MART));
+
+        // 마트에 해당 하는 주문인지 확인
+        if(!orderInfoRepository.existsByOrderIdAndMartShop(orderId, martShop)) {
+            throw new BadRequestException(ResponseStatus.OWNER_WRONG_ORDER);
+        }
 
         // 변경하려는 상태가 존재하는지 확인
         if(!OrderState.isValidState(orderState)) {
@@ -99,9 +111,21 @@ public class OwnerService {
                 .build();
     }
 
-    public OwnerDto.OrderDetailResponseDto getOrderDetail(OwnerDto.OrderDetailRequestDto orderDetailRequestDto) {
+
+    // 주문 상세 내역 조회
+    public OwnerDto.OrderDetailResponseDto getOrderDetail(OwnerDto.OrderDetailRequestDto orderDetailRequestDto,
+                                                          Long userIdx) {
 
         Long orderId = orderDetailRequestDto.getOrderId();
+
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        MartShop martShop = martRepository.findByUser(user).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_MART));
+
+        // 마트에 해당 하는 주문인지 확인
+        if(!orderInfoRepository.existsByOrderIdAndMartShop(orderId, martShop)) {
+            throw new BadRequestException(ResponseStatus.OWNER_WRONG_ORDER);
+        }
 
         // 주문
         OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_ORDER));

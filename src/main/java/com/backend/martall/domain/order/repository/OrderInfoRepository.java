@@ -31,4 +31,6 @@ public interface OrderInfoRepository extends JpaRepository<OrderInfo, Long> {
     @Query("UPDATE OrderInfo o SET o.orderState = :state WHERE o.orderId = :orderId")
     Integer updateStateById(Long orderId, String state);
 
+    Boolean existsByOrderIdAndMartShop(Long orderId, MartShop martShop);
+
 }

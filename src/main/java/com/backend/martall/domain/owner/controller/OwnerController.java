@@ -35,7 +35,7 @@ public class OwnerController {
     @PatchMapping("/order/update-state")
     public ResponseEntity<JsonResponse<OwnerDto.OrderStateUpdateResponseDto>> updateOrder(@RequestBody OwnerDto.OrderStateUpdateRequestDto orderStateUpdateRequestDto) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateOrderState(orderStateUpdateRequestDto)));
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateOrderState(orderStateUpdateRequestDto, userIdx)));
     }
 
     @Operation(summary = "주문 상세 내역 조회")
@@ -43,6 +43,6 @@ public class OwnerController {
     @GetMapping("/order/check-detail")
     public ResponseEntity<JsonResponse<OwnerDto.OrderDetailResponseDto>> inquiryOrderDetail(@RequestBody OwnerDto.OrderDetailRequestDto orderDetailRequestDto) {
         Long userIdx = jwtTokenProvider.resolveToken();
-        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.getOrderDetail(orderDetailRequestDto)));
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.getOrderDetail(orderDetailRequestDto, userIdx)));
     }
 }
