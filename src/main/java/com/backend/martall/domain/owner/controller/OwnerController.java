@@ -37,4 +37,12 @@ public class OwnerController {
         Long userIdx = jwtTokenProvider.resolveToken();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateOrderState(orderStateUpdateRequestDto)));
     }
+
+    @Operation(summary = "주문 상세 내역 조회")
+    @ApiResponse(responseCode = "200", description = "주문 상세 내역 조회", useReturnTypeSchema = true)
+    @GetMapping("/order/check-detail")
+    public ResponseEntity<JsonResponse<OwnerDto.OrderDetailResponseDto>> inquiryOrderDetail(@RequestBody OwnerDto.OrderDetailRequestDto orderDetailRequestDto) {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.getOrderDetail(orderDetailRequestDto)));
+    }
 }

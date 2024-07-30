@@ -49,4 +49,33 @@ public class OwnerDto {
         private Long orderId;
         private String orderState;
     }
+
+    @Getter
+    public static class OrderDetailRequestDto {
+        private Long orderId;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class OrderDetailResponseDto {
+        private String customerName;
+        private Boolean regularState;
+        private LocalDateTime orderAt;
+        private List<Item> itemList;
+        private Integer sumPrice;
+
+        @Getter
+        @Setter
+        @Builder
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class Item {
+            private String productName;
+            private Integer quantity;
+            private Integer price;
+        }
+    }
 }

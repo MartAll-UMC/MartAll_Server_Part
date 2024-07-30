@@ -1,5 +1,6 @@
 package com.backend.martall.domain.owner.service;
 
+import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
 import com.backend.martall.domain.mart.repository.MartRepository;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -77,14 +79,16 @@ public class OwnerService {
 
     @Transactional
     public OwnerDto.OrderStateUpdateResponseDto updateOrderState(OwnerDto.OrderStateUpdateRequestDto orderStateUpdateRequestDto) {
+
         Long orderId = orderStateUpdateRequestDto.getOrderId();
         String orderState = orderStateUpdateRequestDto.getOrderState();
 
+        // 변경하려는 상태가 존재하는지 확인
         if(!OrderState.isValidState(orderState)) {
             throw new BadRequestException(ResponseStatus.OWNER_WRONG_ORDER_STATE);
         }
 
-        // 입력받은 정보로 orderInfo 업데이트
+        // 입력 받은 정보로 orderInfo 업데이트
         if(orderInfoRepository.updateStateById(orderId, orderState) == 0) {
             throw new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_ORDER);
         }
@@ -92,6 +96,45 @@ public class OwnerService {
         return OwnerDto.OrderStateUpdateResponseDto.builder()
                 .orderId(orderId)
                 .orderState(orderState)
+                .build();
+    }
+
+    public OwnerDto.OrderDetailResponseDto getOrderDetail(OwnerDto.OrderDetailRequestDto orderDetailRequestDto) {
+
+        Long orderId = orderDetailRequestDto.getOrderId();
+
+        // 주문
+        OrderInfo orderInfo = orderInfoRepository.findById(orderId).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_ORDER));
+
+        // 주문 상품 목록
+        List<OrderItem> orderItemList = orderItemRepository.findByOrderInfo(orderInfo);
+
+        // 주문한 회원
+        User customer = orderInfo.getUser();
+
+        List<OwnerDto.OrderDetailResponseDto.Item> itemList = new ArrayList<>();
+
+        int sumPrice = 0;
+
+        // 총 가격 계산 및 item dto 리스트 생성
+        for (OrderItem orderItem : orderItemList) {
+            Item item = orderItem.getItem();
+            int itemPrice = orderItem.getCount() * item.getPrice();
+            sumPrice += itemPrice;
+
+            itemList.add(OwnerDto.OrderDetailResponseDto.Item.builder()
+                    .productName(item.getItemName())
+                    .quantity(orderItem.getCount())
+                    .price(itemPrice)
+                    .build());
+        }
+
+        return OwnerDto.OrderDetailResponseDto.builder()
+                .customerName(customer.getUsername())
+                .regularState(martBookmarkRepository.existsByUserAndMartShop(customer, orderInfo.getMartShop()))
+                .orderAt(orderInfo.getCreatedAt())
+                .itemList(itemList)
+                .sumPrice(sumPrice)
                 .build();
     }
 }
