@@ -24,6 +24,7 @@ public class OwnerDto {
         @AllArgsConstructor
         @NoArgsConstructor
         public static class Order {
+            private Long orderId;
             private String customerName;
             private Boolean regularState;
             private LocalDateTime orderAt;
@@ -31,5 +32,15 @@ public class OwnerDto {
             private Long sumPrice;
             private String state;
         }
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class OrderStateUpdateRequestDto {
+        private Long orderId;
+        private String orderState;
     }
 }

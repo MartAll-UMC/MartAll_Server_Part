@@ -54,6 +54,7 @@ public class OwnerService {
                             String orderName = otherItemsCount > 0 ? firstItemName + " 외 " + otherItemsCount + "개" : firstItemName;
 
                             return OwnerDto.OrderListResponseDto.Order.builder()
+                                    .orderId(orderInfo.getOrderId())
                                     .customerName(orderUser.getUsername())
                                     .regularState(martBookmarkRepository.existsByUserAndMartShop(orderUser, martShop))
                                     .orderAt(orderInfo.getCreatedAt())
