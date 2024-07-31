@@ -1,6 +1,9 @@
 package com.backend.martall.domain.owner.service;
 
+import com.backend.martall.domain.image.service.ImageService;
 import com.backend.martall.domain.item.entity.Item;
+import com.backend.martall.domain.item.entity.ItemCategory;
+import com.backend.martall.domain.item.repository.ItemRepository;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
 import com.backend.martall.domain.mart.repository.MartRepository;
@@ -18,6 +21,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,8 @@ public class OwnerService {
     private final OrderInfoRepository orderInfoRepository;
     private final MartBookmarkRepository martBookmarkRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ImageService imageService;
+    private final ItemRepository itemRepository;
 
 
     // 주문 내역 조회
@@ -159,6 +165,43 @@ public class OwnerService {
                 .orderAt(orderInfo.getCreatedAt())
                 .itemList(itemList)
                 .sumPrice(sumPrice)
+                .build();
+    }
+
+    @Transactional
+    public OwnerDto.ItemResponseDto registerItem(MultipartFile profile,
+                                                      MultipartFile content,
+                                                      OwnerDto.ItemCreateRequestDto orderItemRequestDto,
+                                                      Long userIdx) {
+
+        // profile, content가 null인 경우 처리
+        if (profile == null || profile.isEmpty() || content == null || content.isEmpty()) {
+            throw new BadRequestException(ResponseStatus.OWNER_NEED_IMAGE);
+        }
+
+        // 이미지 s3에 저장하고 url 저장
+        String profileUrl = imageService.saveImage(profile);
+        String contentUrl = imageService.saveImage(content);
+
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        MartShop martShop = martRepository.findByUser(user).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_MART));
+
+        // 상품 빌드
+        Item item = Item.builder()
+                .itemName(orderItemRequestDto.getItemName())
+                .categoryId(ItemCategory.findByName(orderItemRequestDto.getItemCategory()))
+                .price(orderItemRequestDto.getPrice())
+                .profilePhoto(profileUrl)
+                .content(contentUrl)
+                .inventoryQuantity(9999)
+                .martShop(martShop)
+                .build();
+
+        itemRepository.save(item);
+
+        return OwnerDto.ItemResponseDto.builder()
+                .itemId(item.getItemId())
                 .build();
     }
 }

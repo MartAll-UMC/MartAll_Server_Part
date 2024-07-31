@@ -8,9 +8,11 @@ import com.backend.martall.global.exception.ResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Tag(name = "Owner", description = "Owner API")
@@ -44,5 +46,15 @@ public class OwnerController {
     public ResponseEntity<JsonResponse<OwnerDto.OrderDetailResponseDto>> inquiryOrderDetail(@RequestBody OwnerDto.OrderDetailRequestDto orderDetailRequestDto) {
         Long userIdx = jwtTokenProvider.resolveToken();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.getOrderDetail(orderDetailRequestDto, userIdx)));
+    }
+
+    @Operation(summary = "상품 등록")
+    @ApiResponse(responseCode = "200", description = "상품 등록", useReturnTypeSchema = true)
+    @PostMapping("/item/registration")
+    public ResponseEntity<JsonResponse<OwnerDto.ItemResponseDto>> createItem(@RequestPart(name = "profile") MultipartFile profile,
+                                                                             @RequestPart(name = "content") MultipartFile content,
+                                                                             @RequestPart(name = "dto") @Valid OwnerDto.ItemCreateRequestDto itemRequestDto) {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.registerItem(profile, content, itemRequestDto, userIdx)));
     }
 }

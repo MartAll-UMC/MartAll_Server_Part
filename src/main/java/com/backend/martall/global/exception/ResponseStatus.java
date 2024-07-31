@@ -82,6 +82,7 @@ public enum ResponseStatus {
     OWNER_NOT_EXIST_ORDER(false, 4451, "존재하지 않는 주문입니다."),
     OWNER_WRONG_ORDER_STATE(false, 4452, "존재하지 않는 주문 상태입니다."),
     OWNER_WRONG_ORDER(false, 4453, "해당 마트의 주문이 아닙니다."),
+    OWNER_NEED_IMAGE(false, 4454, "이미지가 필요합니다."),
 
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),
