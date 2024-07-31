@@ -3,12 +3,13 @@ package com.backend.martall.domain.item.entity;
 import com.backend.martall.domain.BaseTime;
 import com.backend.martall.domain.itemlike.entity.ItemLike;
 import com.backend.martall.domain.mart.entity.MartShop;
+import com.backend.martall.domain.owner.dto.OwnerDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,5 +75,20 @@ public class Item extends BaseTime {
     public void setPic(String profileUrl, String contentUrl) {
         this.profilePhoto = profileUrl;
         this.content = contentUrl;
+    }
+
+    public void updateItem(String profileUrl,
+                           String contentUrl,
+                           OwnerDto.ItemUpdateRequestDto itemUpdateRequestDto) {
+
+        String itemName = itemUpdateRequestDto.getItemName();
+        String itemCategory = itemUpdateRequestDto.getItemCategory();
+        Integer itemPrice = itemUpdateRequestDto.getPrice();
+
+        this.profilePhoto = (profileUrl != null && !profileUrl.isEmpty()) ? profileUrl : this.profilePhoto;
+        this.content = (contentUrl != null && !contentUrl.isEmpty()) ? contentUrl : this.content;
+        this.itemName = (itemName != null && !itemName.isEmpty()) ? itemName : this.itemName;
+        this.categoryId = (itemCategory != null && !itemCategory.isEmpty()) ? ItemCategory.findByName(itemCategory) : this.categoryId;
+        this.price = (itemPrice != null) ? itemPrice : this.price;
     }
 }

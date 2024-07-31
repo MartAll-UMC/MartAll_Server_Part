@@ -1,5 +1,8 @@
 package com.backend.martall.domain.owner.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -77,5 +80,45 @@ public class OwnerDto {
             private Integer quantity;
             private Integer price;
         }
+    }
+
+
+    @Getter
+    @Setter
+    public static class ItemCreateRequestDto {
+
+        @NotNull
+        @NotBlank
+        private String itemName;
+
+        @NotNull
+        @NotBlank
+        private String itemCategory;
+
+        @NotNull
+        @Min(0)
+        private Integer price;
+    }
+
+    @Getter
+    @Setter
+    public static class ItemUpdateRequestDto {
+        private Integer itemId;
+
+        private String itemName;
+
+        private String itemCategory;
+
+        @Min(0)
+        private Integer price;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ItemResponseDto {
+        private Integer itemId;
     }
 }
