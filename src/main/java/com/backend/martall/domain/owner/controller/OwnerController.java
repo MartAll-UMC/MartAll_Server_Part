@@ -57,4 +57,14 @@ public class OwnerController {
         Long userIdx = jwtTokenProvider.resolveToken();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.registerItem(profile, content, itemRequestDto, userIdx)));
     }
+
+    @Operation(summary = "상품 수정")
+    @ApiResponse(responseCode = "200", description = "상품 수정", useReturnTypeSchema = true)
+    @PatchMapping("/item/update")
+    public ResponseEntity<JsonResponse<OwnerDto.ItemResponseDto>> updateItem(@RequestPart(name = "profile", required = false) MultipartFile profile,
+                                                                             @RequestPart(name = "content", required = false) MultipartFile content,
+                                                                             @RequestPart(name = "dto") @Valid OwnerDto.ItemUpdateRequestDto itemRequestDto) {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateItem(profile, content, itemRequestDto, userIdx)));
+    }
 }

@@ -1,5 +1,6 @@
 package com.backend.martall.domain.owner.dto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -95,6 +96,20 @@ public class OwnerDto {
         private String itemCategory;
 
         @NotNull
+        @Min(0)
+        private Integer price;
+    }
+
+    @Getter
+    @Setter
+    public static class ItemUpdateRequestDto {
+        private Integer itemId;
+
+        private String itemName;
+
+        private String itemCategory;
+
+        @Min(0)
         private Integer price;
     }
 
