@@ -80,6 +80,8 @@ public class MartShop extends BaseTime {
     @Column(name = "latitude", length = 50)
     private String latitude;
 
+    private Boolean exposure;
+
 
     public void addMartCategory(MartCategory martCategory) {
         this.martCategories.add(martCategory);
