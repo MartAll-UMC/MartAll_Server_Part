@@ -121,4 +121,8 @@ public class MartShop extends BaseTime {
         if (martRequestDto.getLongitude() != null) this.longitude = martRequestDto.getLongitude();
         if (martRequestDto.getLatitude() != null) this.latitude = martRequestDto.getLatitude();
     }
+
+    public void updateExposure(Boolean exposure) {
+        this.exposure = exposure;
+    }
 }

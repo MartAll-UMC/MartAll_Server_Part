@@ -121,4 +121,18 @@ public class OwnerDto {
     public static class ItemResponseDto {
         private Integer itemId;
     }
+
+    @Getter
+    public static class MartExposureRequestDto {
+        private Boolean exposure;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MartExposureResponseDto {
+        private Boolean exposure;
+    }
 }

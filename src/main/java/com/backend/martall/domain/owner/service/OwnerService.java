@@ -242,4 +242,21 @@ public class OwnerService {
                 .itemId(item.getItemId())
                 .build();
     }
+
+    @Transactional
+    public OwnerDto.MartExposureResponseDto updateMartExposure(OwnerDto.MartExposureRequestDto martExposureRequestDto,
+                                                               Long userIdx) {
+
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        MartShop martShop = martRepository.findByUser(user).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_MART));
+
+        martShop.updateExposure(martExposureRequestDto.getExposure());
+
+        martRepository.save(martShop);
+
+        return OwnerDto.MartExposureResponseDto.builder()
+                .exposure(martShop.getExposure())
+                .build();
+    }
 }

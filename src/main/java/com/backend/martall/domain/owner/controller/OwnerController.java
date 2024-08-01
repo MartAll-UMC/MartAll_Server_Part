@@ -67,4 +67,12 @@ public class OwnerController {
         Long userIdx = jwtTokenProvider.resolveToken();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateItem(profile, content, itemRequestDto, userIdx)));
     }
+
+    @Operation(summary = "가게 노출 상태 수정")
+    @ApiResponse(responseCode = "200", description = "가게 노출 상태 수정", useReturnTypeSchema = true)
+    @PatchMapping("/shops/change-state")
+    public ResponseEntity<JsonResponse<OwnerDto.MartExposureResponseDto>> updateMartExposure(@RequestBody OwnerDto.MartExposureRequestDto martExposureRequestDto) {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateMartExposure(martExposureRequestDto, userIdx)));
+    }
 }
