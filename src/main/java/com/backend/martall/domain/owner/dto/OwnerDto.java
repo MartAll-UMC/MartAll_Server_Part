@@ -121,4 +121,79 @@ public class OwnerDto {
     public static class ItemResponseDto {
         private Integer itemId;
     }
+
+    @Getter
+    public static class MartExposureRequestDto {
+        private Boolean exposure;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MartExposureResponseDto {
+        private Boolean exposure;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MartMainResponseDto {
+        private Long martId;
+        private String martName;
+        private Boolean exposure;
+        private List<String> martCategory;
+        private Integer bookmarkCount;
+        private Integer likeCount;
+    }
+
+    @Getter
+    public static class MartTagRequestDto {
+        private List<String> category;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MartTagResponseDto {
+        private Long martShopId;
+    }
+
+    @Getter
+    public static class MartRequestDto {
+        private String name;
+        private String address;
+        private OperatingTime operatingTime;
+        private String shopNumber;
+        private List<String> category;
+
+        @Getter
+        public static class OperatingTime {
+            private List<String> days;
+            private Time open;
+            private Time close;
+        }
+
+        @Getter
+        public static class Time {
+            private int hour;
+            private int minute;
+            private String period;
+        }
+    }
+
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MartResponseDto {
+        private Long martShopId;
+    }
 }

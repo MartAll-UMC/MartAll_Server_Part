@@ -16,7 +16,7 @@ public enum MartTag {
 //    HEALTH("건강식품"),
 //    PET("반려동물"),
     MEAT("정육"),
-    FRUTVEG("과일채소"),
+    FRUTVEG("과일&채소"),
     SNACK("간식")
     ;
 

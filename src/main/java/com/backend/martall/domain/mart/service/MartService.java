@@ -119,7 +119,11 @@ public class MartService {
 
         // 존재하지 않는 태그면 예외처리
         if (!MartTag.existByName(tag)) {
-            throw new BadRequestException(ResponseStatus.MART_TAG_WRONG);
+            if(tag.equals("과일채소")) {
+                tag = "과일&채소";
+            } else {
+                throw new BadRequestException(ResponseStatus.MART_TAG_WRONG);
+            }
         }
 
         List<MartShop> martShopList = switch (sort) {

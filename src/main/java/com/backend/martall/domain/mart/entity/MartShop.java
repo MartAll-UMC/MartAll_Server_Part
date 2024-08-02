@@ -6,6 +6,7 @@ import com.backend.martall.domain.user.entity.User;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -54,13 +55,13 @@ public class MartShop extends BaseTime {
     private User user;
 
     @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<MartShopPic> martShopPics;
+    private List<MartShopPic> martShopPics = new ArrayList<>();
 
     @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<MartCategory> martCategories;
+    private List<MartCategory> martCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<MartBookmark> martBookmarks;
+    private List<MartBookmark> martBookmarks = new ArrayList<>();
 
     @Column(name = "manager_name", length = 50)
     private String managerName;
@@ -79,6 +80,8 @@ public class MartShop extends BaseTime {
 
     @Column(name = "latitude", length = 50)
     private String latitude;
+
+    private Boolean exposure;
 
 
     public void addMartCategory(MartCategory martCategory) {
@@ -118,5 +121,9 @@ public class MartShop extends BaseTime {
         if (martRequestDto.getLinkNaver() != null) this.linkNaver = martRequestDto.getLinkNaver();
         if (martRequestDto.getLongitude() != null) this.longitude = martRequestDto.getLongitude();
         if (martRequestDto.getLatitude() != null) this.latitude = martRequestDto.getLatitude();
+    }
+
+    public void updateExposure(Boolean exposure) {
+        this.exposure = exposure;
     }
 }

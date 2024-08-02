@@ -67,4 +67,36 @@ public class OwnerController {
         Long userIdx = jwtTokenProvider.resolveToken();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateItem(profile, content, itemRequestDto, userIdx)));
     }
+
+    @Operation(summary = "가게 노출 상태 수정")
+    @ApiResponse(responseCode = "200", description = "가게 노출 상태 수정", useReturnTypeSchema = true)
+    @PatchMapping("/shops/change-state")
+    public ResponseEntity<JsonResponse<OwnerDto.MartExposureResponseDto>> updateMartExposure(@RequestBody OwnerDto.MartExposureRequestDto martExposureRequestDto) {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateMartExposure(martExposureRequestDto, userIdx)));
+    }
+
+    @Operation(summary = "홈 화면")
+    @ApiResponse(responseCode = "200", description = "홈 화면", useReturnTypeSchema = true)
+    @GetMapping("/shops/all")
+    public ResponseEntity<JsonResponse<OwnerDto.MartMainResponseDto>> home() {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.getMartMain(userIdx)));
+    }
+
+    @Operation(summary = "가게 태그 관리")
+    @ApiResponse(responseCode = "200", description = "가게 태그 관리", useReturnTypeSchema = true)
+    @PatchMapping("/shops/tag")
+    public ResponseEntity<JsonResponse<OwnerDto.MartTagResponseDto>> updateMartTag(@RequestBody OwnerDto.MartTagRequestDto martTagRequestDto) {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateMartTag(martTagRequestDto, userIdx)));
+    }
+
+    @Operation(summary = "가게 등록")
+    @ApiResponse(responseCode = "200", description = "가게 등록", useReturnTypeSchema = true)
+    @PostMapping("/shops/create")
+    public ResponseEntity<JsonResponse<OwnerDto.MartResponseDto>> createMart(@RequestBody OwnerDto.MartRequestDto martRequestDto) {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.createMart(martRequestDto, userIdx)));
+    }
 }
