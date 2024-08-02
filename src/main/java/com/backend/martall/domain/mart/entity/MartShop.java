@@ -6,6 +6,7 @@ import com.backend.martall.domain.user.entity.User;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -54,13 +55,13 @@ public class MartShop extends BaseTime {
     private User user;
 
     @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<MartShopPic> martShopPics;
+    private List<MartShopPic> martShopPics = new ArrayList<>();
 
     @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<MartCategory> martCategories;
+    private List<MartCategory> martCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<MartBookmark> martBookmarks;
+    private List<MartBookmark> martBookmarks = new ArrayList<>();
 
     @Column(name = "manager_name", length = 50)
     private String managerName;

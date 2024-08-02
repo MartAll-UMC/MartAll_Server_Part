@@ -86,6 +86,7 @@ public enum ResponseStatus {
     OWNER_NOT_EXIST_ITEM(false, 4455, "상품이 존재하지 않습니다."),
     OWNER_WRONG_ITEM(false, 4456, "마트에 존재하는 상품이 아닙니다."),
     OWNER_WRONG_MART_TAG(false, 4457, "올바른 태그가 아닙니다."),
+    OWNER_ALREADY_EXIST_MART(false, 4458, "이미 마트가 존재합니다."),
 
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),

@@ -315,4 +315,52 @@ public class OwnerService {
                 .martShopId(martShop.getMartShopId())
                 .build();
     }
+
+
+    @Transactional
+    public OwnerDto.MartResponseDto createMart(OwnerDto.MartRequestDto martRequestDto, Long userIdx) {
+
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        if (martRepository.existsByUser(user)) {
+            throw new BadRequestException(ResponseStatus.OWNER_ALREADY_EXIST_MART);
+        }
+
+        OwnerDto.MartRequestDto.Time open = martRequestDto.getOperatingTime().getOpen();
+        OwnerDto.MartRequestDto.Time close = martRequestDto.getOperatingTime().getClose();
+
+        MartShop martShop = MartShop.builder()
+                .name(martRequestDto.getName())
+                .address(martRequestDto.getAddress())
+                .shopNumber(martRequestDto.getShopNumber())
+                .operatingTime(String.format("%s %02d:%02d - %02d:%02d",
+                        String.join(" ", martRequestDto.getOperatingTime().getDays()),
+                        open.getPeriod().equals("PM") ? open.getHour() + 12 : open.getHour(),
+                        open.getMinute(),
+                        close.getPeriod().equals("PM") ? open.getHour() + 12 : open.getHour(),
+                        close.getMinute())
+                )
+                .user(user)
+                .exposure(true)
+                .managerName(user.getUsername())
+                .martCategories(new ArrayList<>())
+                .build();
+
+        for(String category:martRequestDto.getCategory()) {
+            if(MartTag.existByName(category)) {
+                MartCategory martCategory = martCategoryRepository.save(MartCategory.builder()
+                        .categoryName(category)
+                        .build());
+                martShop.addMartCategory(martCategory);
+            } else {
+                throw new BadRequestException(ResponseStatus.OWNER_WRONG_MART_TAG);
+            }
+        }
+
+        martRepository.save(martShop);
+
+        return OwnerDto.MartResponseDto.builder()
+                .martShopId(martShop.getMartShopId())
+                .build();
+    }
 }

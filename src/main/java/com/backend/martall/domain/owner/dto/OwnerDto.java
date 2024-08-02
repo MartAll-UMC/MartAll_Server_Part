@@ -163,4 +163,37 @@ public class OwnerDto {
     public static class MartTagResponseDto {
         private Long martShopId;
     }
+
+    @Getter
+    public static class MartRequestDto {
+        private String name;
+        private String address;
+        private OperatingTime operatingTime;
+        private String shopNumber;
+        private List<String> category;
+
+        @Getter
+        public static class OperatingTime {
+            private List<String> days;
+            private Time open;
+            private Time close;
+        }
+
+        @Getter
+        public static class Time {
+            private int hour;
+            private int minute;
+            private String period;
+        }
+    }
+
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MartResponseDto {
+        private Long martShopId;
+    }
 }
