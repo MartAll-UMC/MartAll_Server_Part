@@ -7,7 +7,9 @@ import com.backend.martall.domain.item.repository.ItemRepository;
 import com.backend.martall.domain.itemlike.repository.ItemLikeRepository;
 import com.backend.martall.domain.mart.entity.MartCategory;
 import com.backend.martall.domain.mart.entity.MartShop;
+import com.backend.martall.domain.mart.entity.MartTag;
 import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
+import com.backend.martall.domain.mart.repository.MartCategoryRepository;
 import com.backend.martall.domain.mart.repository.MartRepository;
 import com.backend.martall.domain.order.entity.OrderInfo;
 import com.backend.martall.domain.order.entity.OrderItem;
@@ -41,6 +43,7 @@ public class OwnerService {
     private final ImageService imageService;
     private final ItemRepository itemRepository;
     private final ItemLikeRepository itemLikeRepository;
+    private final MartCategoryRepository martCategoryRepository;
 
 
     // 주문 내역 조회
@@ -223,7 +226,7 @@ public class OwnerService {
 
         // 마트에 상품이 존재하는지 검증
         if (!item.getMartShop().equals(martShop)) {
-            throw new BadRequestException(ResponseStatus.OWNER_WRONG_Item);
+            throw new BadRequestException(ResponseStatus.OWNER_WRONG_ITEM);
         }
 
         String profileUrl = null;
@@ -280,4 +283,36 @@ public class OwnerService {
                 .build();
     }
 
+
+    @Transactional
+    public OwnerDto.MartTagResponseDto updateMartTag(OwnerDto.MartTagRequestDto martTagRequestDto, Long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        MartShop martShop = martRepository.findByUser(user).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_MART));
+
+        List<MartCategory> currentCategory = new ArrayList<>(martShop.getMartCategories());
+
+        currentCategory
+                .forEach(martCategory -> {
+                    martShop.removeMartCategory(martCategory);
+                    martCategoryRepository.delete(martCategory);
+                });
+
+
+        martTagRequestDto.getCategory()
+                .forEach(category -> {
+                    if (MartTag.existByName(category)) {
+                        MartCategory martCategory = martCategoryRepository.save(MartCategory.builder()
+                                .categoryName(category)
+                                .build());
+                        martShop.addMartCategory(martCategory);
+                    } else {
+                        throw new BadRequestException(ResponseStatus.OWNER_WRONG_MART_TAG);
+                    }
+                });
+
+        return OwnerDto.MartTagResponseDto.builder()
+                .martShopId(martShop.getMartShopId())
+                .build();
+    }
 }

@@ -83,4 +83,12 @@ public class OwnerController {
         Long userIdx = jwtTokenProvider.resolveToken();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.getMartMain(userIdx)));
     }
+
+    @Operation(summary = "가게 태그 관리")
+    @ApiResponse(responseCode = "200", description = "가게 태그 관리", useReturnTypeSchema = true)
+    @PatchMapping("/shops/tag")
+    public ResponseEntity<JsonResponse<OwnerDto.MartTagResponseDto>> updateMartTag(@RequestBody OwnerDto.MartTagRequestDto martTagRequestDto) {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateMartTag(martTagRequestDto, userIdx)));
+    }
 }

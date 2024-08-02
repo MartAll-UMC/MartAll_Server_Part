@@ -149,4 +149,18 @@ public class OwnerDto {
         private Integer bookmarkCount;
         private Integer likeCount;
     }
+
+    @Getter
+    public static class MartTagRequestDto {
+        private List<String> category;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MartTagResponseDto {
+        private Long martShopId;
+    }
 }
