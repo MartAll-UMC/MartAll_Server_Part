@@ -135,4 +135,18 @@ public class OwnerDto {
     public static class MartExposureResponseDto {
         private Boolean exposure;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MartMainResponseDto {
+        private Long martId;
+        private String martName;
+        private Boolean exposure;
+        private List<String> martCategory;
+        private Integer bookmarkCount;
+        private Integer likeCount;
+    }
 }

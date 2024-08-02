@@ -75,4 +75,12 @@ public class OwnerController {
         Long userIdx = jwtTokenProvider.resolveToken();
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.updateMartExposure(martExposureRequestDto, userIdx)));
     }
+
+    @Operation(summary = "홈 화면")
+    @ApiResponse(responseCode = "200", description = "홈 화면", useReturnTypeSchema = true)
+    @GetMapping("/shops/all")
+    public ResponseEntity<JsonResponse<OwnerDto.MartMainResponseDto>> home() {
+        Long userIdx = jwtTokenProvider.resolveToken();
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, ownerService.getMartMain(userIdx)));
+    }
 }

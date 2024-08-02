@@ -4,6 +4,8 @@ import com.backend.martall.domain.image.service.ImageService;
 import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.item.entity.ItemCategory;
 import com.backend.martall.domain.item.repository.ItemRepository;
+import com.backend.martall.domain.itemlike.repository.ItemLikeRepository;
+import com.backend.martall.domain.mart.entity.MartCategory;
 import com.backend.martall.domain.mart.entity.MartShop;
 import com.backend.martall.domain.mart.repository.MartBookmarkRepository;
 import com.backend.martall.domain.mart.repository.MartRepository;
@@ -38,6 +40,7 @@ public class OwnerService {
     private final OrderItemRepository orderItemRepository;
     private final ImageService imageService;
     private final ItemRepository itemRepository;
+    private final ItemLikeRepository itemLikeRepository;
 
 
     // 주문 내역 조회
@@ -49,7 +52,7 @@ public class OwnerService {
         List<OrderInfo> orderInfoList = orderInfoRepository.findByMartShopAndOrderState(martShop, state);
 
         // 준비중(P)이면 당일 완료(C) 주문도 추가로 불러오기
-        if(state.equals("P")) {
+        if (state.equals("P")) {
             orderInfoList.addAll(orderInfoRepository.findTodayCompleteByMartShop(martShop));
         }
 
@@ -97,17 +100,17 @@ public class OwnerService {
         MartShop martShop = martRepository.findByUser(user).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_MART));
 
         // 마트에 해당 하는 주문인지 확인
-        if(!orderInfoRepository.existsByOrderIdAndMartShop(orderId, martShop)) {
+        if (!orderInfoRepository.existsByOrderIdAndMartShop(orderId, martShop)) {
             throw new BadRequestException(ResponseStatus.OWNER_WRONG_ORDER);
         }
 
         // 변경하려는 상태가 존재하는지 확인
-        if(!OrderState.isValidState(orderState)) {
+        if (!OrderState.isValidState(orderState)) {
             throw new BadRequestException(ResponseStatus.OWNER_WRONG_ORDER_STATE);
         }
 
         // 입력 받은 정보로 orderInfo 업데이트
-        if(orderInfoRepository.updateStateById(orderId, orderState) == 0) {
+        if (orderInfoRepository.updateStateById(orderId, orderState) == 0) {
             throw new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_ORDER);
         }
 
@@ -129,7 +132,7 @@ public class OwnerService {
         MartShop martShop = martRepository.findByUser(user).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_MART));
 
         // 마트에 해당 하는 주문인지 확인
-        if(!orderInfoRepository.existsByOrderIdAndMartShop(orderId, martShop)) {
+        if (!orderInfoRepository.existsByOrderIdAndMartShop(orderId, martShop)) {
             throw new BadRequestException(ResponseStatus.OWNER_WRONG_ORDER);
         }
 
@@ -170,9 +173,9 @@ public class OwnerService {
 
     @Transactional
     public OwnerDto.ItemResponseDto registerItem(MultipartFile profile,
-                                                      MultipartFile content,
-                                                      OwnerDto.ItemCreateRequestDto itemCreateRequestDto,
-                                                      Long userIdx) {
+                                                 MultipartFile content,
+                                                 OwnerDto.ItemCreateRequestDto itemCreateRequestDto,
+                                                 Long userIdx) {
 
         // profile, content가 null인 경우 처리
         if (profile == null || profile.isEmpty() || content == null || content.isEmpty()) {
@@ -208,9 +211,9 @@ public class OwnerService {
 
     @Transactional
     public OwnerDto.ItemResponseDto updateItem(MultipartFile profile,
-                                                 MultipartFile content,
-                                                 OwnerDto.ItemUpdateRequestDto itemUpdateRequestDto,
-                                                 Long userIdx) {
+                                               MultipartFile content,
+                                               OwnerDto.ItemUpdateRequestDto itemUpdateRequestDto,
+                                               Long userIdx) {
 
         User user = userRepository.findByUserIdx(userIdx).get();
 
@@ -259,4 +262,22 @@ public class OwnerService {
                 .exposure(martShop.getExposure())
                 .build();
     }
+
+    public OwnerDto.MartMainResponseDto getMartMain(Long userIdx) {
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        MartShop martShop = martRepository.findByUser(user).orElseThrow(() -> new BadRequestException(ResponseStatus.OWNER_NOT_EXIST_MART));
+
+        return OwnerDto.MartMainResponseDto.builder()
+                .martId(martShop.getMartShopId())
+                .martName(martShop.getName())
+                .exposure(martShop.getExposure())
+                .martCategory(martShop.getMartCategories().stream()
+                        .map(MartCategory::getCategoryName)
+                        .toList())
+                .bookmarkCount(martShop.getMartBookmarks().size())
+                .likeCount(itemLikeRepository.countItemLikeByMart(martShop))
+                .build();
+    }
+
 }
