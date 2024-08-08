@@ -60,7 +60,7 @@ public class InquiryCommandService {
 
         User user = userRepository.findByUserIdx(userIdx).get();
 
-        Inquiry inquiry = inquiryRepository.findById(inquiryId)
+        Inquiry inquiry = inquiryRepository.findByInquiryId(inquiryId)
                 .orElseThrow(() -> new BadRequestException(ResponseStatus.INQUIRY_NOT_EXIST));
 
         boolean isUser;
