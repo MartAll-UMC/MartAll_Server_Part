@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/inquiry")
@@ -31,7 +28,19 @@ public class InquiryController {
 
         Long userIdx = jwtTokenProvider.resolveToken();
 
-        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, inquiryCommandService.createInquiry(inquiryCreateRequestDto, userIdx)));
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, inquiryCommandService.createInquiry(inquiryCreateRequestDto, userIdx)));
+
+    }
+
+    @Operation(summary = "문의 작성")
+    @ApiResponse(responseCode = "200", description = "문의 작성",useReturnTypeSchema = true)
+    @PostMapping("/{inquiryId}")
+    public ResponseEntity<JsonResponse<InquiryResponseDto.InquiryIdResponseDto>> createInquiryContent(@RequestBody InquiryRequestDto.InquiryContentRequestDto inquiryContentRequestDto,
+                                                                                                      @PathVariable Long inquiryId) {
+
+        Long userIdx = jwtTokenProvider.resolveToken();
+
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, inquiryCommandService.createInquiryContent(inquiryContentRequestDto, inquiryId, userIdx)));
 
     }
 }

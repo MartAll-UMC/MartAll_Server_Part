@@ -88,6 +88,10 @@ public enum ResponseStatus {
     OWNER_WRONG_MART_TAG(false, 4457, "올바른 태그가 아닙니다."),
     OWNER_ALREADY_EXIST_MART(false, 4458, "이미 마트가 존재합니다."),
 
+    // 문의 4470 ~
+    INQUIRY_NOT_EXIST(false, 4470, "존재하지 않는 문의입니다."),
+    INQUIRY_NOT_MATCH(false, 4471, "사용자의 문의가 아닙니다."),
+
     // 5000 - Request Error
     REQUEST_ERROR(false, 5000, "잘못된 요청입니다."),
 

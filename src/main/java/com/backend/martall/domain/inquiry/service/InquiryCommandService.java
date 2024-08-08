@@ -53,4 +53,32 @@ public class InquiryCommandService {
                 .inquiryId(inquiry.getId())
                 .build();
     }
+
+    public InquiryResponseDto.InquiryIdResponseDto createInquiryContent(InquiryRequestDto.InquiryContentRequestDto inquiryContentRequestDto,
+                                                                        Long inquiryId,
+                                                                        Long userIdx) {
+
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
+                .orElseThrow(() -> new BadRequestException(ResponseStatus.INQUIRY_NOT_EXIST));
+
+        boolean isUser;
+
+        // 문의한 회원이 문의의 회원이거나 마트 사장일 경우에만 생성
+        if ((isUser = inquiry.getUser().equals(user)) || (inquiry.getMartShop().getUser().equals(user))) {
+            inquiryContentRepository.save(InquiryContent.builder()
+                    .content(inquiryContentRequestDto.getContent())
+                    .isUser(isUser)
+                    .inquiry(inquiry)
+                    .build());
+
+            return InquiryResponseDto.InquiryIdResponseDto.builder()
+                    .inquiryId(inquiry.getId())
+                    .build();
+        } else {
+            throw new BadRequestException(ResponseStatus.INQUIRY_NOT_MATCH);
+        }
+
+    }
 }

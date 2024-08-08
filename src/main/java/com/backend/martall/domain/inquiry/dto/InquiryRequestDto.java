@@ -8,4 +8,9 @@ public class InquiryRequestDto {
         private Long martId;
         private String content;
     }
+
+    @Getter
+    public static class InquiryContentRequestDto {
+        private String content;
+    }
 }
