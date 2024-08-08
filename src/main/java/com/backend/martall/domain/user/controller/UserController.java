@@ -191,4 +191,16 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS, token));
     }
+
+    @Operation(summary = "유저 정보 변경")
+    @ApiResponse(responseCode = "200", description = "유저 정보 변경", useReturnTypeSchema = true)
+    @PatchMapping("/update")
+    public ResponseEntity<JsonResponse> updateNickname(@RequestBody AccountDto.NicknameUpdateRequestDto nicknameUpdateRequestDto) {
+
+        Long userIdx = jwtTokenProvider.resolveToken();
+
+        accountService.updateNickname(userIdx, nicknameUpdateRequestDto);
+
+        return ResponseEntity.ok(new JsonResponse(ResponseStatus.SUCCESS));
+    }
 }

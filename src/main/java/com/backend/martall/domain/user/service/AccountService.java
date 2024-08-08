@@ -277,4 +277,15 @@ public class AccountService {
 
         userRepository.save(user);
     }
+
+    public void updateNickname(Long userIdx, AccountDto.NicknameUpdateRequestDto nicknameUpdateRequestDto) {
+
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        user.updateUserName(nicknameUpdateRequestDto.getNickname());
+
+        userRepository.save(user);
+
+    }
+
 }

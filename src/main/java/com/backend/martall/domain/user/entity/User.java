@@ -77,4 +77,6 @@ public class User extends BaseTime {
     public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
 
     public void setPassword(String password) { this.password = password; }
+
+    public void updateUserName(String nickname) { this.username = nickname; }
 }

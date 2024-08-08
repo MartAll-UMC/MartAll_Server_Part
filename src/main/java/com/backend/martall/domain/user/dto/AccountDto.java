@@ -93,4 +93,11 @@ public class AccountDto {
         private String password;
 
     }
+
+    @Getter
+    public static class NicknameUpdateRequestDto {
+        @NotBlank(message = "이름을 입력해주세요.")
+        @Length(max = 20)
+        private String nickname;
+    }
 }
