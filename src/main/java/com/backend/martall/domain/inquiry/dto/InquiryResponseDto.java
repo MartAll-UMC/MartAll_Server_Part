@@ -24,4 +24,14 @@ public class InquiryResponseDto {
         private String content;
         private String updatedAt;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class InquiryContentResponseDto {
+        private Boolean isCurrentUser;
+        private String content;
+    }
 }

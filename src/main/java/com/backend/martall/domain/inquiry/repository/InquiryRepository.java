@@ -22,4 +22,7 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
     @Query("SELECT i FROM Inquiry i JOIN FETCH i.inquiryContentList JOIN FETCH i.user WHERE i.martShop = :martShop")
     List<Inquiry> findByMartShopWithInquiryContentList(MartShop martShop);
+
+    @Query("SELECT i FROM Inquiry i JOIN FETCH i.martShop JOIN FETCH i.user JOIN FETCH i.inquiryContentList WHERE i.id = :inquiryId")
+    Optional<Inquiry> findByInquiryIdWithContent(Long inquiryId);
 }

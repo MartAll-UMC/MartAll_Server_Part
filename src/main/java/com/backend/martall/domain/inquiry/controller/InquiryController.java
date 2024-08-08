@@ -58,4 +58,15 @@ public class InquiryController {
         return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, inquiryQueryService.getInquiryList(isMart, userIdx)));
 
     }
+
+    @Operation(summary = "문의 상세 조회")
+    @ApiResponse(responseCode = "200", description = "문의 상세 조회",useReturnTypeSchema = true)
+    @GetMapping("/{inquiryId}")
+    public ResponseEntity<JsonResponse<List<InquiryResponseDto.InquiryContentResponseDto>>> getInquiryContentList(@PathVariable Long inquiryId) {
+
+        Long userIdx = jwtTokenProvider.resolveToken();
+
+        return ResponseEntity.ok(new JsonResponse<>(ResponseStatus.SUCCESS, inquiryQueryService.getInquiryContent(inquiryId, userIdx)));
+
+    }
 }

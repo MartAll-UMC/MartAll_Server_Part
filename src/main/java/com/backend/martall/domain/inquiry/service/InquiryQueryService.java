@@ -65,4 +65,36 @@ public class InquiryQueryService {
 
         return dateTime.format(formatter);
     }
+
+    public List<InquiryResponseDto.InquiryContentResponseDto> getInquiryContent(Long inquiryId,
+                                                                                Long userIdx) {
+
+        User user = userRepository.findByUserIdx(userIdx).get();
+
+        Inquiry inquiry = inquiryRepository.findByInquiryIdWithContent(inquiryId)
+                .orElseThrow(() -> new BadRequestException(ResponseStatus.INQUIRY_NOT_EXIST));
+
+
+        if (inquiry.getUser().equals(user)) {
+
+            return inquiry.getInquiryContentList().stream()
+                    .map(inquiryContent -> InquiryResponseDto.InquiryContentResponseDto.builder()
+                            .isCurrentUser(inquiryContent.getIsUser())
+                            .content(inquiryContent.getContent())
+                            .build())
+                    .toList();
+
+        } else if (inquiry.getMartShop().getUser().equals(user)) {
+
+            return inquiry.getInquiryContentList().stream()
+                    .map(inquiryContent -> InquiryResponseDto.InquiryContentResponseDto.builder()
+                            .isCurrentUser(!inquiryContent.getIsUser())
+                            .content(inquiryContent.getContent())
+                            .build())
+                    .toList();
+
+        } else {
+            throw new BadRequestException(ResponseStatus.INQUIRY_NOT_MATCH);
+        }
+    }
 }
