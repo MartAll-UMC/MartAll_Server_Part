@@ -1,6 +1,7 @@
 package com.backend.martall.domain.mart.entity;
 
 import com.backend.martall.domain.BaseTime;
+import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.mart.dto.MartRequestDto;
 import com.backend.martall.domain.user.entity.User;
 import lombok.*;
@@ -82,6 +83,9 @@ public class MartShop extends BaseTime {
     private String latitude;
 
     private Boolean exposure;
+
+    @OneToMany(mappedBy = "martShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Item> itemList = new ArrayList<>();
 
 
     public void addMartCategory(MartCategory martCategory) {
