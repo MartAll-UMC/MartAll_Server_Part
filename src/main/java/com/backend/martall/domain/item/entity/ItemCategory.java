@@ -16,7 +16,8 @@ public enum ItemCategory {
     FRUTVEG("과일&채소"),
     SEAFOOD("수산"),
     MEAT("정육"),
-    SNACK("간식")
+    SNACK("간식"),
+    HOUSEHOLD("생활용품")
     ;
 
     private final String name;
