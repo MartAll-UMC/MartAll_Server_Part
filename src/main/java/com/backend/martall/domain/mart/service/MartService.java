@@ -141,7 +141,7 @@ public class MartService {
     //mart 전체 조회
     public List<MartWithItemResponseDto> findAllMarts(Long userIdx) {
         User user = userRepository.findById(userIdx).orElseThrow(() -> new BadRequestException(NOT_EXIST_USER));
-        List<MartShop> martShopList = martRepository.findAll();
+        List<MartShop> martShopList = martRepository.findAllMart();
 
         return generateMartWithItemList(martShopList, user);
     }

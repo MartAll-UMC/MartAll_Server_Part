@@ -69,6 +69,10 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
             "ORDER BY FUNCTION('RAND')")
     List<MartShop> findRandomMart(Pageable pageable);
 
+    @Query("SELECT martShop FROM MartShop martShop WHERE (martShop.exposure = true) " +
+            "AND martShop.itemList IS NOT EMPTY ")
+    List<MartShop> findAllMart();
+
     boolean existsByUser(User user);
 
     Optional<MartShop> findByUser(User user);
