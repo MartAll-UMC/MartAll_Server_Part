@@ -17,7 +17,8 @@ public enum MartTag {
 //    PET("반려동물"),
     MEAT("정육"),
     FRUTVEG("과일&채소"),
-    SNACK("간식")
+    SNACK("간식"),
+    HOUSEHOLD("생활용품")
     ;
 
     private final String name;

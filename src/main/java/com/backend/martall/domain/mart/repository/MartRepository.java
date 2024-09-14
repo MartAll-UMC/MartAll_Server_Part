@@ -17,7 +17,8 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
 
 
     @Query("SELECT m FROM MartShop m WHERE (m.name LIKE %:keyword% OR m.introduction LIKE %:keyword%)" +
-            "AND (m.exposure = true)")
+            "AND (m.exposure = true)" +
+            "AND m.itemList IS NOT EMPTY")
     List<MartShop> findByKeyword(String keyword);
 
     @Query("SELECT m FROM MartShop m JOIN m.martCategories c WHERE (:categoryName IS NULL OR c.categoryName = :categoryName)" +
@@ -29,7 +30,8 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
             "AND (:maxBookmark IS NULL OR SIZE(m.martBookmarks) <= :maxBookmark)" +
             "AND (:minLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) >= :minLike)" +
             "AND (:maxLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) <= :maxLike)" +
-            "AND (m.exposure = true)")
+            "AND (m.exposure = true)" +
+            "AND m.itemList IS NOT EMPTY")
     List<MartShop> searchByFilter(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike);
 
     @Query("SELECT m FROM MartShop m LEFT JOIN m.martCategories c WHERE (:tag = '전체' OR c.categoryName = :tag)" +
@@ -37,7 +39,8 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
             "AND (:maxBookmark IS NULL OR SIZE(m.martBookmarks) <= :maxBookmark)" +
             "AND (:minLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) >= :minLike)" +
             "AND (:maxLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) <= :maxLike)" +
-            "AND (m.exposure = true)" +
+            "AND (m.exposure = true)"  +
+            "AND (m.itemList IS NOT EMPTY)" +
             "ORDER BY m.createdAt DESC")
     List<MartShop> searchByFilterCreatedAtDesc(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike);
 
@@ -47,6 +50,7 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
             "AND (:minLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) >= :minLike)" +
             "AND (:maxLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) <= :maxLike)" +
             "AND (m.exposure = true)" +
+            "AND m.itemList IS NOT EMPTY " +
             "ORDER BY SIZE(m.martBookmarks) DESC")
     List<MartShop> searchByFilterBookmarkDesc(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike);
 
@@ -55,11 +59,14 @@ public interface MartRepository extends JpaRepository<MartShop, Long> {
             "AND (:maxBookmark IS NULL OR SIZE(m.martBookmarks) <= :maxBookmark)" +
             "AND (:minLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) >= :minLike)" +
             "AND (:maxLike IS NULL OR (SELECT count(il) FROM ItemLike il WHERE il.item.martShop = m) <= :maxLike)" +
-            "AND (m.exposure = true)")
+            "AND (m.exposure = true)" +
+            "AND m.itemList IS NOT EMPTY")
     List<MartShop> searchByFilterLikeDesc(String tag, Integer minBookmark, Integer maxBookmark, Integer minLike, Integer maxLike);
 //    findTop8ByOrderByCreatedAtDesc
 
-    @Query("SELECT martShop FROM MartShop martShop WHERE (martShop.exposure = true) ORDER BY FUNCTION('RAND')")
+    @Query("SELECT martShop FROM MartShop martShop WHERE (martShop.exposure = true) " +
+            "AND martShop.itemList IS NOT EMPTY " +
+            "ORDER BY FUNCTION('RAND')")
     List<MartShop> findRandomMart(Pageable pageable);
 
     boolean existsByUser(User user);
