@@ -76,7 +76,7 @@ public class OwnerService {
                             return OwnerDto.OrderListResponseDto.Order.builder()
                                     .orderId(orderInfo.getOrderId())
                                     .customerName(orderUser.getUsername())
-                                    .regularState(martBookmarkRepository.existsByUserAndMartShop(orderUser, martShop))
+                                    .isBookmark(martBookmarkRepository.existsByUserAndMartShop(orderUser, martShop))
                                     .orderAt(orderInfo.getCreatedAt())
                                     .orderName(orderName)
                                     .sumPrice(orderItemList.stream()
