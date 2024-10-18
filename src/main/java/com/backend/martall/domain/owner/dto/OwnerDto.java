@@ -29,7 +29,7 @@ public class OwnerDto {
         public static class Order {
             private Long orderId;
             private String customerName;
-            private Boolean regularState;
+            private Boolean isBookmark;
             private LocalDateTime orderAt;
             private String orderName;
             private Long sumPrice;
