@@ -1,8 +1,18 @@
 package com.backend.martall.domain.item.service;
 
+import static com.backend.martall.global.exception.ResponseStatus.ITEM_CATEGORY_SORT_WRONG;
+import static com.backend.martall.global.exception.ResponseStatus.ITEM_DETAIL_ITEMID_FAIL;
+import static com.backend.martall.global.exception.ResponseStatus.ITEM_DETAIL_MARTID_FAIL;
+import static com.backend.martall.global.exception.ResponseStatus.ITEM_SEARCH_WORD_EMPTY;
+
 import com.backend.martall.domain.image.dto.ImageDto;
 import com.backend.martall.domain.image.service.ImageService;
-import com.backend.martall.domain.item.dto.*;
+import com.backend.martall.domain.item.dto.ItemAddRequestDto;
+import com.backend.martall.domain.item.dto.ItemCategorySearchResponseDto;
+import com.backend.martall.domain.item.dto.ItemDetailResponseDto;
+import com.backend.martall.domain.item.dto.ItemKeywordSearchResponseDto;
+import com.backend.martall.domain.item.dto.ItemMartNewResponseDto;
+import com.backend.martall.domain.item.dto.ItemNewResponseDto;
 import com.backend.martall.domain.item.entity.Item;
 import com.backend.martall.domain.item.entity.ItemCategory;
 import com.backend.martall.domain.item.repository.ItemRepository;
@@ -14,16 +24,13 @@ import com.backend.martall.domain.user.entity.User;
 import com.backend.martall.domain.user.entity.UserRepository;
 import com.backend.martall.global.exception.BadRequestException;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.backend.martall.global.exception.ResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +97,7 @@ public class ItemService {
                 .itemPrice(item.getPrice())
                 .itemLike(itemLikeService.checkItemLike(item, user))
                 .itemContentImg(item.getContent())
+                .itemCategory(item.getCategoryId().getName())
                 // 마트 정보
                 .mart(ItemDetailResponseDto.Mart.builder()
                         .martId(martShop.getMartShopId())
