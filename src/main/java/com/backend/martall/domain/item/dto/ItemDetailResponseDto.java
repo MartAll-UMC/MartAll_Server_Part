@@ -1,13 +1,13 @@
 package com.backend.martall.domain.item.dto;
 
-import com.backend.martall.domain.item.entity.Item;
-import com.backend.martall.domain.item.entity.ItemCategory;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -28,6 +28,7 @@ public class ItemDetailResponseDto {
     private boolean itemLike;
     @Schema(example = "아이템 정보 이미지 경로")
     private String itemContentImg;
+    private String itemCategory;
     private Mart mart;
 
     @Getter
